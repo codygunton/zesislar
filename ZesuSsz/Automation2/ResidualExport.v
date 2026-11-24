@@ -29,8 +29,12 @@ Set Default Proof Mode "Classic".
    variable with the conclusion or with a fact already kept (to a fixpoint),
    without facts above the node limit and without facts that mention no
    local variable (switch and marker facts), plus the variables these terms
-   mention. Local definitions are unfolded into the statement. Each binder
-   keeps the name of its hypothesis, so `intros.` restores the names.
+   mention. A fact above the limit takes part through its pieces below it
+   (`ContextCollection.zesu_large_fact_pieces`); a residual lemma premise
+   over a piece closes from the whole fact (`ResidualLemmas.zesu_residual_premise`).
+   Local definitions are unfolded into the statement.
+   Each binder keeps the name of its hypothesis, so `intros.` restores the
+   names.
 
    Reparsing the printed statement and printing it again gives the same
    text exactly when the reparsed term is the exported term (up to binder
@@ -579,7 +583,7 @@ Ltac2 zesu_export_record (kind : string) (limit : int) :=
   Message.print (zesu_export_cats [zesu_export_str "@@X stmt "; source]);
   Message.print (zesu_export_str "@@X end").
 
-Ltac2 zesu_export_goal (kind : string) :=
+Ltac2 zesu_export_goal_here (kind : string) :=
   match Control.case (fun () => zesu_export_record kind 2048) with
   | Val _ => ()
   | Err error =>
@@ -589,6 +593,17 @@ Ltac2 zesu_export_goal (kind : string) :=
         end in
       Message.print (zesu_export_str (String.concat "" ["@@X skip "; kind; " "; why]))
   end.
+
+Ltac2 Type exn ::= [ ZesuExportRestore ].
+
+(* The record is printed with the pieces of the large facts in the context;
+   the failure that follows restores the goal and the context. *)
+Ltac2 zesu_export_goal (kind : string) :=
+  let _ := Control.case (fun () =>
+    let _ := ZesuSsz.Automation2.ContextCollection.zesu_large_fact_pieces () in
+    zesu_export_goal_here kind;
+    Control.zero ZesuExportRestore) in
+  ().
 
 (* ---- checks used by the loop tool ---- *)
 
