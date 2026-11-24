@@ -68,6 +68,15 @@ Proof.
   exact I.
 Qed.
 
+(* The word lookup's goal `low = address` is membership in one byte at low. *)
+Lemma mem_range_word (p q : bv 64) : True.
+Proof.
+  assert_succeeds (assert (bv_unsigned p + 8 = bv_unsigned p + 16) as H; [outside; shelve | ]).
+  assert_succeeds (assert (bv_unsigned p + 8 = bv_unsigned (p + BV 64 8)) as H; [possible; shelve | ]).
+  assert_succeeds (assert (bv_unsigned p + 8 = bv_unsigned q + 8) as H; [unread; shelve | ]).
+  exact I.
+Qed.
+
 (* The lookup end to end: a region that holds the address is found; a region
    that does not is refused by the gate and by isla's hint after it. *)
 Section lookup.
@@ -82,6 +91,35 @@ Section lookup.
   Proof.
     Fail (assert (exists G, FindHypEqual (FICMemMapstoSemantic (bv_unsigned p + 12)) (bv_unsigned p ↦ₘ? 8)
       (mem_mapsto_kind_prop (bv_unsigned p) (MKUninit (bv_unsigned p) 8)) G)
+      by (eexists; typeclasses eauto)).
+    exact I.
+  Qed.
+
+  (* A word: the same root with the offset spelled otherwise is found by
+     isla's bv_solve after the gate; another root is found when the address
+     has its own equation; another root without one is refused, by the gate
+     before any solver, even where a fact on the other root would prove it
+     (the last case). *)
+  Lemma mem_lookup_word_found (p : bv 64) (w : bv 64) (Hp : bv_unsigned p < 4096) :
+    exists G, FindHypEqual (FICMemMapstoSemantic (bv_unsigned (p + BV 64 8))) ((bv_unsigned p + 8) ↦ₘ w)
+      (mem_mapsto_kind_prop (bv_unsigned (p + BV 64 8)) (MKMapsTo 64 w)) G.
+  Proof. eexists. typeclasses eauto. Qed.
+
+  Lemma mem_lookup_word_equation (p q : bv 64) (w : bv 64)
+      (Hq : bv_unsigned q = bv_unsigned p + 8) :
+    exists G, FindHypEqual (FICMemMapstoSemantic (bv_unsigned q)) ((bv_unsigned p + 8) ↦ₘ w)
+      (mem_mapsto_kind_prop (bv_unsigned q) (MKMapsTo 64 w)) G.
+  Proof. eexists. typeclasses eauto. Qed.
+
+  Lemma mem_lookup_word_refused (p q : bv 64) (w : bv 64)
+      (Hq : bv_unsigned q = bv_unsigned p - 8) : True.
+  Proof.
+    Fail (assert (exists G, FindHypEqual (FICMemMapstoSemantic (bv_unsigned p + 16)) ((bv_unsigned p + 8) ↦ₘ w)
+      (mem_mapsto_kind_prop (bv_unsigned p + 16) (MKMapsTo 64 w)) G)
+      by (eexists; typeclasses eauto)).
+    assert_succeeds (assert (bv_unsigned p + 8 = bv_unsigned q + 16) as H by bv_solve).
+    Fail (assert (exists G, FindHypEqual (FICMemMapstoSemantic (bv_unsigned q + 16)) ((bv_unsigned p + 8) ↦ₘ w)
+      (mem_mapsto_kind_prop (bv_unsigned q + 16) (MKMapsTo 64 w)) G)
       by (eexists; typeclasses eauto)).
     exact I.
   Qed.

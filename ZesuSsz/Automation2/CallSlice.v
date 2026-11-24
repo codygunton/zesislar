@@ -13,6 +13,7 @@ Require ZesuSsz.Automation2.WrappedWord.
 Require ZesuSsz.Automation2.PureFacts.
 Require ZesuSsz.Automation2.ByteExtractCodec281.
 Require ZesuSsz.Automation2.VmClosed.
+Require ZesuSsz.Automation2.FactViews.
 Local Open Scope Z_scope.
 
 (* The call-site step for a callee that takes an input slice and an output
@@ -625,6 +626,7 @@ Ltac zesu_call_slice :=
       let meaning := lazymatch type of I with @ZesuCallSliceInterface _ _ _ ?m => m end in
       let count := eval vm_compute in (@zesu_call_slice_out_size _ _ _ _ I) in
       let size := eval vm_compute in (Z.of_nat count) in
+      ZesuSsz.Automation2.FactViews.zesu_specialise_guarded_facts;
       zesu_call_slice_payload_windows I dom meaning mk;
       iMatchHyp ltac:(fun Harray resource =>
         lazymatch resource with
@@ -919,6 +921,7 @@ Ltac zesu_call_slice_ref :=
         (* the window of (p, l): the window steps of a by-value callee whose
            call record the context holds, a stated window, or the rest the
            previous by-reference call returned *)
+        ZesuSsz.Automation2.FactViews.zesu_specialise_guarded_facts;
         let Hwin := fresh "HcsWindow" in
         once (zesu_call_slice_window_any p l base bytes
                 ltac:(fun Hw => pose proof Hw as Hwin));

@@ -2,6 +2,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.ContextCollection.
 Require ZesuSsz.Automation2.ResidualExport.
 Require ZesuSsz.Automation2.SpatialExport.
+Require ZesuSsz.Automation2.ExistsPure.
 Require Import ZesuSsz.Automation2.Telemetry.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
@@ -205,9 +206,16 @@ Ltac zesu_diag_export_split :=
 Ltac zesu_diag_export_final :=
   tryif first [zesu_diag_export_on | zesu_telemetry_on] then try (
     lazymatch goal with
-    | |- environments.envs_entails _ _ => idtac "@@X skip final spatial";
+    | |- environments.envs_entails _ _ =>
+        (* an existential that only pure facts constrain, its spatial rest
+           held (ExistsPure.v): its pure statement is the residual goal *)
+        tryif ZesuSsz.Automation2.ExistsPure.zesu_exists_pure_parts ltac:(fun _ => idtac)
+        then ZesuSsz.Automation2.ExistsPure.zesu_exists_pure_parts ltac:(fun E =>
+          try (assert E; [ltac2:(ZesuSsz.Automation2.ResidualExport.zesu_export_goal "final"); fail
+                         | fail]))
+        else (idtac "@@X skip final spatial";
         tryif ZesuSsz.Automation2.SpatialExport.zesu_spatial_export_on
-        then try ZesuSsz.Automation2.SpatialExport.zesu_spatial_export_final else idtac
+        then try ZesuSsz.Automation2.SpatialExport.zesu_spatial_export_final else idtac)
     | _ => ltac2:(ZesuSsz.Automation2.ResidualExport.zesu_export_goal "final")
     end)
   else idtac.

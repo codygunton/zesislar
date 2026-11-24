@@ -198,14 +198,35 @@ Ltac zesu_byte_slice_alias_normalize :=
   end.
 
 (* A hypothesis word convertible to a goal word is restated in the goal's
-   form, whatever alias it was elaborated at. *)
+   form, whatever alias it was elaborated at. A width alias leaves the local
+   names of a word as they are, so only a word with the same local names is
+   unified: unification otherwise unfolds the local definitions of both
+   words. On txAccessList 0000 (bench r30) the pairs of a lend's address side
+   goal (156 hypotheses, 70 local definitions) ran from 632 s to the block's
+   3,600 s cap, Coq's conversion and context matching at 12 to 15 GiB. A
+   word whose names cannot be read is unified as before. *)
+Ltac2 zesu_byte_slice_same_names (a : constr) (b : constr) :=
+  let names term := Control.case (fun () =>
+    ZesuSsz.Automation2.ContextCollection.zesu_context_variables term) in
+  match (names a, names b) with
+  | (Val (left, _), Val (right, _)) =>
+      if Bool.and
+           (List.for_all (fun name => ZesuSsz.Automation2.ContextCollection.zesu_context_member name right) left)
+           (List.for_all (fun name => ZesuSsz.Automation2.ContextCollection.zesu_context_member name left) right)
+      then () else Control.zero (Tactic_failure None)
+  | (_, _) => ()
+  end.
+
 Ltac zesu_byte_slice_goal_atoms :=
+  let same_names := ltac2:(a b |-
+    zesu_byte_slice_same_names (Option.get (Ltac1.to_constr a)) (Option.get (Ltac1.to_constr b))) in
   repeat match goal with
   | |- context[@bv_unsigned ?n ?a] =>
       match goal with
       | H : context[@bv_unsigned ?m ?b] |- _ =>
           assert_fails (constr_eq a b);
           assert_fails (has_evar b);
+          same_names a b;
           unify (@bv_unsigned m b) (@bv_unsigned n a);
           change (@bv_unsigned m b) with (@bv_unsigned n a) in H
       end
@@ -325,9 +346,14 @@ Ltac zesu_byte_slice_moduli :=
       let v := eval vm_compute in (bv_modulus n) in change (bv_modulus n) with v
   end.
 
+(* The derived facts come from the semi-naive saturation (PureFacts.v):
+   the frozen core's loop restarts its scan of every hypothesis after each
+   new fact. On txAccessList 0000 (bench r30) that loop ran from 632 s to
+   the 3,600 s cap of the block on one lend's address side goal (156
+   hypotheses, 70 local definitions after the focus), at 12 to 15 GiB. *)
 Ltac zesu_byte_slice_bound_arith :=
   zesu_byte_slice_named_values;
-  ZesuSsz.Automation.PureFacts.zesu_saturate_derived_facts;
+  ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts;
   repeat match goal with H : _ /\ _ |- _ => destruct H end;
   repeat match goal with
   | H : context[length (take _ _)] |- _ => rewrite length_take in H
