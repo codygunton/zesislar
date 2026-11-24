@@ -1,0 +1,759 @@
+{
+  "function": "txAccessList",
+  "entry_hist": "wrap",
+  "frame_slots": true,
+  "array_spelling": "sealed",
+  "hist_visible": [
+    "^\\(?frame_old_m\\d+'* = ",
+    "^\\W*bv_unsigned call_x10 = 0\\W*$",
+    "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$"
+  ],
+  "args_type": "TxAccessListArgs",
+  "symbol": "rlp_decode.txAccessList",
+  "generated_directory": "ZesuSsz/Generated/TxAccessList/FP301",
+  "callers_directory": "tools/block/generated/txaccesslist_fp301_callers",
+  "contract_requires": [
+    "Require Import InstrSpecs.Machine.",
+    "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Generated.Stock.Symbols.",
+    "Require Export ZesuSsz.Interfaces.DecodeItem.",
+    "Require Export ZesuSsz.Interfaces.KeysToOwnedSlice.",
+    "Require Export ZesuSsz.Interfaces.EntriesToOwnedSlice.",
+    "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
+    "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
+    "Require Import ZesuSsz.Contracts.AbiBytes.",
+    "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
+    "Require Import ZesuSsz.Contracts.ArrayListContract.",
+    "Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.",
+    "Require Import ZesuSsz.Contracts.TxAccessListContract.",
+    "Require Import ZesuSsz.Contracts.TxAccessListBlockEntries.",
+    "Require Export ZesuSsz.Compliance.TxAccessListHints."
+  ],
+  "loop_contract_requires": [
+    "Require Import InstrSpecs.Machine.",
+    "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Generated.Stock.Symbols.",
+    "Require Export ZesuSsz.Interfaces.DecodeItem.",
+    "Require Export ZesuSsz.Interfaces.KeysToOwnedSlice.",
+    "Require Export ZesuSsz.Interfaces.EntriesToOwnedSlice.",
+    "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
+    "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
+    "Require Import ZesuSsz.Contracts.AbiBytes.",
+    "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
+    "Require Import ZesuSsz.Contracts.ArrayListContract.",
+    "Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.",
+    "Require Import ZesuSsz.Contracts.TxAccessListContract.",
+    "Require Import ZesuSsz.Contracts.TxAccessListBlockEntries.",
+    "Require Export ZesuSsz.Compliance.TxAccessListHints."
+  ],
+  "caller_contract_requires": [
+    "Require Import ZesuSsz.Contracts.TxAccessListContract.",
+    "Require Import ZesuSsz.Contracts.TxAccessListBlockEntries."
+  ],
+  "selected_code": {
+    "module": "ZesuSsz.Contracts.TxAccessListSelected",
+    "premise": "txAccessListSelectedCode"
+  },
+  "return_address": {
+    "register": "x1",
+    "value": "(txReturnAddress args)",
+    "alignment": 4,
+    "source": "txAccessListArgsWellFormed (TxAccessListContract.v): bv_unsigned (txReturnAddress args) mod 4 = 0"
+  },
+  "entry_interface": {
+    "entry_resources": "txAccessListBlockEntryResources",
+    "well_formed": "txAccessListArgsWellFormed",
+    "exit_resources": "txAccessListExitResources",
+    "source": "ZesuSsz/Contracts/TxAccessListBlockEntries.v",
+    "exact_system_registers": {
+      "zisk_input_end": "bv_unsigned (txInputEnd args)"
+    }
+  },
+  "trace_namespace": "ZesuSsz.Stock.Closure",
+  "cfg_function": "rlp_decode.txAccessList",
+  "compliance": {
+    "boundary": "ZesuSsz.Compliance.TxAccessListCompositionBoundary",
+    "continuation": "txAccessListContinuation",
+    "inline_returns": false,
+    "source": "Exit design A (as keysToOwnedSlice): every table entry carries the contract continuation at returnAddress as K; the callers of the return slots take the generated return package at returnAddress; the composition proves each package's return premise from K through that package's end bridge."
+  },
+  "blocks": [
+    "+0x0",
+    "+0x68",
+    "+0x70",
+    "+0x7c",
+    "+0xac",
+    "+0xc4",
+    "+0xd8",
+    "+0xe0",
+    "+0xec",
+    "+0x10c",
+    "+0x114",
+    "+0x120",
+    "+0x128",
+    "+0x15c",
+    "+0x164",
+    "+0x170",
+    "+0x188",
+    "+0x18c",
+    "+0x1a0",
+    "+0x1a8",
+    "+0x1b4",
+    "+0x1bc",
+    "+0x1f8",
+    "+0x204",
+    "+0x248",
+    "+0x25c",
+    "+0x264",
+    "+0x2a0",
+    "+0x2d4",
+    "+0x2e0",
+    "+0x2ec",
+    "+0x2f4",
+    "+0x340",
+    "+0x344",
+    "+0x364",
+    "+0x368",
+    "+0x390",
+    "+0x39c",
+    "+0x3c0",
+    "+0x3d4",
+    "+0x3dc",
+    "+0x3e0",
+    "+0x3e4",
+    "+0x400",
+    "+0x404",
+    "+0x42c",
+    "+0x43c",
+    "+0x448",
+    "+0x48c",
+    "+0x4a0",
+    "+0x4a8",
+    "+0x4b8",
+    "+0x4f4"
+  ],
+  "domain_component": "\u231ctxAccessListBlockDomainAt returnAddress args\u231d",
+  "opaque_predicates": {
+    "altFlHeap": {
+      "name": "altFlHeap",
+      "owner": "ZesuSsz.Contracts.AltFlAllocPremises"
+    },
+    "altFlBlock": {
+      "name": "altFlBlock",
+      "owner": "ZesuSsz.Contracts.AltFlAllocPremises"
+    }
+  },
+  "loop_heads": [
+    "+0xc4",
+    "+0x18c"
+  ],
+  "loop_designs": [
+    {
+      "head": "+0xc4",
+      "entry_predecessor": "+0xac",
+      "registers": {
+        "x20": "outer_x20",
+        "x21": "outer_x21"
+      },
+      "index": "i",
+      "facts": [
+        {
+          "kind": "index_link",
+          "coq": "bv_unsigned outer_x20 = (bv_unsigned {x20} + i)%Z"
+        },
+        {
+          "kind": "index_range",
+          "coq": "(0 <= i)%Z"
+        },
+        {
+          "kind": "bound",
+          "need": "al.len: the remaining outer payload shrinks by what the cursor walked",
+          "coq": "(bv_unsigned outer_x21 + i = bv_unsigned {x21})%Z"
+        },
+        {
+          "kind": "bound",
+          "need": "while (al.len > 0): the head is entered only with bytes left (+0xa8, +0x488)",
+          "coq": "(0 < bv_unsigned outer_x21)%Z"
+        }
+      ]
+    },
+    {
+      "head": "+0x18c",
+      "entry_predecessor": "+0x188",
+      "registers": {
+        "x22": "inner_x22",
+        "x23": "inner_x23",
+        "x24": "inner_x24"
+      },
+      "index": "i",
+      "facts": [
+        {
+          "kind": "index_link",
+          "coq": "bv_unsigned inner_x23 = (bv_unsigned {x23} + i)%Z"
+        },
+        {
+          "kind": "index_range",
+          "coq": "(0 <= i)%Z"
+        },
+        {
+          "kind": "bound",
+          "need": "kp.len: the remaining keys payload shrinks by what the cursor walked",
+          "coq": "(bv_unsigned inner_x22 + i = bv_unsigned {x22})%Z"
+        },
+        {
+          "kind": "bound",
+          "need": "while (kp.len > 0): entered only with bytes left (+0x184, +0x244)",
+          "coq": "(0 < bv_unsigned inner_x22)%Z"
+        },
+        {
+          "kind": "bound",
+          "need": "s8 is the keys count; every accepted key is a 32-byte string with a one-byte header (0xa0)",
+          "coq": "(33 * bv_unsigned inner_x24 = i)%Z"
+        }
+      ]
+    }
+  ],
+  "calls": [
+    {
+      "function": "rlp_decode.txAccessList",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x68",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Interfaces.DecodeItem",
+      "spec_source": "ZesuSsz/Interfaces/DecodeItem.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "txInputBytes args",
+          "caller_value": "txInputBytes args"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "call_site_pc": "+0x64"
+    },
+    {
+      "function": "rlp_decode.txAccessList",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0xd8",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Interfaces.DecodeItem",
+      "spec_source": "ZesuSsz/Interfaces/DecodeItem.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "txInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (txInputPointer args))) (txInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "call_site_pc": "+0xd4"
+    },
+    {
+      "function": "rlp_decode.txAccessList",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x10c",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Interfaces.DecodeItem",
+      "spec_source": "ZesuSsz/Interfaces/DecodeItem.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "txInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (txInputPointer args))) (txInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "call_site_pc": "+0x108"
+    },
+    {
+      "function": "rlp_decode.txAccessList",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x15c",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Interfaces.DecodeItem",
+      "spec_source": "ZesuSsz/Interfaces/DecodeItem.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "txInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (txInputPointer args))) (txInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "call_site_pc": "+0x158"
+    },
+    {
+      "function": "rlp_decode.txAccessList",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x1a0",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Interfaces.DecodeItem",
+      "spec_source": "ZesuSsz/Interfaces/DecodeItem.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "txInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (txInputPointer args))) (txInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "call_site_pc": "+0x19c"
+    },
+    {
+      "function": "rlp_decode.txAccessList",
+      "callee_pc": "array_list.Aligned([32]u8,null).ensureTotalCapacity+0x0",
+      "return_site_pc": "+0x1f8",
+      "spec": "keysEnsureCapacityCallSpec2",
+      "spec_module": "ZesuSsz.Interfaces.KeysEnsureCapacity",
+      "spec_source": "ZesuSsz/Interfaces/KeysEnsureCapacity.v",
+      "stack_bytes": 128,
+      "arrays": [
+        {
+          "binder": "state",
+          "argument": 0,
+          "caller_value": "tx_keys"
+        },
+        {
+          "binder": "scratchBefore",
+          "constant": "ziskExtraParamsAddress",
+          "caller_value": "tx_scratch",
+          "length": 8,
+          "length_source": "txAccessListArgsWellFormed: length (txScratchBefore args) = 8; loop cuts carry it as tx_scratch with Z.of_nat (length tx_scratch) = 8"
+        }
+      ],
+      "output_length_source": "keysEnsureCapacityCallSpec2 (aa/b4-ensure, ZesuSsz/Contracts/KeysEnsureCapacityCallSpec2.v c7a314494): header and buffer of ensureListAfter outcome; x10 = arrayListOutcomeCode",
+      "opaque": [
+        {
+          "spec": "arrayListBuffer keysElementBytes keysLog2Alignment state",
+          "use": "consumed",
+          "caller": [
+            "arrayListBuffer keysElementBytes keysLog2Alignment tx_keys"
+          ]
+        },
+        {
+          "spec": "arrayListBuffer keysElementBytes keysLog2Alignment (ensureListAfter outcome)",
+          "use": "produced"
+        },
+        {
+          "spec": "altFlAllocatorObject (bv_unsigned (argv !!! 1%nat)) context",
+          "use": "framed"
+        },
+        {
+          "spec": "altFlVtable",
+          "use": "framed"
+        },
+        {
+          "spec": "altFlHeap",
+          "use": "framed"
+        }
+      ],
+      "returns": [
+        {
+          "index": 0,
+          "register": "x10"
+        }
+      ],
+      "call_site_pc": "+0x1f4"
+    },
+    {
+      "function": "rlp_decode.txAccessList",
+      "callee_pc": "array_list.Aligned([32]u8,null).toOwnedSlice+0x0",
+      "return_site_pc": "+0x25c",
+      "spec": "keysToOwnedSliceCallSpec2",
+      "spec_module": "ZesuSsz.Interfaces.KeysToOwnedSlice",
+      "spec_source": "ZesuSsz/Interfaces/KeysToOwnedSlice.v",
+      "stack_bytes": 112,
+      "arrays": [
+        {
+          "binder": "state",
+          "argument": 1,
+          "caller_value": "tx_keys"
+        },
+        {
+          "binder": "resultBefore",
+          "argument": 0,
+          "length": 24,
+          "length_source": "the 24-byte result slot in the frame"
+        },
+        {
+          "binder": "scratchBefore",
+          "constant": "ziskExtraParamsAddress",
+          "caller_value": "tx_scratch",
+          "length": 8,
+          "length_source": "txAccessListArgsWellFormed: length (txScratchBefore args) = 8; loop cuts carry it as tx_scratch with Z.of_nat (length tx_scratch) = 8"
+        }
+      ],
+      "output_length_source": "keysToOwnedSliceCallSpec2 (ZesuSsz/Interfaces): header (toOwnedListAfter outcome), result toOwnedResultAfter outcome (24 bytes)",
+      "opaque": [
+        {
+          "spec": "arrayListBuffer keysElementBytes keysLog2Alignment state",
+          "use": "consumed",
+          "caller": [
+            "arrayListBuffer keysElementBytes keysLog2Alignment tx_keys"
+          ]
+        },
+        {
+          "spec": "arrayListBuffer keysElementBytes keysLog2Alignment (toOwnedListAfter outcome)",
+          "use": "produced"
+        },
+        {
+          "spec": "arrayListBuffer keysElementBytes keysLog2Alignment (toOwnedSlice outcome)",
+          "use": "produced"
+        },
+        {
+          "spec": "altFlAllocatorObject (bv_unsigned (argv !!! 2%nat)) context",
+          "use": "framed"
+        },
+        {
+          "spec": "altFlVtable",
+          "use": "framed"
+        },
+        {
+          "spec": "altFlHeap",
+          "use": "framed"
+        }
+      ],
+      "call_site_pc": "+0x258"
+    },
+    {
+      "function": "rlp_decode.txAccessList",
+      "callee_pc": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice+0x0",
+      "return_site_pc": "+0x4a0",
+      "spec": "entriesToOwnedSliceCallSpec2",
+      "spec_module": "ZesuSsz.Interfaces.EntriesToOwnedSlice",
+      "spec_source": "ZesuSsz/Interfaces/EntriesToOwnedSlice.v",
+      "stack_bytes": 112,
+      "arrays": [
+        {
+          "binder": "state",
+          "argument": 1,
+          "caller_value": "tx_entries"
+        },
+        {
+          "binder": "resultBefore",
+          "argument": 0,
+          "length": 24,
+          "length_source": "the 24-byte result slot in the frame"
+        },
+        {
+          "binder": "scratchBefore",
+          "constant": "ziskExtraParamsAddress",
+          "caller_value": "tx_scratch",
+          "length": 8,
+          "length_source": "txAccessListArgsWellFormed: length (txScratchBefore args) = 8; loop cuts carry it as tx_scratch with Z.of_nat (length tx_scratch) = 8"
+        }
+      ],
+      "output_length_source": "entriesToOwnedSliceCallSpec2 (ZesuSsz/Interfaces): header (toOwnedListAfter outcome), result toOwnedResultAfter outcome (24 bytes)",
+      "opaque": [
+        {
+          "spec": "arrayListBuffer entriesElementBytes entriesLog2Alignment state",
+          "use": "consumed",
+          "caller": [
+            "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_entries"
+          ]
+        },
+        {
+          "spec": "arrayListBuffer entriesElementBytes entriesLog2Alignment (toOwnedListAfter outcome)",
+          "use": "produced"
+        },
+        {
+          "spec": "arrayListBuffer entriesElementBytes entriesLog2Alignment (toOwnedSlice outcome)",
+          "use": "produced"
+        },
+        {
+          "spec": "altFlAllocatorObject (bv_unsigned (argv !!! 2%nat)) context",
+          "use": "framed"
+        },
+        {
+          "spec": "altFlVtable",
+          "use": "framed"
+        },
+        {
+          "spec": "altFlHeap",
+          "use": "framed"
+        }
+      ],
+      "call_site_pc": "+0x49c"
+    },
+    {
+      "function": "rlp_decode.txAccessList",
+      "callee_pc": "alt_fl_alloc.remap+0x0",
+      "return_site_pc": "+0x340",
+      "spec": "altFlRemapCallSpec",
+      "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+      "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+      "stack_bytes": 16,
+      "arrays": [],
+      "output_length_source": "altFlRemapCallSpec (AltFlAllocPremises.v): returns 0 in x10 and no array",
+      "returns": [
+        {
+          "index": 0,
+          "register": "x10"
+        }
+      ],
+      "call_site_pc": "+0x33c"
+    },
+    {
+      "function": "rlp_decode.txAccessList",
+      "callee_pc": "alt_fl_alloc.alloc+0x0",
+      "return_site_pc": "+0x3d4",
+      "spec": "altFlAllocCallSpec",
+      "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+      "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+      "stack_bytes": 16,
+      "arrays": [],
+      "output_length_source": "altFlAllocCallSpec (AltFlAllocPremises.v): the returned block owns altFlAllocatedBytes x10 (argument 1) bytes, uninitialized",
+      "returns": [
+        {
+          "index": 0,
+          "register": "x10"
+        }
+      ],
+      "opaque": [
+        {
+          "spec": "altFlHeap",
+          "use": "framed"
+        },
+        {
+          "spec": "bv_unsigned (rets !!! 0%nat) \u21a6\u2098? altFlAllocatedBytes (bv_unsigned (rets !!! 0%nat)) (bv_unsigned (argv !!! 1%nat))",
+          "use": "produced"
+        },
+        {
+          "spec": "altFlBlock (bv_unsigned (rets !!! 0%nat)) (altFlAllocatedBytes (bv_unsigned (rets !!! 0%nat)) (bv_unsigned (argv !!! 1%nat))) (bv_unsigned (argv !!! 2%nat))",
+          "use": "produced"
+        }
+      ],
+      "call_site_pc": "+0x3d0"
+    },
+    {
+      "function": "rlp_decode.txAccessList",
+      "callee_pc": "alt_fl_alloc.free+0x0",
+      "return_site_pc": "+0x42c",
+      "spec": "altFlFreeCallSpec",
+      "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+      "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+      "stack_bytes": 16,
+      "arrays": [],
+      "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array",
+      "opaque": [
+        {
+          "spec": "altFlHeap",
+          "use": "framed"
+        },
+        {
+          "spec": "bv_unsigned (argv !!! 1%nat) \u21a6\u2098? bv_unsigned (argv !!! 2%nat)",
+          "use": "consumed",
+          "caller": [
+            "arrayListPointer tx_entries \u21a6\u2098\u2217 arrayListItems tx_entries",
+            "(arrayListPointer tx_entries + arrayListLength tx_entries * entriesElementBytes) \u21a6\u2098? ((arrayListCapacity tx_entries - arrayListLength tx_entries) * entriesElementBytes)"
+          ]
+        },
+        {
+          "spec": "altFlBlock (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat)) (bv_unsigned (argv !!! 3%nat))",
+          "use": "consumed",
+          "caller": [
+            "altFlBlock (arrayListPointer tx_entries) (arrayListCapacity tx_entries * entriesElementBytes) entriesLog2Alignment"
+          ]
+        }
+      ],
+      "call_site_pc": "+0x428"
+    },
+    {
+      "function": "rlp_decode.txAccessList",
+      "callee_pc": "memcpy+0x0",
+      "return_site_pc": "+0x400",
+      "spec": "ziskMemcpyCallSpec",
+      "spec_module": "ZesuSsz.Contracts.ZiskMemcpyPremise",
+      "spec_source": "ZesuSsz/Contracts/ZiskMemcpyPremise.v",
+      "stack_bytes": 0,
+      "arrays": [
+        {
+          "binder": "source",
+          "argument": 1,
+          "caller_value": "arrayListItems tx_entries"
+        },
+        {
+          "binder": "scratch",
+          "constant": "ziskExtraParamsAddress",
+          "caller_value": "tx_scratch",
+          "length": 8,
+          "length_source": "loop cut +0xc4: Z.of_nat (length tx_scratch) = 8"
+        }
+      ],
+      "output_length_source": "ziskMemcpyCallSpec (ZiskMemcpyPremise.v): the destination receives source, Z.of_nat (length source) = argument 2; the extra-params word receives word64Bytes (argument 2), 8 bytes",
+      "returned_lengths": {
+        "0": "altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned (bv_add (bv_shiftl machine_x25 (BV 64%N 5%Z)) (bv_shiftl machine_x25 (BV 64%N 3%Z))))"
+      },
+      "call_site_pc": "+0x3fc"
+    }
+  ],
+  "function_returns": [
+    {
+      "return_instruction_pc": "+0x4f0",
+      "return_fact": true
+    }
+  ],
+  "unreachable_entries": [
+    "+0x344",
+    "+0x2ec"
+  ],
+  "unreachable_reached": [
+    "+0x344"
+  ],
+  "join_frames": {
+    "+0x4a8": [
+      {
+        "offset": -8,
+        "coq": "txReturnAddress args"
+      },
+      {
+        "offset": -16,
+        "coq": "txSavedX8 args"
+      },
+      {
+        "offset": -24,
+        "coq": "txSavedX9 args"
+      },
+      {
+        "offset": -32,
+        "coq": "txSavedX18 args"
+      },
+      {
+        "offset": -40,
+        "coq": "txSavedX19 args"
+      },
+      {
+        "offset": -48,
+        "coq": "txSavedX20 args"
+      },
+      {
+        "offset": -56,
+        "coq": "txSavedX21 args"
+      },
+      {
+        "offset": -64,
+        "coq": "txSavedX22 args"
+      },
+      {
+        "offset": -72,
+        "coq": "txSavedX23 args"
+      },
+      {
+        "offset": -80,
+        "coq": "txSavedX24 args"
+      },
+      {
+        "offset": -88,
+        "coq": "txSavedX25 args"
+      },
+      {
+        "offset": -96,
+        "coq": "txSavedX26 args"
+      },
+      {
+        "offset": -104,
+        "coq": "txSavedX27 args"
+      }
+    ],
+    "+0x4b8": [
+      {
+        "offset": -8,
+        "coq": "txReturnAddress args"
+      },
+      {
+        "offset": -16,
+        "coq": "txSavedX8 args"
+      },
+      {
+        "offset": -24,
+        "coq": "txSavedX9 args"
+      },
+      {
+        "offset": -32,
+        "coq": "txSavedX18 args"
+      },
+      {
+        "offset": -40,
+        "coq": "txSavedX19 args"
+      },
+      {
+        "offset": -48,
+        "coq": "txSavedX20 args"
+      },
+      {
+        "offset": -56,
+        "coq": "txSavedX21 args"
+      },
+      {
+        "offset": -64,
+        "coq": "txSavedX22 args"
+      },
+      {
+        "offset": -72,
+        "coq": "txSavedX23 args"
+      },
+      {
+        "offset": -80,
+        "coq": "txSavedX24 args"
+      },
+      {
+        "offset": -88,
+        "coq": "txSavedX25 args"
+      },
+      {
+        "offset": -96,
+        "coq": "txSavedX26 args"
+      },
+      {
+        "offset": -104,
+        "coq": "txSavedX27 args"
+      }
+    ]
+  },
+  "generated_from": {
+    "path": "tools/block/functions/txAccessList.annotations.json",
+    "sha256": "334c16d55eb0b5a634455f3a91690961aa90a88d5decc86f8c4c673150e85631"
+  }
+}
