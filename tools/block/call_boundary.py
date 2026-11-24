@@ -151,6 +151,7 @@ def parse_machine_call_spec(source, name, listed=None, returns=()):
     holds the indices N of the returned registers the row names: the continuation may then be
     `fun rets => ...`, and `rets !!! N%nat` is read as the placeholder RETURNED % N."""
     listed = {side: {_normal_text(text) for text in (listed or {}).get(side, ())} for side in ('pre', 'post')}
+    z_scope = re.search(r'^\s*(?:Local\s+|Global\s+)?Open\s+Scope\s+Z_scope\s*\.', source, re.M) is not None
     body = _strip_enclosure(re.sub(r'%I\s*$', '', definition_body(source, name).strip()))
     body = _strip_enclosure(re.sub(r'%I\s*$', '', body))
     match = re.match(r'machine_call\s+(\S+)\s+(\S+)\s+', body)
@@ -225,8 +226,11 @@ def parse_machine_call_spec(source, name, listed=None, returns=()):
             register = re.fullmatch(r'"(\w+)"\s+↦ᵣ\s+RVal_Bits\s+(\w+)', part)
             address = place(points[1]) if points else None
             if address is not None and points[2] == '↦ₘ∗':
-                # A binder, or (after the call) an expression over the post binders.
+                # A binder, or (after the call) an expression over the post binders. A post value with an
+                # operator, from a spec module that opens Z_scope, keeps that reading where the caller states it.
                 value = _strip_enclosure(points[3])
+                if side == 'post' and z_scope and re.search(r'[=<>+*/-]|\bmod\b', value):
+                    value = '(' + value + ')%Z'
                 rows['arrays'].append({**address, ('binder' if re.fullmatch(r'\w+', value) else 'value'): value})
             elif address is not None and points[2] == '↦ₘ' and 'argument' in address:
                 rows['words'].append({'offset': 0, **address, 'value': _strip_enclosure(points[3])})

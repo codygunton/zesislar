@@ -206,6 +206,11 @@ class CallBoundary(unittest.TestCase):
         spec = parse_machine_call_spec(source, 'tailSpec')
         self.assertEqual(spec['post']['arrays'][-1]['constant'], 'extra')
         self.assertEqual(' '.join(spec['post']['arrays'][-1]['value'].split()), 'if n =? 0 then scratch else two')
+        # In a module that opens Z_scope, an operator value keeps that reading where the caller states it.
+        spec = parse_machine_call_spec('Local Open Scope Z_scope.\n' + source, 'tailSpec')
+        self.assertEqual(' '.join(spec['post']['arrays'][-1]['value'].split()),
+                         '(if n =? 0 then scratch else two)%Z')
+        self.assertEqual(spec['post']['arrays'][0], {'constant': 'src', 'binder': 'source'})
 
     def tail_call_fixture(self, directory):
         """A root seed, a call-site edge, the shapes and the call row of a tail call to tailSpec."""
