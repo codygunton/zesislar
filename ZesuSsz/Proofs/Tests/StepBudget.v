@@ -37,12 +37,16 @@ Section tests.
   Proof. zesu_block2. Qed.
 
   (* Two credits do not pay for the third fetch. *)
-  Lemma step_budget_two_fails (sp : bv 64) :
-    instr_pre 0x100c (reg_col zesu_sys_regs ∗ "x2" ↦ᵣ: (fun _ => True) ∗ True) -∗
-    step_budget_test_code -∗
-    instr_body 0x1000
-      (reg_col zesu_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗ step_budget 2 ∗ True).
-  Proof. Fail solve [zesu_block2]. Abort.
+  Lemma step_budget_two_fails : True.
+  Proof.
+    Fail assert (forall sp : bv 64,
+      ⊢ instr_pre 0x100c (reg_col zesu_sys_regs ∗ "x2" ↦ᵣ: (fun _ => True) ∗ True) -∗
+        step_budget_test_code -∗
+        instr_body 0x1000
+          (reg_col zesu_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗ step_budget 2 ∗ True))
+      by (intros sp; solve [zesu_block2]).
+    exact I.
+  Qed.
 
   (* Two blocks. Block A (0x1000, 0x1004) owns three credits, spends two and
      jumps to block B's entry, which asks for one. *)
@@ -103,17 +107,19 @@ Section tests.
   Proof. rewrite /step_budget_test_return_entry. zesu_block2. Qed.
 
   (* Seven credits do not pay for the call, the callee and the return block. *)
-  Lemma step_budget_call_site_short (sp : bv 64) :
-    step_budget_test_callee
-      (reg_col zesu_sys_regs ∗ "x2" ↦ᵣ: (fun _ => True) ∗ True) -∗
-    instr_pre 0x2000 step_budget_test_return_entry -∗
-    step_budget_test_code -∗
-    instr_body 0x1000
-      (reg_col zesu_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗ step_budget 7 ∗ True).
+  Lemma step_budget_call_site_short : True.
   Proof.
-    rewrite /step_budget_test_callee /step_budget_test_return_entry.
-    Fail solve [zesu_block2].
-  Abort.
+    Fail assert (forall sp : bv 64,
+      ⊢ step_budget_test_callee
+          (reg_col zesu_sys_regs ∗ "x2" ↦ᵣ: (fun _ => True) ∗ True) -∗
+        instr_pre 0x2000 step_budget_test_return_entry -∗
+        step_budget_test_code -∗
+        instr_body 0x1000
+          (reg_col zesu_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗ step_budget 7 ∗ True))
+      by (intros sp; rewrite /step_budget_test_callee /step_budget_test_return_entry;
+          solve [zesu_block2]).
+    exact I.
+  Qed.
 End tests.
 
 Print Assumptions step_budget_three_closes.

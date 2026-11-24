@@ -118,7 +118,8 @@ Ltac zesu_budget_rest_apply z k :=
     | (?base - ?k0)%Z =>
         zesu_vm_closed (k0 + k)%Z;
         let total := eval vm_compute in (k0 + k)%Z in
-        apply (zesu_budget_rest_hint z k (base - total)%Z); lia
+        apply (zesu_budget_rest_hint z k (base - total)%Z);
+        rewrite -Z.sub_add_distr; reflexivity
     end
   | apply (zesu_budget_rest_hint z k (z - k)%Z); reflexivity ].
 
