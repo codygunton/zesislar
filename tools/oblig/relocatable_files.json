@@ -27,6 +27,8 @@
     "ZesuSsz/Compliance/TxAccessList*.v",
     "ZesuSsz/Compliance/KeysToOwnedSliceCompliance.v",
     "ZesuSsz/Compliance/EntriesToOwnedSliceCompliance.v",
+    "ZesuSsz/Contracts/EntriesToOwnedSliceCall*.v",
+    "ZesuSsz/Compliance/EntriesToOwnedSliceCallSpec2.v",
     "ZesuSsz/Compliance/KeysEnsureCapacityCompliance.v",
     "ZesuSsz/Residuals/*/*.v"
   ],

@@ -40,6 +40,7 @@ Require ZesuSsz.Contracts.AltFlAllocPremises.
 Require ZesuSsz.Contracts.ZiskMemcpyPremise.
 Require ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller0070.
 Require ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller0080.
+Require ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller00a4.
 Require ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller00ac.
 Require ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller00b0.
 Require ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller00e4.
@@ -53,6 +54,7 @@ Require ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller0144.
 Require ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller014c_slot0.
 Require ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller014c_slot1.
 Require ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller014c_slot2.
+Require ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller017c.
 Require ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller01a4.
 Require ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller01c0.
 Require ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller01c8.
@@ -63,7 +65,7 @@ Require ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller0224.
 Import ListNotations.
 Local Open Scope Z_scope.
 
-(* The 8 open blocks: each field is the statement its block proof must close. *)
+(* The 6 open blocks: each field is the statement its block proof must close. *)
 Record EntriesToOwnedSliceOpenBlocks : Prop := {
   entriesToOwnedSliceOpen_800d6554 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
@@ -93,20 +95,6 @@ Record EntriesToOwnedSliceOpenBlocks : Prop := {
       instr_pre 0x800d65f8 (ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot00a4Entries.fp_machineAt00a4 (args) (returnAddress) (K))%I -∗
       entriesToOwnedSliceSelectedCode -∗
       instr_body 0x800d65d0 ((ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot007cEntries.fp_machineAt007c (args) (returnAddress) K) ∗ True));
-  entriesToOwnedSliceOpen_800d65f8 :
-    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
-    entriesToOwnedSliceBlockAt 0x800d65f8 (@ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot00a4Entries.fp_machineAt00a4 Sigma _ _) (forall (args : EntriesToOwnedSliceBlockArgs) (returnAddress : Z) (K : iProp Sigma),
-    ⊢ instr_pre 0x800d6600 (ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot00acEntries.fp_machineAt00ac (args) (returnAddress) (K))%I -∗
-      instr_pre 0x800d665c (ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot0108Entries.fp_machineAt0108 (args) (returnAddress) (K))%I -∗
-      entriesToOwnedSliceSelectedCode -∗
-      instr_body 0x800d65f8 ((ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot00a4Entries.fp_machineAt00a4 (args) (returnAddress) K) ∗ True));
-  entriesToOwnedSliceOpen_800d66d0 :
-    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
-    entriesToOwnedSliceBlockAt 0x800d66d0 (@ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot017cEntries.fp_machineAt017c Sigma _ _) (forall (args : EntriesToOwnedSliceBlockArgs) (returnAddress : Z) (K : iProp Sigma),
-    ⊢ instr_pre 0x800d66e0 (ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot018cEntries.fp_machineAt018c (args) (returnAddress) (K))%I -∗
-      instr_pre 0x800d6758 (ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot0204Entries.fp_machineAt0204 (args) (returnAddress) (K))%I -∗
-      entriesToOwnedSliceSelectedCode -∗
-      instr_body 0x800d66d0 ((ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot017cEntries.fp_machineAt017c (args) (returnAddress) K) ∗ True));
   entriesToOwnedSliceOpen_800d66e0 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     entriesToOwnedSliceBlockAt 0x800d66e0 (@ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot018cEntries.fp_machineAt018c Sigma _ _) (forall (args : EntriesToOwnedSliceBlockArgs) (returnAddress : Z) (K : iProp Sigma),
@@ -123,7 +111,7 @@ Record EntriesToOwnedSliceOpenBlocks : Prop := {
       instr_body 0x800d6700 ((ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot01acEntries.fp_machineAt01ac (args) (returnAddress) K) ∗ True))
 }.
 
-(* The 22 closed blocks, from their compiled callers. *)
+(* The 24 closed blocks, from their compiled callers. *)
 Record EntriesToOwnedSliceClosedBlocks : Prop := {
   entriesToOwnedSliceClosed_800d65c4 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
@@ -138,6 +126,13 @@ Record EntriesToOwnedSliceClosedBlocks : Prop := {
       instr_pre 0x80041f38 (ZesuSsz.Contracts.AltFlAllocPremises.altFlFreeCallSpec)%I -∗
       entriesToOwnedSliceSelectedCode -∗
       instr_body 0x800d65d4 ((ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot0080Entries.fp_machineAt0080 (args) (returnAddress) K) ∗ True));
+  entriesToOwnedSliceClosed_800d65f8 :
+    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
+    entriesToOwnedSliceBlockAt 0x800d65f8 (@ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot00a4Entries.fp_machineAt00a4 Sigma _ _) (forall (args : EntriesToOwnedSliceBlockArgs) (returnAddress : Z) (K : iProp Sigma),
+    ⊢ instr_pre 0x800d6600 (ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot00acEntries.fp_machineAt00ac (args) (returnAddress) (K))%I -∗
+      instr_pre 0x800d665c (ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot0108Entries.fp_machineAt0108 (args) (returnAddress) (K))%I -∗
+      entriesToOwnedSliceSelectedCode -∗
+      instr_body 0x800d65f8 ((ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot00a4Entries.fp_machineAt00a4 (args) (returnAddress) K) ∗ True));
   entriesToOwnedSliceClosed_800d6600 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     entriesToOwnedSliceBlockAt 0x800d6600 (@ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot00acEntries.fp_machineAt00ac Sigma _ _) (forall (args : EntriesToOwnedSliceBlockArgs) (returnAddress : Z) (K : iProp Sigma),
@@ -220,6 +215,13 @@ Record EntriesToOwnedSliceClosedBlocks : Prop := {
     ⊢ instr_pre returnAddress (ZesuSsz.Generated.EntriesToOwnedSlice.FP301.FunctionReturnEntries.fp_machineReturn_slot2 args returnAddress K) -∗
       entriesToOwnedSliceSelectedCode -∗
       instr_body 0x800d66a0 ((ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot014cEntries.fp_machineAt014c_slot2 (args) (returnAddress) K) ∗ True));
+  entriesToOwnedSliceClosed_800d66d0 :
+    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
+    entriesToOwnedSliceBlockAt 0x800d66d0 (@ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot017cEntries.fp_machineAt017c Sigma _ _) (forall (args : EntriesToOwnedSliceBlockArgs) (returnAddress : Z) (K : iProp Sigma),
+    ⊢ instr_pre 0x800d66e0 (ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot018cEntries.fp_machineAt018c (args) (returnAddress) (K))%I -∗
+      instr_pre 0x800d6758 (ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot0204Entries.fp_machineAt0204 (args) (returnAddress) (K))%I -∗
+      entriesToOwnedSliceSelectedCode -∗
+      instr_body 0x800d66d0 ((ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot017cEntries.fp_machineAt017c (args) (returnAddress) K) ∗ True));
   entriesToOwnedSliceClosed_800d66f8 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     entriesToOwnedSliceBlockAt 0x800d66f8 (@ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Pilot01a4Entries.fp_machineAt01a4 Sigma _ _) (forall (args : EntriesToOwnedSliceBlockArgs) (returnAddress : Z) (K : iProp Sigma),
@@ -272,6 +274,7 @@ Record EntriesToOwnedSliceClosedBlocks : Prop := {
 Definition entriesToOwnedSliceClosedBlocks : EntriesToOwnedSliceClosedBlocks := {|
   entriesToOwnedSliceClosed_800d65c4 := @ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller0070.DesignedBoundary_800d65c4;
   entriesToOwnedSliceClosed_800d65d4 := @ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller0080.DesignedBoundary_800d65d4;
+  entriesToOwnedSliceClosed_800d65f8 := @ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller00a4.DesignedBoundary_800d65f8;
   entriesToOwnedSliceClosed_800d6600 := @ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller00ac.DesignedBoundary_800d6600;
   entriesToOwnedSliceClosed_800d6604 := @ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller00b0.DesignedBoundary_800d6604;
   entriesToOwnedSliceClosed_800d6638 := @ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller00e4.DesignedBoundary_800d6638;
@@ -285,6 +288,7 @@ Definition entriesToOwnedSliceClosedBlocks : EntriesToOwnedSliceClosedBlocks := 
   entriesToOwnedSliceClosed_800d66a0_slot0 := @ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller014c_slot0.DesignedBoundary_800d66a0_slot0;
   entriesToOwnedSliceClosed_800d66a0_slot1 := @ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller014c_slot1.DesignedBoundary_800d66a0_slot1;
   entriesToOwnedSliceClosed_800d66a0_slot2 := @ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller014c_slot2.DesignedBoundary_800d66a0_slot2;
+  entriesToOwnedSliceClosed_800d66d0 := @ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller017c.DesignedBoundary_800d66d0;
   entriesToOwnedSliceClosed_800d66f8 := @ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller01a4.DesignedBoundary_800d66f8;
   entriesToOwnedSliceClosed_800d6714 := @ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller01c0.DesignedBoundary_800d6714;
   entriesToOwnedSliceClosed_800d671c := @ZesuSsz.Proofs.EntriesToOwnedSlice.FP301.Caller01c8.DesignedBoundary_800d671c;
