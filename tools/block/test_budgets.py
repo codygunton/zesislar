@@ -119,6 +119,21 @@ class Walks(unittest.TestCase):
         self.assertEqual(record['entries']['0004'], {'pc': '0x1004', 'offset': '+0x4', 'kind': 'unreachable',
                                                      'budget': 0, 'instructions': 4, 'successors': []})
 
+    def test_a_reached_call_return_site_keeps_its_budget(self):
+        # +0xc is cut as a join target (its edge from +0x0 is contradictory) but stays the return site of
+        # the call at +0x4: the call's term adds its budget, the cut edge adds nothing.
+        blocks = [(0, 1, [4, 12], 'branch'), (4, 2, [12], 'call'), (12, 3, [], 'return')]
+        keys = {'unreachable_entries': ['000c'], 'unreachable_reached': ['000c']}
+        record = walk(blocks, keys, registry={'demo.callee': 7}).run()
+        self.assertEqual(record['entries']['000c']['budget'], 3)
+        self.assertEqual(record['entries']['0004']['budget'], 2 + 7 + 3)
+        self.assertEqual(record['entry_budget'], 1 + 2 + 7 + 3)
+        self.assertEqual([term['to'] for term in record['entries']['0000']['successors']], ['+0x4'])
+        # Without `unreachable_reached` the return site is unreachable: budget 0.
+        record = walk(blocks, {'unreachable_entries': ['000c']}, registry={'demo.callee': 7}).run()
+        self.assertEqual(record['entries']['000c']['kind'], 'unreachable')
+        self.assertEqual(record['entry_budget'], 1 + 2 + 7)
+
     LOOP = [(0, 1, [4], 'plain'), (4, 2, [4, 12], 'branch'), (12, 1, [], 'return')]
 
     def test_loop_without_potential_is_refused_with_its_offset(self):

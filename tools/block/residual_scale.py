@@ -398,7 +398,20 @@ LOAD_PATH = (("-Q", "ZesuSsz", "ZesuSsz"), ("-Q", "ZesuStock", "ZesuStock"), ("-
              ("-Q", "generated/isla-traces/stock-zisk/free", "ZesuSsz.Stock.Free"),
              ("-Q", "generated/evm-sail-coq", "EvmSail"), ("-Q", "generated/evm-sail-coq/rlp", "EvmSailRlp"),
              ("-Q", "generated/sail-stdpp", "SailStdpp"))
-COQC = "/home/cody/islaris/_opam/bin/coqc"
+
+
+def bank_coqc(build_dir):
+    """The coqc of the switch the bank was built with. The bank's coqc recipe (coqc_recipe.json, written
+    by the guarded Dune build) loads the switch's `<switch>/lib/coq-core/...`; with no recipe, the switch
+    the Makefile selects: $OPAM_SWITCH, else $ISLARIS_REPO, else ~/islaris."""
+    recipe = read_json(Path(build_dir) / "coqc_recipe.json") or {}
+    for arg in recipe.get("command", []):
+        match = re.match(r"^(/.+)/lib/coq-core(/|$)", arg)
+        if match:
+            return match[1] + "/bin/coqc"
+    switch = (os.environ.get("OPAM_SWITCH") or os.environ.get("ISLARIS_REPO")
+              or str(Path.home() / "islaris"))
+    return switch.rstrip("/") + "/_opam/bin/coqc"
 
 
 def bank_args(build_dir):
@@ -407,7 +420,7 @@ def bank_args(build_dir):
     default = Path(build_dir).resolve() / "default"
     if not (default / "ZesuSsz").is_dir():
         raise ScaleError("No ZesuSsz tree in %s." % default)
-    args = [COQC]
+    args = [bank_coqc(build_dir)]
     for flag, path, name in LOAD_PATH:
         args += [flag, str(default / path), name]
     # Trace theories that bind_traces.py added for other functions (free, hpDecode, ...). Dune does not

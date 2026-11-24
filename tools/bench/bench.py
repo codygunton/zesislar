@@ -367,11 +367,16 @@ class Sampler(threading.Thread):
 # ---------------------------------------------------------------- one block
 
 def fresh_directory(run_dir, case):
+    """A new run directory for the case: runs/<case>, else runs/<case>-<n>. Members of one set may share a
+    case (a charged and an uncharged function) and start at once, so the directory is claimed by mkdir."""
+    (run_dir / 'runs').mkdir(parents=True, exist_ok=True)
     directory, number = run_dir / 'runs' / case, 2
-    while directory.exists():
-        directory, number = run_dir / 'runs' / ('%s-%d' % (case, number)), number + 1
-    directory.mkdir(parents=True)
-    return directory
+    while True:
+        try:
+            directory.mkdir()
+            return directory
+        except FileExistsError:
+            directory, number = run_dir / 'runs' / ('%s-%d' % (case, number)), number + 1
 
 
 def save_leftovers(member, directory, run_name, bench_head, bank):

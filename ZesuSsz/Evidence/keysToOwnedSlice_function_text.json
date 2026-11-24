@@ -5,8 +5,10 @@
   "inventory_only": true,
   "contracts": [
     "ZesuSsz/Contracts/KeysToOwnedSliceBlockEntries.v",
+    "ZesuSsz/Contracts/KeysToOwnedSliceBudgetContract.v",
     "ZesuSsz/Contracts/KeysToOwnedSliceCallFacts.v",
     "ZesuSsz/Contracts/KeysToOwnedSliceCallSpec2.v",
+    "ZesuSsz/Contracts/KeysToOwnedSliceChargedSelected.v",
     "ZesuSsz/Contracts/KeysToOwnedSliceContract.v",
     "ZesuSsz/Contracts/KeysToOwnedSliceSelected.v"
   ],
@@ -14,6 +16,7 @@
   "exit_meanings": [],
   "loop_steps": [],
   "registrations": [
+    "ZesuSsz/Compliance/KeysToOwnedSliceBudgetCompositionBoundary.v",
     "ZesuSsz/Compliance/KeysToOwnedSliceCompositionBoundary.v",
     "ZesuSsz/Compliance/KeysToOwnedSliceDomainRanges.v",
     "ZesuSsz/Compliance/KeysToOwnedSliceUnfoldRegistrations.v"
@@ -21,13 +24,16 @@
   "generator_json": [],
   "files": [
     {"path": "ZesuSsz/Contracts/KeysToOwnedSliceBlockEntries.v", "category": "contracts", "scope": "whole_file", "text_kind": "hand_written"},
+    {"path": "ZesuSsz/Contracts/KeysToOwnedSliceBudgetContract.v", "category": "contracts", "scope": "whole_file", "text_kind": "hand_written"},
     {"path": "ZesuSsz/Contracts/KeysToOwnedSliceCallFacts.v", "category": "contracts", "scope": "whole_file", "text_kind": "hand_written"},
     {"path": "ZesuSsz/Contracts/KeysToOwnedSliceCallSpec2.v", "category": "contracts", "scope": "whole_file", "text_kind": "hand_written"},
+    {"path": "ZesuSsz/Contracts/KeysToOwnedSliceChargedSelected.v", "category": "contracts", "scope": "whole_file", "text_kind": "hand_written"},
     {"path": "ZesuSsz/Contracts/KeysToOwnedSliceContract.v", "category": "contracts", "scope": "whole_file", "text_kind": "hand_written"},
     {"path": "ZesuSsz/Contracts/KeysToOwnedSliceSelected.v", "category": "contracts", "scope": "whole_file", "text_kind": "hand_written"},
+    {"path": "ZesuSsz/Compliance/KeysToOwnedSliceBudgetCompositionBoundary.v", "category": "registrations", "scope": "whole_file", "text_kind": "hand_written"},
     {"path": "ZesuSsz/Compliance/KeysToOwnedSliceCompositionBoundary.v", "category": "registrations", "scope": "whole_file", "text_kind": "hand_written"},
     {"path": "ZesuSsz/Compliance/KeysToOwnedSliceDomainRanges.v", "category": "registrations", "scope": "whole_file", "text_kind": "hand_written"},
     {"path": "ZesuSsz/Compliance/KeysToOwnedSliceUnfoldRegistrations.v", "category": "registrations", "scope": "whole_file", "text_kind": "hand_written"}
   ],
-  "attribution_note": "Whole-file keysToOwnedSlice ownership of the registration modules. The block callers import KeysToOwnedSliceHints.v, which is not listed here: the composition boundary module is not exported to the callers. This inventory does not authorize native launches."
+  "attribution_note": "Whole-file keysToOwnedSlice ownership of the registration modules. The block callers import KeysToOwnedSliceHints.v, which is not listed here: the composition boundary modules (uncharged and charged, plan T8) are not exported to the callers. This inventory does not authorize native launches."
 }
