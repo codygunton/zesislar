@@ -206,6 +206,9 @@ def compile_profile(data, source=None):
                 for item in row.get('resources', []):
                     if not (isinstance(item, str) or isinstance(item, dict) and set(item) == {'coq', 'length'}):
                         raise AnnotationError('%s: a loop-cut resource is a text or {coq, length}' % row['id'])
+                for item in row.get('replaces', []):
+                    if not (isinstance(item, str) or isinstance(item, dict) and set(item) == {'id'}):
+                        raise AnnotationError('%s: a replaced loop-entry component is a text or {id}' % row['id'])
                 design['owned'] = {'binders': [{'name': binder['name'], 'type': binder['type']} for binder in loose],
                                    'resources': list(row.get('resources', [])),
                                    'replaces': list(row.get('replaces', []))}
