@@ -420,14 +420,17 @@ def _merge_call_sites(edges, prefix=PREFIX):
     return merged, widened
 
 
+def _lower_owned(value):
+    """A value with each symbolic byte read `owned_array_byte` as its owned-array lookup term (an input):
+    a seed after the call carries no read obligation that would render it (forward_resources.owned_byte_term)."""
+    if value.op == 'owned_array_byte':
+        return input_expr(owned_byte_term(value), 8)
+    return replace(value, args=tuple(_lower_owned(argument) for argument in value.args)) if value.args else value
+
+
 def _coq(value):
-    """The Coq text of a value; a symbolic byte read renders as its owned-array lookup, the term the
-    boundary's owned read renderings give it (forward_resources.owned_byte_term)."""
-    def owned(term):
-        if term.op == 'owned_array_byte':
-            return input_expr(owned_byte_term(term), 8)
-        return replace(term, args=tuple(owned(argument) for argument in term.args)) if term.args else term
-    return owned(value).coq()
+    """The Coq text of a value; a symbolic byte read renders as its owned-array lookup (_lower_owned)."""
+    return _lower_owned(value).coq()
 
 
 def _inputs(value):
@@ -1071,7 +1074,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                                   '%s ↦ₘ? %d' % (address, end - start), 'address_z': address,
                                   'length_original_coq': str(end - start)})
                 elif len(written) == end - start:
-                    known = tuple(Expr.from_dict(updates[offset]['value']) for offset in range(start, end))
+                    known = tuple(_lower_owned(Expr.from_dict(updates[offset]['value'])) for offset in range(start, end))
                     value = '[' + '; '.join(_coq(byte) for byte in known) + ']'
                     nodes.append({'kind': 'byte_array', 'id': piece_id, 'original_component':
                                   '%s ↦ₘ∗ %s' % (address, value), 'address_z': address,
@@ -1097,7 +1100,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                 splits[key]['pieces'].append(piece_id)
                 address = '(' + resource.address_z + ' + ' + str(start) + ')' if start else resource.address_z
                 if start in updates:
-                    known = tuple(Expr.from_dict(updates[offset]['value']) for offset in range(start, end))
+                    known = tuple(_lower_owned(Expr.from_dict(updates[offset]['value'])) for offset in range(start, end))
                     value = '[' + '; '.join(_coq(byte) for byte in known) + ']'
                     nodes.append({'kind': 'byte_array', 'id': piece_id, 'original_component':
                                   '%s ↦ₘ∗ %s' % (address, value), 'address_z': address,
