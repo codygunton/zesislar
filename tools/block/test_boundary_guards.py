@@ -7,7 +7,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from boundary_guards import (BoundaryRefused, RocqContradictionCheck, alternative_facts, annotate_reaching_stops,
                              check_groups, contradiction_source, contradictory_alternatives,
-                             contradictory_sources, fact_conjuncts,
+                             contradictory_sources, fact_conjuncts, read_range_representatives,
                              refused_alternative_indices, require_complete_boundary,
                              require_consistent_alternatives, without_alternatives)
 from forward_design import evaluate_function
@@ -505,6 +505,22 @@ class Contradictions(unittest.TestCase):
         self.assertNotRegex(source, r'\b(?:Timeout|timeout|Qed|Admitted)\b')
         other = contradiction_source('Require Import Header.\n', check_groups(binders, facts), 'FreeArgs')
         self.assertIn('Goal forall (args : FreeArgs) (returnAddress : Z) (machine_x15 : bv 64),', other)
+
+    def test_a_multi_byte_read_is_checked_at_its_last_byte(self):
+        # Per-byte range facts of one 8-byte read at p + 8 (bytes 0..7) and of a byte at p + 16.
+        def byte(term, form):
+            fact = '(bv_unsigned (bv_sub ' + term + ' start) < bv_unsigned len)%Z'
+            return '(bool_decide (' + fact + ') = true)' if form else '(' + fact + ')'
+        address = ['(bv_add p (BV 64%N 8%Z))'] + ['(bv_add (bv_add p (BV 64%N 8%Z)) (BV 64%N K%Z))'.replace('K', str(k))
+                                                  for k in range(1, 8)]
+        facts = [byte(term, form) for term in address for form in (True, False)]
+        other = ['(bv_unsigned (bv_sub (bv_add p (BV 64%N 16%Z)) start) < bv_unsigned len)%Z', '(0 <= i)%Z',
+                 '(bv_unsigned (bv_sub q start) < bv_unsigned len)%Z']
+        kept = read_range_representatives(facts + other)
+        self.assertEqual(kept, [byte(address[7], True), byte(address[7], False), *other])
+        self.assertEqual(read_range_representatives(other), other)
+        groups = check_groups('(p : bv 64) (q : bv 64) (start : bv 64) (len : bv 64) (i : Z)', facts + other)
+        self.assertEqual(sum(len(group_facts) for _, group_facts in groups), 5)
 
 
 class DuplicatedJoins(unittest.TestCase):
