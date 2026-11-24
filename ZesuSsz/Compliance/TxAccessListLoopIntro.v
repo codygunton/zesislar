@@ -67,6 +67,21 @@ Global Instance tx_empty_keys_list :
   TxEmptyList keysEmptyPointer keysElementBytes keysLog2Alignment := {}.
 Global Hint Mode TxEmptyList ! - - : typeclass_instances.
 
+(* A closed stored word whose little-endian bytes are the closed literal
+   `bytes`, decided on the byte values. *)
+Class TxClosedWordBytes (w : bv 64) (bytes : list byte) : Prop :=
+  tx_closed_word_bytes : bytes = bv_to_little_endian 8 8 (bv_unsigned w).
+
+Lemma tx_closed_word_bytes_intro (w : bv 64) (bytes : list byte) :
+  map bv_unsigned bytes = map bv_unsigned (bv_to_little_endian 8 8 (bv_unsigned w)) ->
+  TxClosedWordBytes w bytes.
+Proof. apply tx_byte_list_eq. Qed.
+
+Global Hint Extern 0 (TxClosedWordBytes ?w ?bytes) =>
+  (ZesuSsz.Automation2.VmClosed.zesu_closed_term w;
+   ZesuSsz.Automation2.VmClosed.zesu_closed_term bytes;
+   apply tx_closed_word_bytes_intro; vm_compute; reflexivity) : typeclass_instances.
+
 Section tx_loop_intro.
   Context `{!islaG Sigma} `{!threadG}.
 
@@ -123,13 +138,17 @@ Section tx_loop_intro.
     [instance simpl_goal_txAccessListKeysSlices_empty with 50%N].
   Global Existing Instance simpl_goal_txAccessListKeysSlices_empty_inst.
 
-  (* A stored word read as the 8 bytes of its little-endian image (the
-     frame word at +80 the code stores before the loop). *)
-  Lemma subsume_tx_word_bytes A (a1 a2 : Z) (w : bv 64) (requested : A -> list byte) G
-      `{!TCFastDone (forall x : A, length (requested x) = 8%nat)} :
-    (∃ x, ⌜a1 = a2⌝ ∗ ⌜requested x = bv_to_little_endian 8 8 (bv_unsigned w)⌝ ∗ G x)%I ⊢
-    subsume (a1 ↦ₘ w) (fun x => a2 ↦ₘ∗ requested x) G.
-  Proof. exact (subsume_mem_word_byte_array A a1 a2 8 w requested G). Qed.
+  (* A closed stored word read as the closed bytes of its little-endian
+     image (the frame word at +80 the code stores before the loop). *)
+  Lemma subsume_tx_word_bytes A (a1 a2 : Z) (w : bv 64) (bytes : list byte)
+      `{!TxClosedWordBytes w bytes} G :
+    (⌜a1 = a2⌝ ∗ ∃ x, G x)%I ⊢
+    subsume (a1 ↦ₘ w) (fun _ : A => a2 ↦ₘ∗ bytes) G.
+  Proof.
+    rewrite (@tx_closed_word_bytes w bytes _).
+    iIntros "[-> [%x HG]] Hw". iExists x. iFrame "HG".
+    iApply (ZesuSsz.Contracts.IslarisMemory.mem_mapsto_mapsto_to_byte_array with "Hw").
+  Qed.
   Definition subsume_tx_word_bytes_inst := [instance subsume_tx_word_bytes].
   Global Existing Instance subsume_tx_word_bytes_inst | 96.
 End tx_loop_intro.
