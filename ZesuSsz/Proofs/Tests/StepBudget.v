@@ -130,6 +130,38 @@ Section call_tests.
   Qed.
 End call_tests.
 
+(* A package that reaches the source route (Finish.v) still requests the
+   successor's budget: MemoryTupleConsumer.zesu_memory_frame_budget pays it
+   from the context's budget, literal or symbolic, and refuses a request
+   above the budget. *)
+Section package_tests.
+  Context `{!islaG Sigma} `{!threadG}.
+
+  Lemma step_budget_package_frame (a : Z) (b : bv 8) :
+    ⊢ a ↦ₘ b -∗ step_budget 70 -∗ a ↦ₘ b ∗ (step_budget 10 ∗ ⌜a = a⌝).
+  Proof.
+    iIntros "Ha Hbudget".
+    ZesuSsz.Automation2.MemoryTupleConsumer.zesu_memory_frame_budget.
+    iFrame "Ha". done.
+  Qed.
+
+  Lemma step_budget_package_symbolic (cursor bound : Z) :
+    cursor < bound ->
+    ⊢ step_budget (5 * (bound - cursor) + 12 - 5) -∗
+      step_budget (5 * (bound - (cursor + 1)) + 12).
+  Proof.
+    intros Hlt. iIntros "Hbudget".
+    ZesuSsz.Automation2.MemoryTupleConsumer.zesu_memory_frame_budget.
+  Qed.
+
+  Lemma step_budget_package_short : True.
+  Proof.
+    Fail assert (⊢ step_budget (Sigma:=Sigma) 7 -∗ step_budget 10)
+      by (iIntros "Hbudget"; ZesuSsz.Automation2.MemoryTupleConsumer.zesu_memory_frame_budget).
+    exact I.
+  Qed.
+End package_tests.
+
 Print Assumptions step_budget_three_closes.
 Print Assumptions step_budget_block_a.
 Print Assumptions step_budget_block_b.
