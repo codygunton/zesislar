@@ -30,6 +30,7 @@ Open Scope Z_scope.
 Open Scope stdpp_scope.
 
 #[local] Instance : LithiumUnfold (@keysEnsureCapacityCallSpecDefinition) := I.
+Global Typeclasses Opaque keysEnsureCapacityCallSpecDefinition.
 
 Lemma keysEnsureCapacityBudgetCallSpec2_correct `{!islaG Sigma} `{!threadG} :
   KeysEnsureCapacityBudgetContractCorrect ->
