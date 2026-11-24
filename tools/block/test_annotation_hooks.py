@@ -513,6 +513,62 @@ class ListHeaderCall(OpaqueAndReturnedCall):
         with self.assertRaisesRegex(CallRefused, 'no unchanged caller array listHeader other'):
             self.run_call(arrays=[{'binder': 'state', 'argument': 0, 'caller_value': 'other'}])
 
+class ProducedUnfold(OpaqueAndReturnedCall):
+    """A produced row's `as`: the spec resource (an array list buffer) enters the seed as the pieces of
+    its registered LithiumUnfold, which the call block proves."""
+    SPEC = '''Definition allocSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (machine_call someMap 0
+    (fun argv sp RET =>
+      RET (fun rets =>
+        ∃ outcome : Outcome,
+        arrayListBuffer 32 3 (listAfter outcome) ∗
+        ⌜bv_unsigned (rets !!! 0%nat) = 0⌝ ∗
+        True)))%I.
+'''
+    PIECES = [{'coq': 'arrayListPointer (listAfter outcome) ↦ₘ∗ arrayListItems (listAfter outcome)',
+               'length': 'arrayListLength (listAfter outcome) * 32'},
+              '(arrayListPointer (listAfter outcome) + arrayListLength (listAfter outcome) * 32) ↦ₘ? '
+              '((arrayListCapacity (listAfter outcome) - arrayListLength (listAfter outcome)) * 32)',
+              'altFlBlock (arrayListPointer (listAfter outcome)) (arrayListCapacity (listAfter outcome) * 32) 3']
+
+    def test_without_rows_the_old_refusals_stay(self):
+        pass
+
+    def test_rows_frame_consume_and_produce_and_name_the_returned_register(self):
+        pass
+
+    def test_a_wrong_row_is_refused(self):
+        pass
+
+    def run_grow(self, **row):
+        return self.run_call(returns=[{'index': 0, 'register': 'x10'}],
+                             opaque=[{'spec': 'arrayListBuffer 32 3 (listAfter outcome)', 'use': 'produced', **row}])
+
+    def test_the_pieces_replace_the_opaque_resource(self):
+        _, public, report = self.run_grow(**{'as': self.PIECES})
+        nodes = {node['id']: node for node in public['assertion_tree']['components']}
+        after = '(listAfter (call_outcome))'
+        self.assertEqual((nodes['call_produced_0']['kind'], nodes['call_produced_0']['address_z']),
+                         ('byte_array', 'arrayListPointer ' + after))
+        self.assertEqual(nodes['call_produced_1']['kind'], 'uninitialized_memory')
+        self.assertEqual(nodes['call_produced_2']['coq'], 'altFlBlock (arrayListPointer %s) (arrayListCapacity %s * 32) 3'
+                         % (after, after))
+        self.assertNotIn('arrayListBuffer', repr(public['assertion_tree']['components']))
+        self.assertEqual(report['unfolded_produced'][0]['spec'], 'arrayListBuffer 32 3 ' + after)
+
+    def test_without_as_the_resource_stays_opaque(self):
+        _, public, report = self.run_grow()
+        nodes = {node['id']: node for node in public['assertion_tree']['components']}
+        self.assertEqual(nodes['call_produced_0']['coq'], 'arrayListBuffer 32 3 (listAfter (call_outcome))')
+        self.assertNotIn('unfolded_produced', report)
+
+    def test_an_unregistered_unfold_is_refused(self):
+        from call_boundary import CallRefused
+        self.SPEC = self.SPEC.replace('arrayListBuffer', 'someBuffer')
+        with self.assertRaisesRegex(CallRefused, 'someBuffer, which has no LithiumUnfold instance'):
+            self.run_call(returns=[{'index': 0, 'register': 'x10'}],
+                          opaque=[{'spec': 'someBuffer 32 3 (listAfter outcome)', 'use': 'produced', 'as': self.PIECES}])
+
 class WordLinkAcrossCall(unittest.TestCase):
     """A root word link survives a call that leaves its array alone and is dropped when the spec
     replaces the array (wrong-output fix: the return seed used to drop every link)."""

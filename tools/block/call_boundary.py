@@ -49,6 +49,7 @@ the caller's own return address: its seed is the state the function exits with.
 """
 from dataclasses import replace
 from pathlib import Path
+import functools
 import hashlib
 import json
 import re
@@ -81,6 +82,16 @@ class CallRefused(ValueError):
 
 
 PROVED_FUNCTIONS = Path(__file__).resolve().parents[2] / 'ZesuSsz/Contracts/proved_functions.json'
+
+
+@functools.lru_cache(maxsize=None)
+def registered_unfold(head, root=None):
+    """Whether a contract predicate has a `LithiumUnfold (@head)` instance (ZesuSsz/Contracts, ZesuSsz/Interfaces):
+    the unfold a produced row's `as` pieces state, which the call block's proof uses."""
+    root = Path(root) if root else Path(__file__).resolve().parents[2]
+    pattern = re.compile(r'LithiumUnfold\s+\(@' + re.escape(head) + r'\)')
+    return any(pattern.search(path.read_text(errors='replace'))
+               for folder in ('ZesuSsz/Contracts', 'ZesuSsz/Interfaces') for path in (root / folder).rglob('*.v'))
 
 
 def interface_of(call, registry=None):
@@ -942,10 +953,21 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     by_text = {}
     for component in ownership['components']:
         by_text.setdefault(component_text(component), []).append(component['id'])
-    consumed, produced = set(), []
+    consumed, produced, unfolded = set(), [], []
     for row in opaque_rows:
         text = listed_after[_normal_text(row['spec'])]
         if row['use'] == 'produced':
+            if 'as' in row:
+                # The pieces of the spec resource's registered unfold, in the call's terms; the call
+                # block proves them from the spec resource (an obligation, never assumed).
+                head = _strip_enclosure(text).split()[0]
+                if not registered_unfold(head):
+                    raise CallRefused('A produced row unfolds %s, which has no LithiumUnfold instance' % head)
+                pieces = [{**piece, 'coq': listed_text(piece['coq'])} if isinstance(piece, dict)
+                          else listed_text(piece) for piece in row['as']]
+                unfolded.append({'spec': text, 'pieces': pieces})
+                produced.extend({'piece': piece} for piece in pieces)
+                continue
             produced.append(text)
             continue
         callers = row.get('caller', [text] if row['use'] == 'framed' else [])
@@ -1136,6 +1158,14 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         for row in result_minimums]
     produced_nodes = []
     for index, text in enumerate(produced):
+        if isinstance(text, dict):
+            # A piece of an unfolded produced resource: an owned array needs its length ({coq, length}).
+            from loop_design import owned_node
+            try:
+                produced_nodes.append(owned_node(text['piece'], index, prefix + 'produced_'))
+            except ValueError as error:
+                raise CallRefused(str(error))
+            continue
         points = re.fullmatch(r'(.+?)\s+(↦ₘ∗|↦ₘ\?|↦ₘ)\s+(.+)', text)
         if points is not None and points[2] != '↦ₘ?':
             raise CallRefused('A produced spec resource holds bytes the design does not name: ' + text)
@@ -1268,5 +1298,6 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
               'named_registers': {key: value.value for key, value in registers.items() if value in named.values()},
               **({'named_arguments': named_arguments} if named_arguments else {}),
               'havoc_registers': [binder['name'] for binder in binders if binder['name'].startswith(prefix + 'x')],
-              **({'renewed_system_registers': renewed_exact} if renewed_exact else {})}
+              **({'renewed_system_registers': renewed_exact} if renewed_exact else {}),
+              **({'unfolded_produced': unfolded} if unfolded else {})}
     return seed, public, report

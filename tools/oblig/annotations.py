@@ -37,7 +37,9 @@ The compiled profile keys, by `boundary`:
                    record the guards it relies on, as documentation only (never emitted).
   call_site        a `calls` row: the row's `call` object with `call_site_pc`. Its `opaque` rows
                    [{`spec`, `use`: framed | consumed | produced, `caller`: [...]}] name spec resources in
-                   the spec's text and, for a consumed one, the caller components it takes; its `returns`
+                   the spec's text and, for a consumed one, the caller components it takes (a framed one
+                   may name them too); a produced row's `as` [text | {coq, length}] states the spec resource
+                   by the pieces of its LithiumUnfold, which the call block proves; its `returns`
                    rows [{`index`, `register`}] name the returned registers the continuation reads; its
                    `result_words` {byte offset: Z value} name words of the returned array the return entry
                    states and the seed reads as the value (`{argv:N}`, `{fresh:NAME:TYPE}` in the value);
@@ -196,6 +198,12 @@ def _check_call(row):
         if item['use'] == 'consumed' and not callers or item['use'] == 'produced' and callers \
                 or not all(isinstance(text, str) for text in callers):
             raise AnnotationError('%s: a consumed opaque row names its caller resources, a produced one none'
+                                  % row['id'])
+        pieces = item.get('as')
+        if pieces is not None and (item['use'] != 'produced' or not isinstance(pieces, list) or not pieces
+                                   or not all(isinstance(piece, str) or isinstance(piece, dict)
+                                              and set(piece) == {'coq', 'length'} for piece in pieces)):
+            raise AnnotationError('%s: `as` belongs to a produced opaque row: its pieces are texts or {coq, length}'
                                   % row['id'])
     for item in row['call'].get('returns', []):
         if not isinstance(item.get('index'), int) or not re.fullmatch(r'x(1[0-7])', str(item.get('register'))):
