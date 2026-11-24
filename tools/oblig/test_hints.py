@@ -1,16 +1,14 @@
 """Tests of the hint pack builder (tools/oblig/hints.py)."""
 import json
 from pathlib import Path
-import re
 import sys
 import tempfile
 import unittest
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+import check_relocatable  # noqa: E402
 import hints  # noqa: E402
-
-ADDRESS = re.compile(r'0x800[0-9a-f]{5}|2148[0-9]{6}|21474[0-9]{5}')
 
 
 def expr(ops):
@@ -165,7 +163,7 @@ class RealObjectTests(unittest.TestCase):
             self.assertEqual(blocks.count('\n## block '), 53)
             self.assertIn('call rlp.decodeItem', blocks)
             for name in ('SOURCE.md', 'BLOCKS.md'):
-                self.assertIsNone(ADDRESS.search((out / name).read_text()), name)
+                self.assertEqual(check_relocatable.address_hits((out / name).read_text()), [], name)
             text = hints.slice_pack(out, ['+0x1f4'])
             self.assertIn('ensureTotalCapacity', text)
 

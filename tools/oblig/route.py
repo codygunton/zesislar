@@ -91,12 +91,12 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-import re
 import sys
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent / 'residuals'))
+import check_relocatable  # noqa: E402
 import store  # noqa: E402
 import residual_package  # noqa: E402
 
@@ -115,7 +115,7 @@ SPIN_ATTEMPTS = 6
 SPIN_RESETS = 3
 # Leftover classes of tools/bench/triage_classes.json whose goal is an Iris entailment.
 SPATIAL_CLASSES = {'SPATIAL', 'CALL', 'LOOKUP', 'EXIST', 'FAULT', 'HIST'}
-ADDRESS = re.compile(r'0x800[0-9a-f]{5}|2148[0-9]{6}|21474[0-9]{5}')
+ADDRESS_PATTERNS = check_relocatable.PATTERNS
 TESTED_KINDS = ('contract', 'loop_assertion', 'join_assertion')
 GROUPS = {'rerun': 0, 'derive': 0, 'package': 0, 'falsify': 0, 'test': 0, 'check': 0,
           'prove': 1, 'diagnose': 2, 'decide': 2, 'reconsider': 2, 'owner': 3, 'spin': 4}
@@ -176,7 +176,8 @@ def names_address(item):
     if artifact and Path(artifact['path']).is_file():
         if Path(artifact['path']).name == 'PACKAGE.json':
             return (store.read_json(artifact['path']) or {}).get('class') == 'ADDRESS'
-        return bool(ADDRESS.search(Path(artifact['path']).read_text(errors='replace')))
+        text = Path(artifact['path']).read_text(errors='replace')
+        return any(pattern.search(text) for pattern in ADDRESS_PATTERNS)
     return False
 
 

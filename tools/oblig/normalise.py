@@ -53,7 +53,12 @@ event (tier `falsify`: state `false` on a kernel-refuted real state, else the sc
 accepted proof copied byte for byte into `assert (zn_part_i : Ni). { .. }` (the proof of the full part
 statement, full-proof.v when residual_loop.py minimised it), then the link script; `residual_loop.py
 collect` checks it against goal.v like any answer and `register` renders that lemma (parts are never
-registered: rows with `part_of` are skipped).
+registered: rows with `part_of` are skipped). The asserted statements and the link script are written
+with the symbol notations of tools/oblig/symbolize.py (the call package.py applies to goal statements),
+so the registered proof names no absolute address; when that introduces a notation, the goal.v header
+gains the import of ZesuSsz.Generated.Stock.Symbols (the original kept as goal-norequire.v), and collect
+(proof.v from goal.v) and register (the module header from goal.v) carry it. The kernel check of
+collect stays the acceptance.
 """
 import argparse
 from concurrent.futures import ThreadPoolExecutor
@@ -70,6 +75,7 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(ROOT / "tools/block"))
 import falsify  # noqa: E402
 import residual_loop as rl  # noqa: E402
+import symbolize  # noqa: E402
 
 TACTIC = HERE / "normalise_tactic.v"
 BINDERS = HERE / "exec" / "binders"
@@ -544,11 +550,31 @@ def file_events(store_root, function, run, manifest, record, part_ids):
 
 # ---- compose ----
 
+def symbolized(text, symbols, bounds):
+    """(TEXT with symbolize.statement's notations, whether it changed)."""
+    rewritten, found = symbolize.statement(text, symbols, bounds)
+    return rewritten, bool(found)
+
+
+def require_symbols(goal_v):
+    """Add the Symbols import to the header of the goal.v at GOAL_V (once; the original kept as
+    goal-norequire.v). The statement is unchanged: the notations are parsing-only."""
+    text = goal_v.read_text()
+    header = header_of(text)
+    if symbolize.REQUIRE in header:
+        return
+    keep = goal_v.with_name("goal-norequire.v")
+    if not keep.exists():
+        keep.write_text(text)
+    goal_v.write_text("\n".join(symbolize.with_require(header)) + "\n" + text[text.index("\nLemma "):])
+
+
 def compose(run, goal_ids=()):
     """Write answers/<goal>.v for each goal with parts whose parts all PASS; returns the goal ids."""
     run = Path(run)
     manifest = rl.read_json(run / "MANIFEST.json")
     by_id = {g["id"]: g for g in manifest["goals"]}
+    symbols, bounds = symbolize.table(), symbolize.sections()
     done = []
     for goal in manifest["goals"]:
         if not goal.get("parts") or (goal_ids and goal["id"] not in goal_ids):
@@ -556,18 +582,23 @@ def compose(run, goal_ids=()):
         status = rl.read_json(run / "goals" / goal["id"] / "STATUS.json", {})
         if status.get("result") == "PASS":
             continue
-        proofs, parts = [], []
+        proofs, parts, named = [], [], False
         for gid in goal["parts"]:
             part = by_id[gid]
             proof = accepted_proof(run / "goals" / gid)
             if proof is None:
                 break
             proofs.append(proof)
-            parts.append(dict(k=part["part"], statement=part["statement"]))
+            statement, changed = symbolized(part["statement"], symbols, bounds)
+            named |= changed
+            parts.append(dict(k=part["part"], statement=statement))
         else:
+            link, changed = symbolized(goal["normalised"]["link"], symbols, bounds)
+            if named or changed:
+                require_symbols(run / "goals" / goal["id"] / "goal.v")
             answer = run / "answers" / (goal["id"] + ".v")
             answer.parent.mkdir(parents=True, exist_ok=True)
-            answer.write_text(composed_proof(parts, goal["normalised"]["link"], proofs))
+            answer.write_text(composed_proof(parts, link, proofs))
             done.append(goal["id"])
     return done
 
