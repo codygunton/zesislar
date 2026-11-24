@@ -19,6 +19,10 @@ import falsify  # noqa: E402
 import normalise  # noqa: E402
 import store  # noqa: E402
 import render_residual_module as rrm  # noqa: E402
+import check_relocatable  # noqa: E402
+import residual_loop as rl  # noqa: E402
+import symbolize  # noqa: E402
+from test_symbolize import BOUNDS, TEXT_END, TEXT_START, disjoint  # noqa: E402
 
 LOG = """0.1 noise
 0.2 @@N part 1 binders x H0
@@ -175,6 +179,43 @@ class PartsTests(unittest.TestCase):
         text = (self.run / "answers" / "0010-1.v").read_text()
         self.assertEqual(text, "assert (zn_part_1 :\n  P1).\n{ intros; lia.\n}\n"
                                "assert (zn_part_2 :\n  P2).\n{ auto.\n}\nLINK.\nQed.\n")
+        # Literal-free parts: the goal.v header stays as it was.
+        self.assertNotIn(symbolize.REQUIRE, (self.run / "goals" / "0010-1" / "goal.v").read_text())
+        self.assertFalse((self.run / "goals" / "0010-1" / "goal-norequire.v").exists())
+
+    def test_compose_names_section_bounds_and_imports_their_notations(self):
+        statement = "(forall (x n : Z), %s)" % disjoint("x", TEXT_START, TEXT_END)
+        manifest = json.loads((self.run / "MANIFEST.json").read_text())
+        manifest["goals"][1]["statement"] = statement
+        manifest["goals"][0]["normalised"]["link"] = "exact (zn_part_1 (%d)%%Z)." % (TEXT_START + 0x10)
+        (self.run / "MANIFEST.json").write_text(json.dumps(manifest))
+        close(self.run, "0010-2", "intros; lia.\nQed.\n")
+        close(self.run, "0010-3", "auto.\nQed.\n")
+        saved = symbolize.table, symbolize.sections
+        symbolize.table = lambda path=None: [(TEXT_START + 0x10, "sym_demo")]
+        symbolize.sections = lambda path=None: BOUNDS
+        try:
+            self.assertEqual(normalise.compose(self.run), ["0010-1"])
+        finally:
+            symbolize.table, symbolize.sections = saved
+        text = (self.run / "answers" / "0010-1.v").read_text()
+        self.assertIn("(sec_text_start)%Z", text)
+        self.assertIn("(sec_text_end)%Z", text)
+        self.assertIn("exact (zn_part_1 (sym_demo)%Z).", text)
+        self.assertEqual(check_relocatable.address_hits(text), [])
+        d = self.run / "goals" / "0010-1"
+        goal_v = (d / "goal.v").read_text()
+        self.assertEqual(goal_v.split("\n")[:3],
+                         ["Require Import ZesuSsz.Demo.", symbolize.REQUIRE, "Local Open Scope Z_scope."])
+        original = (d / "goal-norequire.v").read_text()
+        self.assertEqual(goal_v[goal_v.index("\nLemma "):], original[original.index("\nLemma "):])
+        # collect fills proof.v from goal.v and register takes the module header from it.
+        (d / "proof.v").write_text(rl.goal_head(goal_v) + text)
+        self.assertIn(symbolize.REQUIRE, rrm.read_goal(d)[0])
+
+    def test_collect_refuses_an_answer_naming_an_address(self):
+        self.assertIn("absolute address", rl.answer_problems("assert (x = %#x) by lia.\nQed.\n" % TEXT_END))
+        self.assertIsNone(rl.answer_problems("assert (x = sec_text_end) by lia.\nQed.\n"))
 
     def test_store_blocks_the_goal_on_its_first_open_part(self):
         states = store.derived_states("demo", self.tmp)

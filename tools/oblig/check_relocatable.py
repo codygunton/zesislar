@@ -4,9 +4,11 @@
 A file listed in tools/oblig/relocatable_files.json names code and data by symbol
 and offset (the notations of ZesuSsz/Generated/Stock/Symbols.v, or `+0xOFFSET`
 from a symbol), never by an absolute address of the pinned binary. The checker
-fails on a hexadecimal literal `0x800` followed by five hex digits, or a decimal
-literal of the form `2148` followed by six digits or `21474` followed by five,
-each standing as its own token. Absolute addresses belong in generated files only.
+fails on an address of the linked image (the 16 MiB above 2^31) standing as its
+own token: a hexadecimal literal `0x80` followed by six hex digits, or a decimal
+literal of ten digits starting `2147` then 4-9, `2148`, `2149`, `215` or `216`
+then 0-4 (a little below 2^31 too). Absolute addresses belong in generated files
+only.
 
     check_relocatable.py [--list tools/oblig/relocatable_files.json] [--root DIR] [FILE...]
 
@@ -27,9 +29,8 @@ SCHEMA = 'zesu.relocatable-files.v1'
 # A literal counts only as a whole token: no letter, digit or `_` before it and no
 # digit (or, for hexadecimal, hex digit) after it, so hashes and longer numbers pass.
 PATTERNS = (
-    re.compile(r'(?<![0-9A-Za-z_])0[xX]800[0-9a-fA-F]{5}(?![0-9a-fA-F])'),
-    re.compile(r'(?<![0-9A-Za-z_])2148[0-9]{6}(?![0-9])'),
-    re.compile(r'(?<![0-9A-Za-z_])21474[0-9]{5}(?![0-9])'),
+    re.compile(r'(?<![0-9A-Za-z_])0[xX]80[0-9a-fA-F]{6}(?![0-9a-fA-F])'),
+    re.compile(r'(?<![0-9A-Za-z_])(?:2147[4-9][0-9]{5}|214[89][0-9]{6}|215[0-9]{7}|216[0-4][0-9]{6})(?![0-9])'),
 )
 
 
