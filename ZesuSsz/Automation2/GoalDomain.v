@@ -5,6 +5,8 @@ From Coq Require Import ZArith Lia.
 Require Import ZesuSsz.Automation2.LiaHook.
 Require ZesuSsz.Automation2.Hooks.
 Require ZesuSsz.Automation2.VmClosed.
+Require ZesuSsz.Automation2.ContextCollection.
+From Coq Require Import Strings.String.
 
 (* A pure goal whose head a contract registers in `zesu_goal_domain`: a
    callee's call-site domain that is a conjunction of address arithmetic
@@ -89,7 +91,12 @@ Ltac zesu_goal_domain_part :=
   zesu_final_solver_goal;
   zesu_goal_domain_closed_words;
   first
-    [zesu_lia
+    [(* the facts that share the conjunct's atoms first: over a block's whole
+        context lia on a modular frame address ran past 120 s (r50 0x0248)
+        where the stack pointer's range alone closes it at once *)
+     ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+       ("goal_domain.selected"%string) ltac:(zesu_lia)
+    |zesu_lia
     |lazymatch goal with |- context [bv_unsigned _] => bv_solve end
     |match goal with
      | |- context [bv_unsigned ?word] =>
