@@ -150,8 +150,15 @@ class RegisterDefinition(unittest.TestCase):
 class HeldBinders(unittest.TestCase):
     """Profile `held_binders`: a named binder is kept as an owned ghost, so a span whose bytes name it stays exact."""
 
+    KEYS = ('FRAME_SLOTS', 'HIST_VISIBLE', 'STORE_SPLICE', 'JOIN_GUARD_FORM', 'ARRAY_SPELLING', 'HELD_BINDERS')
+
+    def setUp(self):
+        # entry_hist.configure sets every profile shape key; restore them so other tests keep theirs.
+        self.saved = {key: getattr(entry_hist, key) for key in self.KEYS}
+
     def tearDown(self):
-        entry_hist.HELD_BINDERS = frozenset()
+        for key, value in self.saved.items():
+            setattr(entry_hist, key, value)
 
     def run_drop(self):
         byte = operation('extract', input_expr('off', 64), width=8, value=0)

@@ -5,6 +5,7 @@ The result is untrusted input for later block proofs. Conditions remain explicit
 Captured proof states never supply input bindings.
 """
 from dataclasses import dataclass, field
+import functools
 import hashlib
 import json
 import re
@@ -455,6 +456,43 @@ def _symbolic_owner(address, regions):
     return matches[0] if len(matches) == 1 else None
 
 
+_BV8_LITERAL = re.compile(r'\(\s*BV\s+8%N\s+(\d+)%Z\s*\)|BV\s+8%N\s+(\d+)%Z')
+
+
+@functools.lru_cache(maxsize=256)
+def _literal_list_constants(text):
+    """Per item of a literal list text `[i0; i1; …]`, its byte value when the item is `(BV 8%N k%Z)`, else
+    None; None for a text that is no literal list."""
+    text = text.strip()
+    if not (text.startswith('[') and text.endswith(']')):
+        return None
+    items, depth, start = [], 0, 1
+    for position, char in enumerate(text[1:-1], start=1):
+        depth += char in '([{'
+        depth -= char in ')]}'
+        if char == ';' and depth == 0:
+            items.append(text[start:position])
+            start = position + 1
+    items.append(text[start:-1])
+    values = []
+    for item in items:
+        match = _BV8_LITERAL.fullmatch(item.strip())
+        value = int(match[1] or match[2]) if match else None
+        values.append(value if value is not None and value < 256 else None)
+    return tuple(values)
+
+
+def _literal_list_byte(array, index):
+    """The byte constant at `index` of an array that is a literal list `[(BV 8%N k%Z); …]` (a frame slot
+    the forward pass packed from stored constants), else None: a pointer stored there reads as its value."""
+    if array.op != 'input' or not isinstance(array.value, str):
+        return None
+    values = _literal_list_constants(array.value)
+    if values is None or index >= len(values) or values[index] is None:
+        return None
+    return bits(values[index], 8)
+
+
 def _offset(address, base):
     def split(expr):
         if expr.op == 'bits':
@@ -659,7 +697,9 @@ class _Evaluator:
             if offset < len(region.bytes):
                 candidates.append((region.bytes[offset], region.ownership_id))
             elif region.byte_array is not None and ((isinstance(length, int) and offset < length) or offset < region.minimum_length):
-                candidates.append((Expr('array_byte', (region.byte_array,), 8, offset), region.ownership_id))
+                literal = _literal_list_byte(region.byte_array, offset)
+                candidates.append((literal if literal is not None else
+                                   Expr('array_byte', (region.byte_array,), 8, offset), region.ownership_id))
             elif region.uninitialized and region.ownership_id is not None and (
                     (isinstance(length, int) and offset < length) or offset < region.minimum_length):
                 candidates.append((self.uninitialized_byte(address, region), region.ownership_id))
