@@ -36,6 +36,8 @@ applies the callee summary to make the seed of the return site:
   return entry states `bv_unsigned <word> = value`, which the call block proves
   from the callee's meaning, and the seed reads the word as that value (a word
   link of the returned array), so a load through it finds the array it points into.
+  The row's `result_minimums` {NAME: m} add `m <= NAME` of a fresh Z binder, also
+  proved by the call block; the seed keeps it as an `offset_minimum` source row.
 
 The callee summary comes from the spec's source text. The call design row
 names the spec, binds each spec array to its argument and the caller value

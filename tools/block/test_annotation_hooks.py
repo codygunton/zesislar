@@ -105,6 +105,63 @@ class PlacedLoadPastEnd(unittest.TestCase):
         self.assertTrue(report['required_rocq_guard_projection'])
 
 
+class PlacedLoadAboveLow(unittest.TestCase):
+    """The trace case `address = 0x40000000` (the ZisK free-input read) of a load placed at base + off + 8
+    stops only with three rows: the access row, a domain relation `2^30 <= base` and a minimum `1 <= off`."""
+
+    def setUp(self):
+        self.addCleanup(setattr, symbolic_state, 'ACCESS_PLACEMENTS', symbolic_state.ACCESS_PLACEMENTS)
+        base = input_expr('base', 64)
+        self.state = SymbolicState(registers={'PC': bits(PC, 64)}, memory=[
+            MemoryRegion(base, byte_array=input_expr('arr', None), length=input_expr('length arr', None),
+                         ownership_id='arr_resource')])
+        self.offset = input_expr('(Z_to_bv 64%N (call_off))', 64)
+        address = operation('bvadd', operation('bvadd', base, self.offset), bits(8, 64))
+        self.guard = operation('=', operation('zero_extend', address, width=128), bits(0x40000000, 128))
+        self.placement = {'pc': '0050', 'array': 'arr', 'index': 'off', 'scale': 1, 'offset': 8}
+
+    def rows(self, low=True, minimum=True):
+        if low:
+            self.state.source_intervals.append({'low_bound': {'base': input_expr('base', 64).to_dict(),
+                                                              'minimum': 0x40000000},
+                                                'origin': {'fixture': True}, 'fact_id': 'wellformed:low-bound-0'})
+        if minimum:
+            self.state.source_intervals.append({'offset_minimum': {'expression': self.offset.to_dict(), 'minimum': 1},
+                                                'origin': {'fixture': True}, 'fact_id': 'call_result-minimum-off'})
+
+    def run_case(self):
+        evaluator = _Evaluator(self.state.copy(), instruction_index=PC)
+        evaluator.state.conditions.append(self.guard)
+        symbolic_state._refute_placed_below_low(self.state, evaluator)
+        return evaluator
+
+    def test_without_the_low_bound_or_the_minimum_the_case_stays(self):
+        symbolic_state.ACCESS_PLACEMENTS = {PC: [self.placement]}
+        self.rows(low=False)
+        self.assertEqual(self.run_case().status, 'complete')
+        self.setUp()
+        symbolic_state.ACCESS_PLACEMENTS = {PC: [self.placement]}
+        self.rows(minimum=False)
+        self.assertEqual(self.run_case().status, 'complete')
+
+    def test_without_an_access_row_the_case_stays(self):
+        self.rows()
+        symbolic_state.ACCESS_PLACEMENTS = {}
+        self.assertEqual(self.run_case().status, 'complete')
+
+    def test_the_rows_refute_the_case_as_an_open_obligation(self):
+        self.rows()
+        symbolic_state.ACCESS_PLACEMENTS = {PC: [self.placement]}
+        evaluator = self.run_case()
+        self.assertEqual(evaluator.status, 'infeasible')
+        report, = [row for row in evaluator.state.reports if row['kind'] == 'placed_low_refutation']
+        self.assertEqual((report['proof_status'], report['least_address']), ('open', 0x40000009))
+        self.assertTrue(report['required_rocq_guard_projection'])
+        # A constant at or above the least address is not refuted.
+        self.guard = operation('=', self.guard.args[0], bits(0x40000009, 128))
+        self.assertEqual(self.run_case().status, 'complete')
+
+
 class SeededJoinStops(unittest.TestCase):
     def test_a_stop_inside_a_seeded_join_reaches_the_join_and_what_follows(self):
         # 16 branches to 20 and 24; 24 is a join with a seed; 24 falls into 28.
@@ -228,12 +285,14 @@ class ResultWords(unittest.TestCase):
     SPEC = ReturnedLength.SPEC.replace('∃ (n : Z),\n      bv_unsigned (argv !!! 0%nat) ↦ₘ? n',
                                        'bv_unsigned (argv !!! 0%nat) ↦ₘ? 16')
 
-    def run_call(self, words, length='16'):
+    def run_call(self, words, minimums=None, length='16'):
         from call_boundary import call_return_seed
         with tempfile.TemporaryDirectory() as directory:
             fixture, state, call = ReturnedLength().fixture(directory, length=length)
             Path(directory, 'Spec.v').write_text(self.SPEC)
             call['result_words'] = words
+            if minimums is not None:
+                call['result_minimums'] = minimums
             state.registers['x11'] = input_expr('base', 64)
             return call_return_seed([{'seed_pc': '0x10', 'state': state.to_dict()}], call=call,
                                     function_root=directory, **fixture)
@@ -270,6 +329,21 @@ class ResultWords(unittest.TestCase):
         seed, public_after, _ = self.run_call({})
         self.assertEqual(seed.state.word_links, [])
         self.assertFalse(any('result_word' in node['id'] for node in public_after['assertion_tree']['components']))
+
+    def test_a_result_minimum_is_an_entry_fact_and_a_seed_row(self):
+        from call_boundary import CallRefused
+        seed, public_after, _ = self.run_call({'8': 'bv_unsigned {argv:1} + {fresh:off:Z}'}, {'off': 1})
+        nodes = {node['id']: node for node in public_after['assertion_tree']['components']}
+        self.assertEqual(nodes['call_result_minimum_off']['coq'], '⌜(1 <= call_off)%Z⌝')
+        row, = [row for row in seed.state.source_intervals if 'offset_minimum' in row]
+        self.assertEqual(row['offset_minimum'], {'expression': input_expr('(Z_to_bv 64%N (call_off))', 64).to_dict(),
+                                                 'minimum': 1})
+        # Without the key nothing is added; a minimum of a name that is no fresh Z binder is refused.
+        seed, public_after, _ = self.run_call({'8': 'bv_unsigned {argv:1} + {fresh:off:Z}'})
+        self.assertFalse(any('offset_minimum' in row for row in seed.state.source_intervals))
+        self.assertFalse(any('result_minimum' in node['id'] for node in public_after['assertion_tree']['components']))
+        with self.assertRaisesRegex(CallRefused, 'no fresh Z binder'):
+            self.run_call({'8': 'bv_unsigned {argv:1} + {fresh:off:Z}'}, {'other': 1})
 
 
 class OpaqueAndReturnedCall(unittest.TestCase):
