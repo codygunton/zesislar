@@ -14,7 +14,8 @@
   ],
   "array_spelling": "sealed",
   "held_binders": [
-    "call3_payload_offset"
+    "call3_payload_offset",
+    "call5_outcome"
   ],
   "hist_visible": [
     "^\\(?frame_old_m\\d+'* = ",
@@ -265,7 +266,12 @@
             "length": "24"
           },
           "(bv_unsigned (txStackPointer args) - 424) \u21a6\u2098? 320",
-          "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_entries",
+          {
+            "coq": "arrayListPointer tx_entries \u21a6\u2098\u2217 arrayListItems tx_entries",
+            "length": "arrayListLength tx_entries * entriesElementBytes"
+          },
+          "(arrayListPointer tx_entries + arrayListLength tx_entries * entriesElementBytes) \u21a6\u2098? ((arrayListCapacity tx_entries - arrayListLength tx_entries) * entriesElementBytes)",
+          "altFlBlock (arrayListPointer tx_entries) (arrayListCapacity tx_entries * entriesElementBytes) entriesLog2Alignment",
           "txAccessListKeysSlices tx_done tx_images",
           {
             "coq": "ziskExtraParamsAddress \u21a6\u2098\u2217 tx_scratch",
@@ -370,7 +376,9 @@
     }
   ],
   "join_designs": {
-    "+0x248": []
+    "+0x248": [],
+    "+0x42c": [],
+    "+0x448": []
   },
   "calls": [
     {
@@ -621,7 +629,7 @@
           "spec": "arrayListBuffer keysElementBytes keysLog2Alignment state",
           "use": "consumed",
           "caller": [
-            "arrayListBuffer keysElementBytes keysLog2Alignment tx_keys"
+            "arrayListBuffer keysElementBytes keysLog2Alignment tx_keys_done"
           ]
         },
         {
@@ -676,7 +684,6 @@
         {
           "binder": "scratchBefore",
           "constant": "ziskExtraParamsAddress",
-          "caller_value": "tx_scratch",
           "length": 8,
           "length_source": "txAccessListArgsWellFormed: length (txScratchBefore args) = 8; loop cuts carry it as tx_scratch with Z.of_nat (length tx_scratch) = 8"
         }
@@ -819,7 +826,6 @@
         {
           "binder": "scratch",
           "constant": "ziskExtraParamsAddress",
-          "caller_value": "tx_scratch",
           "length": 8,
           "length_source": "loop cut +0xc4: Z.of_nat (length tx_scratch) = 8"
         }
@@ -838,6 +844,31 @@
     }
   ],
   "access_placements": [
+    {
+      "pc": "+0x460",
+      "region": "arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes",
+      "offset": 0
+    },
+    {
+      "pc": "+0x464",
+      "region": "arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes",
+      "offset": 8
+    },
+    {
+      "pc": "+0x46c",
+      "region": "arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes",
+      "offset": 16
+    },
+    {
+      "pc": "+0x474",
+      "region": "arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes",
+      "offset": 24
+    },
+    {
+      "pc": "+0x484",
+      "region": "arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes",
+      "offset": 32
+    },
     {
       "pc": "+0x130",
       "array": "txInputBytes args",
@@ -1079,7 +1110,7 @@
           "id": "call6_produced_2"
         },
         {
-          "id": "loop_owned_4"
+          "id": "loop_owned_6"
         }
       ],
       "facts": [
@@ -1087,26 +1118,147 @@
           "coq": "arrayListWellFormed keysElementBytes tx_keys_done"
         },
         {
-          "coq": "arrayListItems tx_keys_done = concat tx_keys_list"
+          "coq": "arrayListItems tx_keys_done = List.concat tx_keys_list"
         },
         {
-          "coq": "arrayListLength tx_keys_done = Z.of_nat (length tx_keys_list)"
+          "coq": "arrayListLength tx_keys_done = Z.of_nat (List.length tx_keys_list)"
         },
         {
-          "coq": "\u2203 keys_pointer keys_length, firstn 16 call4_after = word64Bytes keys_pointer ++ word64Bytes keys_length /\\ txAccessListKeysWalked (take (Z.to_nat keys_length) (drop (Z.to_nat (keys_pointer - bv_unsigned (txInputPointer args))) (txInputBytes args))) keys_length tx_keys_list"
+          "coq": "\u2203 (keys_pointer keys_length : Z), firstn 16 call4_after = app (word64Bytes keys_pointer) (word64Bytes keys_length) /\\ txAccessListKeysWalked (take (Z.to_nat keys_length) (drop (Z.to_nat (keys_pointer - bv_unsigned (txInputPointer args))) (txInputBytes args))) keys_length tx_keys_list"
         },
         {
-          "coq": "Z.of_nat (length tx_scratch_keys) = txAccessListScratchSize"
+          "coq": "Z.of_nat (List.length tx_scratch_keys) = txAccessListScratchSize"
         }
       ],
       "predecessors": [
         "+0x15c",
         "+0x204"
       ]
+    },
+    "+0x42c": {
+      "binders": [
+        {
+          "name": "tx_grown",
+          "type": "ArrayListState"
+        }
+      ],
+      "resources": [
+        {
+          "coq": "arrayListPointer tx_grown \u21a6\u2098\u2217 arrayListItems tx_grown",
+          "length": "arrayListLength tx_grown * entriesElementBytes"
+        },
+        "(arrayListPointer tx_grown + arrayListLength tx_grown * entriesElementBytes) \u21a6\u2098? ((arrayListCapacity tx_grown - arrayListLength tx_grown) * entriesElementBytes)",
+        "altFlBlock (arrayListPointer tx_grown) (arrayListCapacity tx_grown * entriesElementBytes) entriesLog2Alignment"
+      ],
+      "replaces": [
+        {
+          "id": "loop_owned_2"
+        },
+        {
+          "id": "loop_owned_3"
+        },
+        {
+          "id": "loop_owned_4"
+        }
+      ],
+      "facts": [
+        {
+          "coq": "bv_unsigned {x24} = arrayListPointer tx_grown"
+        },
+        {
+          "coq": "bv_unsigned {x25} = arrayListCapacity tx_grown"
+        },
+        {
+          "coq": "arrayListLength tx_grown = arrayListLength tx_entries"
+        },
+        {
+          "coq": "arrayListItems tx_grown = arrayListItems tx_entries"
+        },
+        {
+          "coq": "arrayListLength tx_grown < arrayListCapacity tx_grown"
+        },
+        {
+          "coq": "arrayListWellFormed entriesElementBytes tx_grown"
+        }
+      ],
+      "predecessors": [
+        "+0x400",
+        "+0x404"
+      ]
+    },
+    "+0x448": {
+      "binders": [
+        {
+          "name": "tx_appendable",
+          "type": "ArrayListState"
+        }
+      ],
+      "resources": [
+        {
+          "coq": "(bv_unsigned (txStackPointer args) - 448) \u21a6\u2098\u2217 arrayListHeaderBytes tx_appendable",
+          "length": "24"
+        },
+        {
+          "coq": "arrayListPointer tx_appendable \u21a6\u2098\u2217 arrayListItems tx_appendable",
+          "length": "arrayListLength tx_appendable * entriesElementBytes"
+        },
+        "(arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes) \u21a6\u2098? ((arrayListCapacity tx_appendable - arrayListLength tx_appendable) * entriesElementBytes)",
+        "altFlBlock (arrayListPointer tx_appendable) (arrayListCapacity tx_appendable * entriesElementBytes) entriesLog2Alignment"
+      ],
+      "replaces": [
+        {
+          "id": "loop_owned_0"
+        },
+        {
+          "id": "loop_owned_2"
+        },
+        {
+          "id": "loop_owned_3"
+        },
+        {
+          "id": "loop_owned_4"
+        },
+        {
+          "id": "loop_owned_8000042c_0"
+        },
+        {
+          "id": "loop_owned_8000042c_1"
+        },
+        {
+          "id": "loop_owned_8000042c_2"
+        }
+      ],
+      "facts": [
+        {
+          "coq": "bv_unsigned {x11} = arrayListPointer tx_appendable"
+        },
+        {
+          "coq": "arrayListLength tx_appendable = arrayListLength tx_entries"
+        },
+        {
+          "coq": "arrayListItems tx_appendable = arrayListItems tx_entries"
+        },
+        {
+          "coq": "arrayListLength tx_appendable < arrayListCapacity tx_appendable"
+        },
+        {
+          "coq": "arrayListWellFormed entriesElementBytes tx_appendable"
+        },
+        {
+          "coq": "bv_unsigned {x12} = 8 * arrayListLength tx_appendable"
+        },
+        {
+          "coq": "bv_unsigned {x16} = 32 * arrayListLength tx_appendable"
+        }
+      ],
+      "predecessors": [
+        "+0x264",
+        "+0x43c"
+      ]
     }
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "e20aaaa1615fdb3d80523c08552331e993a6f62f3f3fc4c4e32b6ae8b26c07d6"
+    "sha256": "d5083d478f2467b5bc85142dab0403277a922c25da5c3a7e4ba8666fb15d074b"
   }
 }
