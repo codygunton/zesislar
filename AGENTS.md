@@ -102,6 +102,10 @@ unfolds the callee's predicates; it imports only the callee's interface and uses
   `render_interfaces.py`; point its callers' function profiles (`spec_module`, `spec_source`,
   `contract_requires`) at the interface; re-render the callers.
 
+## Step budgets
+
+A function is charged when its selected code is `instr_lookup_resources_charged` and its contract entry owns `step_budget`. A budget of loop-free code is the count of instructions on its longest path plus its callees' budgets, emitted by `tools/block/budgets.py`; this count is not inference. A loop cut owns a potential given by a `potential` annotation row. Uncharged and charged theorems of one function may coexist; a composition uses one kind for all its callees.
+
 ## Constants
 
 Use parsing-only `Notation` for closed numeric literals and literal-only arithmetic or bitvector constants.
