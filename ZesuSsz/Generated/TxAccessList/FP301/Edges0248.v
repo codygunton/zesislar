@@ -42,9 +42,9 @@ Global Instance zesu_hist_edge_40 (args : TxAccessListArgs) (returnAddress : Z) 
     (⌜(∃ (call5_arg_x13 : bv 64) (call5_arg_x14 : bv 64) (call5_arg_x15 : bv 64) (call5_arg_x16 : bv 64) (call5_arg_x17 : bv 64) (call5_arg_tx_scratch_keys : list byte) (call5_context : Z) (call5_resultBefore : list byte), (keysToOwnedSliceCallDomain ([((bv_add (bv_add (bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)) (BV 64%N 576%Z)) (BV 64%N 18446744073709551432%Z))); ((bv_add (bv_add (bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)) (BV 64%N 576%Z)) (BV 64%N 18446744073709551336%Z))); ((txAllocatorPointer args)); (call5_arg_x13); (call5_arg_x14); (call5_arg_x15); (call5_arg_x16); (call5_arg_x17)]) call5_context (tx_keys_done) call5_resultBefore (call5_arg_tx_scratch_keys)) /\ (keysToOwnedSliceCallAllows (tx_keys_done) call5_resultBefore (call5_outcome)))⌝ ∗ ⌜((negb (bool_decide ((bv_and (bv_zero_extend 64%N (List.nth 16%nat call4_after (BV 8%N 0%Z))) (BV 64%N 1%Z)) = (BV 64%N 0%Z)))) = true) /\ ((((bv_unsigned (bv_and (bv_zero_extend 64%N (List.nth 16%nat call4_after (BV 8%N 0%Z))) (BV 64%N 1%Z))) <> (0%Z))%Z)) /\ ((((0%Z) <= (bv_unsigned (List.nth 16%nat call4_after (BV 8%N 0%Z))))%Z)) /\ ((((bv_unsigned (List.nth 16%nat call4_after (BV 8%N 0%Z))) <= (255%Z))%Z))⌝ ∗ True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0248_ForwardA0N0_Hist in Hh.
-  destruct Hh as (tx_scratch & tx_keys_list & fp_seed_mstatus_bits & forward_witness_d7543602bfbbe148 & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_88383840afa7af74 & forward_witness_d0511cb7161d8dd4 & forward_witness_0c9a8614ab622b44 & forward_witness_1be931110d776902 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53 & HF54 & HF55 & HF56 & HF57 & HF58 & HF59).
+  destruct Hh as (tx_scratch & tx_keys_list & fp_seed_mstatus_bits & forward_witness_d7543602bfbbe148 & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_88383840afa7af74 & forward_witness_d0511cb7161d8dd4 & forward_witness_0c9a8614ab622b44 & forward_witness_1be931110d776902 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53 & HF54 & HF55 & HF56 & HF57 & HF58).
   iIntros "HN".
-  iDestruct "HN" as "(%HN0 & %HV9 & _)".
+  iDestruct "HN" as "(%HN0 & %HV10 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt025c_ForwardA0N0_Hist.
   exists tx_scratch, tx_keys_list, fp_seed_mstatus_bits, forward_witness_d7543602bfbbe148, forward_witness_83d3e6d46c3de70e, forward_witness_1d218312837c2f84, forward_witness_dc636cab9ffb40ae, forward_witness_184f6fc7524c683f, forward_witness_88383840afa7af74, forward_witness_d0511cb7161d8dd4, forward_witness_0c9a8614ab622b44, forward_witness_1be931110d776902, (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z).
   split; [exact HF0|].
@@ -63,8 +63,8 @@ Proof.
   split; [exact HF13|].
   split; [exact HF14|].
   split; [exact HF15|].
-  split; [exact HF16|].
   split; [exact HN0|].
+  split; [exact HF17|].
   split; [exact HF18|].
   split; [exact HF19|].
   split; [exact HF20|].
@@ -101,17 +101,16 @@ Proof.
   split; [exact HF51|].
   split; [exact HF52|].
   split; [exact HF53|].
-  split; [exact HF54|].
-  split; [exact HV9|].
+  split; [exact HV10|].
+  split; [exact HF55|].
   split; [exact HF56|].
   split; [exact HF57|].
   split; [exact HF58|].
-  split; [exact HF59|].
   split; [by vm_compute|].
   split; [by vm_compute|].
   split; [by vm_compute|].
   split; [by vm_compute|].
-  exact HF17.
+  exact HF16.
 Qed.
 
 End edges.

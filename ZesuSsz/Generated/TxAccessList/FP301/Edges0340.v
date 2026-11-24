@@ -42,9 +42,9 @@ Global Instance zesu_hist_edge_51 (args : TxAccessListArgs) (returnAddress : Z) 
     (⌜((bool_decide (call6_x10 = (BV 64%N 0%Z))) = true) /\ ((((bv_unsigned call6_x10) = (0%Z))%Z))⌝ ∗ ⌜((zesu_named_eq call3_kept_x26 (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 31%nat call2_after (BV 8%N 0%Z)) (List.nth 30%nat call2_after (BV 8%N 0%Z))) (List.nth 29%nat call2_after (BV 8%N 0%Z))) (List.nth 28%nat call2_after (BV 8%N 0%Z))) (List.nth 27%nat call2_after (BV 8%N 0%Z))) (List.nth 26%nat call2_after (BV 8%N 0%Z))) (List.nth 25%nat call2_after (BV 8%N 0%Z))) (List.nth 24%nat call2_after (BV 8%N 0%Z)))))⌝ ∗ True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0340_ForwardA0N0_Hist in Hh.
-  destruct Hh as (machine_x22 & tx_scratch & tx_keys_list & fp_seed_mstatus_bits & forward_witness_d7543602bfbbe148 & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_88383840afa7af74 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_791c5acc1109e8e6 & forward_witness_f1505c797ad3010d & forward_witness_00470b017f14ddbf & forward_witness_8da77898f656116a & forward_witness_eba071f2aafca867 & forward_witness_6b5c9f21ea2547d9 & forward_witness_1b5321dec05d0d89 & forward_witness_c2f9141038c5af1e & forward_witness_8b04c47a270882cf & forward_witness_c8c2e1211be9136f & forward_witness_315a0c85d2539504 & forward_witness_cf42531383d268a3 & forward_witness_fc5fc84d794ba563 & forward_witness_4bac80a6210294ab & forward_witness_7fe6cd60b2c0221c & forward_witness_96eae826ab9c5698 & forward_witness_d40ac5b086e9153f & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53 & HF54 & HF55 & HF56 & HF57 & HF58 & HF59 & HF60 & HF61 & HF62 & HF63 & HF64 & HF65 & HF66 & HF67 & HF68 & HF69 & HF70 & HF71 & HF72 & HF73 & HF74 & HF75 & HF76 & HF77 & HF78 & HF79 & HF80 & HF81 & HF82).
+  destruct Hh as (machine_x22 & tx_scratch & tx_keys_list & fp_seed_mstatus_bits & forward_witness_d7543602bfbbe148 & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_88383840afa7af74 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_791c5acc1109e8e6 & forward_witness_f1505c797ad3010d & forward_witness_00470b017f14ddbf & forward_witness_8da77898f656116a & forward_witness_eba071f2aafca867 & forward_witness_6b5c9f21ea2547d9 & forward_witness_1b5321dec05d0d89 & forward_witness_c2f9141038c5af1e & forward_witness_8b04c47a270882cf & forward_witness_c8c2e1211be9136f & forward_witness_315a0c85d2539504 & forward_witness_cf42531383d268a3 & forward_witness_fc5fc84d794ba563 & forward_witness_4bac80a6210294ab & forward_witness_7fe6cd60b2c0221c & forward_witness_96eae826ab9c5698 & forward_witness_d40ac5b086e9153f & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53 & HF54 & HF55 & HF56 & HF57 & HF58 & HF59 & HF60 & HF61 & HF62 & HF63 & HF64 & HF65 & HF66 & HF67 & HF68 & HF69 & HF70 & HF71 & HF72 & HF73 & HF74 & HF75 & HF76 & HF77 & HF78 & HF79 & HF80 & HF81).
   iIntros "HN".
-  iDestruct "HN" as "(%HN0 & %HV6 & _)".
+  iDestruct "HN" as "(%HN0 & %HV7 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt0364_ForwardA0N0_Hist.
   exists machine_x22, tx_scratch, tx_keys_list, fp_seed_mstatus_bits, forward_witness_d7543602bfbbe148, forward_witness_83d3e6d46c3de70e, forward_witness_1d218312837c2f84, forward_witness_dc636cab9ffb40ae, forward_witness_184f6fc7524c683f, forward_witness_88383840afa7af74, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_11fde2df72db9d06, forward_witness_791c5acc1109e8e6, forward_witness_f1505c797ad3010d, forward_witness_00470b017f14ddbf, forward_witness_8da77898f656116a, forward_witness_eba071f2aafca867, forward_witness_6b5c9f21ea2547d9, forward_witness_1b5321dec05d0d89, forward_witness_c2f9141038c5af1e, forward_witness_8b04c47a270882cf, forward_witness_c8c2e1211be9136f, forward_witness_315a0c85d2539504, forward_witness_cf42531383d268a3, forward_witness_fc5fc84d794ba563, forward_witness_4bac80a6210294ab, forward_witness_7fe6cd60b2c0221c, forward_witness_96eae826ab9c5698, forward_witness_d40ac5b086e9153f, (BV 64%N 0%Z).
   split; [exact HF0|].
@@ -56,8 +56,8 @@ Proof.
   split; [exact HF6|].
   split; [exact HF7|].
   split; [exact HF8|].
+  split; [exact HV7|].
   split; [exact HF9|].
-  split; [exact HV6|].
   split; [exact HF10|].
   split; [exact HF11|].
   split; [exact HF12|].
@@ -130,7 +130,6 @@ Proof.
   split; [exact HF79|].
   split; [exact HF80|].
   split; [exact HF81|].
-  split; [exact HF82|].
   split; [by vm_compute|].
   exact HN0.
 Qed.
