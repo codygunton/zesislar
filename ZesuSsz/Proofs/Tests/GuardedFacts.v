@@ -7,7 +7,6 @@ Require Import ZesuSsz.Contracts.ParentHeaderDomainRanges.
 Require Import ZesuSsz.Contracts.ParentHeaderCallSlice.
 Import ListNotations.
 Require Import ZesuSsz.Automation2.All.
-Import ZesuSsz.Automation2.FactViews.
 Local Open Scope Z_scope.
 
 (* A guarded pure fact whose guard is a hypothesis is specialised before
@@ -17,16 +16,16 @@ Local Open Scope Z_scope.
    the success test. Without the guard among the hypotheses the step refuses. *)
 
 Goal forall P Q R : Prop, P -> (P -> Q /\ R) -> R.
-Proof. intros P Q R HP HPQR. zesu_specialise_guarded_facts. assumption. Qed.
+Proof. intros P Q R HP HPQR. ZesuSsz.Automation2.FactViews.zesu_specialise_guarded_facts. assumption. Qed.
 
 (* A chain of guards, each a hypothesis. *)
 Goal forall P1 P2 Q : Prop, P1 -> P2 -> (P1 -> P2 -> Q) -> Q.
-Proof. intros P1 P2 Q H1 H2 H. zesu_specialise_guarded_facts. assumption. Qed.
+Proof. intros P1 P2 Q H1 H2 H. ZesuSsz.Automation2.FactViews.zesu_specialise_guarded_facts. assumption. Qed.
 
 (* A guard that is not a hypothesis: nothing is posed. *)
 Goal forall P Q : Prop, (P -> Q) -> True.
 Proof.
-  intros P Q H. zesu_specialise_guarded_facts.
+  intros P Q H. ZesuSsz.Automation2.FactViews.zesu_specialise_guarded_facts.
   Fail (match goal with _ : Q |- _ => idtac end).
   exact I.
 Qed.
