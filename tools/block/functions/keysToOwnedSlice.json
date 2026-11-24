@@ -1,0 +1,420 @@
+{
+  "function": "keysToOwnedSlice",
+  "entry_hist": "wrap",
+  "frame_slots": true,
+  "array_spelling": "sealed",
+  "hist_visible": [
+    "^\\(?frame_old_m\\d+'* = ",
+    "^\\W*bv_unsigned call_x10 = 0\\W*$",
+    "^\\W*bv_unsigned call_x10\\W+<>\\W+0(%Z)?\\W*(%Z)?\\W*$",
+    "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$"
+  ],
+  "args_type": "KeysToOwnedSliceBlockArgs",
+  "symbol": "array_list.Aligned([32]u8,null).toOwnedSlice",
+  "generated_directory": "ZesuSsz/Generated/KeysToOwnedSlice/FP301",
+  "callers_directory": "tools/block/generated/keystoownedslice_fp301_callers",
+  "contract_requires": [
+    "Require Import InstrSpecs.Machine.",
+    "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Generated.Stock.Symbols.",
+    "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
+    "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
+    "Require Import ZesuSsz.Contracts.AbiBytes.",
+    "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
+    "Require Import ZesuSsz.Contracts.ArrayListContract.",
+    "Require Import ZesuSsz.Contracts.KeysToOwnedSliceBlockEntries.",
+    "Require Export ZesuSsz.Compliance.KeysToOwnedSliceHints."
+  ],
+  "loop_contract_requires": [
+    "Require Import InstrSpecs.Machine.",
+    "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Generated.Stock.Symbols.",
+    "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
+    "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
+    "Require Import ZesuSsz.Contracts.AbiBytes.",
+    "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
+    "Require Import ZesuSsz.Contracts.ArrayListContract.",
+    "Require Import ZesuSsz.Contracts.KeysToOwnedSliceBlockEntries.",
+    "Require Export ZesuSsz.Compliance.KeysToOwnedSliceHints."
+  ],
+  "caller_contract_requires": [
+    "Require Import ZesuSsz.Contracts.KeysToOwnedSliceBlockEntries."
+  ],
+  "selected_code": {
+    "module": "ZesuSsz.Contracts.KeysToOwnedSliceSelected",
+    "premise": "keysToOwnedSliceSelectedCode"
+  },
+  "return_address": {
+    "register": "x1",
+    "value": "(toOwnedReturnAddress (keysBase args))",
+    "alignment": 4,
+    "source": "keysBlockArgsWellFormed (KeysToOwnedSliceBlockEntries.v): bv_unsigned (toOwnedReturnAddress (keysBase args)) mod 4 = 0 (from toOwnedSliceDomain: (4 | bv_unsigned (toOwnedReturnAddress args)))"
+  },
+  "entry_interface": {
+    "entry_resources": "keysBlockEntryResources",
+    "well_formed": "keysBlockArgsWellFormed",
+    "exit_resources": "keysBlockExitResources",
+    "source": "ZesuSsz/Contracts/KeysToOwnedSliceBlockEntries.v",
+    "exact_system_registers": {
+      "zisk_input_end": "bv_unsigned (toOwnedInputEnd (keysBase args))"
+    }
+  },
+  "trace_namespace": "ZesuSsz.Stock.Closure",
+  "blocks": [
+    "+0x0",
+    "+0x58",
+    "+0x5c",
+    "+0x6c",
+    "+0x78",
+    "+0x7c",
+    "+0x98",
+    "+0xa0",
+    "+0xa4",
+    "+0xc8",
+    "+0xcc",
+    "+0xd8",
+    "+0xf0",
+    "+0xf8",
+    "+0xfc",
+    "+0x110",
+    "+0x118",
+    "+0x148",
+    "+0x150",
+    "+0x168",
+    "+0x170",
+    "+0x184",
+    "+0x18c",
+    "+0x1ac",
+    "+0x1c0",
+    "+0x1d8",
+    "+0x1e0"
+  ],
+  "loop_heads": [],
+  "duplicated_joins": [
+    "+0xf0",
+    "+0x118"
+  ],
+  "cfg_function": "array_list.Aligned([32]u8,null).toOwnedSlice",
+  "compliance": {
+    "boundary": "ZesuSsz.Compliance.KeysToOwnedSliceCompositionBoundary",
+    "continuation": "keysToOwnedSliceContinuation",
+    "inline_returns": false,
+    "source": "Exit design A (KeysToOwnedSliceGeneratedComposition.v): every table entry carries the contract continuation at returnAddress as K; the callers of the return slots take the generated return package at returnAddress; the composition proves each package's return premise from K through that package's end bridge."
+  },
+  "domain_component": "\u231ckeysBlockDomainAt returnAddress args\u231d",
+  "opaque_predicates": {
+    "altFlHeap": {
+      "name": "altFlHeap",
+      "owner": "ZesuSsz.Contracts.AltFlAllocPremises"
+    },
+    "altFlBlock": {
+      "name": "altFlBlock",
+      "owner": "ZesuSsz.Contracts.AltFlAllocPremises"
+    }
+  },
+  "join_designs": {
+    "+0x110": [],
+    "+0x98": []
+  },
+  "calls": [
+    {
+      "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
+      "callee_pc": "alt_fl_alloc.free+0x0",
+      "return_site_pc": "+0x98",
+      "spec": "altFlFreeCallSpec",
+      "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+      "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+      "stack_bytes": 16,
+      "arrays": [],
+      "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array",
+      "opaque": [
+        {
+          "spec": "altFlHeap",
+          "use": "framed"
+        },
+        {
+          "spec": "bv_unsigned (argv !!! 1%nat) \u21a6\u2098? bv_unsigned (argv !!! 2%nat)",
+          "use": "consumed",
+          "caller": [
+            "arrayListPointer (keysBlockList args) \u21a6\u2098\u2217 arrayListItems (keysBlockList args)",
+            "(arrayListPointer (keysBlockList args) + arrayListLength (keysBlockList args) * keysElementBytes) \u21a6\u2098? ((arrayListCapacity (keysBlockList args) - arrayListLength (keysBlockList args)) * keysElementBytes)"
+          ]
+        },
+        {
+          "spec": "altFlBlock (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat)) (bv_unsigned (argv !!! 3%nat))",
+          "use": "consumed",
+          "caller": [
+            "altFlBlock (arrayListPointer (keysBlockList args)) (arrayListCapacity (keysBlockList args) * keysElementBytes) keysLog2Alignment"
+          ]
+        }
+      ],
+      "call_site_pc": "+0x94"
+    },
+    {
+      "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
+      "callee_pc": "alt_fl_alloc.remap+0x0",
+      "return_site_pc": "+0xc8",
+      "spec": "altFlRemapCallSpec",
+      "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+      "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+      "stack_bytes": 16,
+      "arrays": [],
+      "output_length_source": "altFlRemapCallSpec (AltFlAllocPremises.v): returns 0 in x10 and no array",
+      "returns": [
+        {
+          "index": 0,
+          "register": "x10"
+        }
+      ],
+      "call_site_pc": "+0xc4"
+    },
+    {
+      "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
+      "callee_pc": "alt_fl_alloc.alloc+0x0",
+      "return_site_pc": "+0x168",
+      "spec": "altFlAllocCallSpec",
+      "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+      "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+      "stack_bytes": 16,
+      "arrays": [],
+      "output_length_source": "altFlAllocCallSpec (AltFlAllocPremises.v): the returned block owns altFlAllocatedBytes x10 (argument 1) bytes, uninitialized",
+      "returns": [
+        {
+          "index": 0,
+          "register": "x10"
+        }
+      ],
+      "opaque": [
+        {
+          "spec": "altFlHeap",
+          "use": "framed"
+        },
+        {
+          "spec": "bv_unsigned (rets !!! 0%nat) \u21a6\u2098? altFlAllocatedBytes (bv_unsigned (rets !!! 0%nat)) (bv_unsigned (argv !!! 1%nat))",
+          "use": "produced"
+        },
+        {
+          "spec": "altFlBlock (bv_unsigned (rets !!! 0%nat)) (altFlAllocatedBytes (bv_unsigned (rets !!! 0%nat)) (bv_unsigned (argv !!! 1%nat))) (bv_unsigned (argv !!! 2%nat))",
+          "use": "produced"
+        }
+      ],
+      "call_site_pc": "+0x164"
+    },
+    {
+      "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
+      "callee_pc": "memcpy+0x0",
+      "return_site_pc": "+0x184",
+      "spec": "ziskMemcpyCallSpec",
+      "spec_module": "ZesuSsz.Contracts.ZiskMemcpyPremise",
+      "spec_source": "ZesuSsz/Contracts/ZiskMemcpyPremise.v",
+      "stack_bytes": 0,
+      "arrays": [
+        {
+          "binder": "source",
+          "argument": 1,
+          "caller_value": "arrayListItems (keysBlockList args)"
+        },
+        {
+          "binder": "scratch",
+          "constant": "ziskExtraParamsAddress",
+          "caller_value": "toOwnedScratchBefore (keysBase args)",
+          "length": 8,
+          "length_source": "keysBlockArgsWellFormed (KeysToOwnedSliceBlockEntries.v): length (toOwnedScratchBefore (keysBase args)) = 8%nat"
+        }
+      ],
+      "output_length_source": "ziskMemcpyCallSpec (ZiskMemcpyPremise.v): the destination receives source, Z.of_nat (length source) = argument 2; the extra-params word receives word64Bytes (argument 2), 8 bytes",
+      "returned_lengths": {
+        "0": "altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z))))"
+      },
+      "call_site_pc": "+0x180"
+    },
+    {
+      "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
+      "callee_pc": "alt_fl_alloc.free+0x0",
+      "return_site_pc": "+0x1ac",
+      "spec": "altFlFreeCallSpec",
+      "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+      "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+      "stack_bytes": 16,
+      "arrays": [],
+      "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array",
+      "opaque": [
+        {
+          "spec": "altFlHeap",
+          "use": "framed"
+        },
+        {
+          "spec": "bv_unsigned (argv !!! 1%nat) \u21a6\u2098? bv_unsigned (argv !!! 2%nat)",
+          "use": "consumed",
+          "caller": [
+            "arrayListPointer (keysBlockList args) \u21a6\u2098\u2217 arrayListItems (keysBlockList args)",
+            "(arrayListPointer (keysBlockList args) + arrayListLength (keysBlockList args) * keysElementBytes) \u21a6\u2098? ((arrayListCapacity (keysBlockList args) - arrayListLength (keysBlockList args)) * keysElementBytes)"
+          ]
+        },
+        {
+          "spec": "altFlBlock (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat)) (bv_unsigned (argv !!! 3%nat))",
+          "use": "consumed",
+          "caller": [
+            "altFlBlock (arrayListPointer (keysBlockList args)) (arrayListCapacity (keysBlockList args) * keysElementBytes) keysLog2Alignment"
+          ]
+        }
+      ],
+      "call_site_pc": "+0x1a8"
+    },
+    {
+      "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
+      "callee_pc": "memcpy+0x0",
+      "return_site_pc": "+0x1d8",
+      "spec": "ziskMemcpyCallSpec",
+      "spec_module": "ZesuSsz.Contracts.ZiskMemcpyPremise",
+      "spec_source": "ZesuSsz/Contracts/ZiskMemcpyPremise.v",
+      "stack_bytes": 0,
+      "arrays": [
+        {
+          "binder": "source",
+          "argument": 1,
+          "caller_value": "arrayListItems (keysBlockList args)"
+        },
+        {
+          "binder": "scratch",
+          "constant": "ziskExtraParamsAddress",
+          "caller_value": "toOwnedScratchBefore (keysBase args)",
+          "length": 8,
+          "length_source": "keysBlockArgsWellFormed (KeysToOwnedSliceBlockEntries.v): length (toOwnedScratchBefore (keysBase args)) = 8%nat"
+        }
+      ],
+      "output_length_source": "ziskMemcpyCallSpec (ZiskMemcpyPremise.v): the destination receives source, Z.of_nat (length source) = argument 2; the extra-params word receives word64Bytes (argument 2), 8 bytes",
+      "call_site_pc": "+0x1d4"
+    }
+  ],
+  "function_returns": [
+    {
+      "return_instruction_pc": "+0x144",
+      "return_fact": true
+    }
+  ],
+  "unreachable_entries": [
+    "+0xa0",
+    "+0xcc",
+    "+0x1c0",
+    "+0x1d8",
+    "+0x1e0",
+    "+0x1ac"
+  ],
+  "unreachable_reached": [
+    "+0x1c0",
+    "+0x1ac"
+  ],
+  "join_drops": {
+    "+0x110": [
+      {
+        "root": "+0x168",
+        "resources": [
+          "bv_unsigned call_x10 \u21a6\u2098? altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z))))"
+        ]
+      }
+    ],
+    "+0x98": [
+      {
+        "root": "+0x0",
+        "resources": [
+          "arrayListPointer (keysBlockList args) \u21a6\u2098\u2217 arrayListItems (keysBlockList args)",
+          "(arrayListPointer (keysBlockList args) + arrayListLength (keysBlockList args) * keysElementBytes) \u21a6\u2098? ((arrayListCapacity (keysBlockList args) - arrayListLength (keysBlockList args)) * keysElementBytes)",
+          "altFlBlock (arrayListPointer (keysBlockList args)) (arrayListCapacity (keysBlockList args) * keysElementBytes) keysLog2Alignment"
+        ]
+      }
+    ]
+  },
+  "join_frames": {
+    "+0xfc": [
+      {
+        "offset": -80,
+        "coq": "savedX24 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -72,
+        "coq": "savedX23 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -64,
+        "coq": "savedX22 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -56,
+        "coq": "savedX21 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -48,
+        "coq": "savedX20 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -40,
+        "coq": "savedX19 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -32,
+        "coq": "savedX18 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -24,
+        "coq": "savedX9 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -16,
+        "coq": "savedX8 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -8,
+        "coq": "toOwnedReturnAddress (keysBase args)"
+      }
+    ],
+    "+0x110": [
+      {
+        "offset": -80,
+        "coq": "savedX24 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -72,
+        "coq": "savedX23 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -64,
+        "coq": "savedX22 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -56,
+        "coq": "savedX21 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -48,
+        "coq": "savedX20 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -40,
+        "coq": "savedX19 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -32,
+        "coq": "savedX18 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -24,
+        "coq": "savedX9 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -16,
+        "coq": "savedX8 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -8,
+        "coq": "toOwnedReturnAddress (keysBase args)"
+      }
+    ]
+  },
+  "generated_from": {
+    "path": "tools/block/functions/keysToOwnedSlice.annotations.json",
+    "sha256": "eeed38240c03f4c9befd63fd63c4969eaf7ef102533d4959699b3bfcb4529aad"
+  }
+}
