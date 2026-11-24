@@ -4,7 +4,11 @@ Require Import stdpp.bitvector.definitions.
 From iris.proofmode Require Import environments.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Contracts.AltFlAllocPremises.
+Require ZesuSsz.Automation2.ResidualExport.
+From Ltac2 Require Import Ltac2.
+From Coq Require Import Lia.
 Require Import ZesuSsz.Automation2.All.
+Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 
 Section fact_views.
@@ -76,6 +80,80 @@ Section fact_views.
       altFlBlock pointer bytes log2Align.
   Proof.
     iStartProof. ZesuSsz.Automation2.Finish.zesu_run.
+  Qed.
+
+  (* A token whose size is a long expression, as an allocation size computed
+     by a growth formula is. Its fact states the size three times and lies
+     above the solvers' node limit, so neither a solver's context selection
+     nor a residual statement sees it; each piece states the size at most
+     twice and lies below the limit. *)
+  Local Notation big4 y := (y + y + y + y) (only parsing).
+  Local Notation bigSize y := (big4 (big4 (big4 (big4 y)))) (only parsing).
+
+  Definition alignedToken (pointer bytes : Z) : iProp Sigma :=
+    ((pointer + bytes) ↦ₘ? 8 ∗
+     ⌜bytes <> 0 -> 4096 <= pointer /\ pointer + bytes <= 8192 /\ (bytes | pointer)⌝)%I.
+  Lemma alignedToken_unfold (pointer bytes : Z) :
+    alignedToken pointer bytes ⊣⊢
+    ((pointer + bytes) ↦ₘ? 8 ∗
+     ⌜bytes <> 0 -> 4096 <= pointer /\ pointer + bytes <= 8192 /\ (bytes | pointer)⌝)%I.
+  Proof. reflexivity. Qed.
+  Global Opaque alignedToken.
+
+  #[local] Instance alignedTokenFactView (pointer bytes : Z) :
+    ZesuFactView (alignedToken pointer bytes)
+      (bytes <> 0 -> 4096 <= pointer /\ pointer + bytes <= 8192 /\ (bytes | pointer)).
+  Proof.
+    rewrite /ZesuFactView alignedToken_unfold.
+    iIntros "[Hslack %Hfacts]". iFrame "Hslack". iSplit; iPureIntro; exact Hfacts.
+  Qed.
+
+  (* The loss: the entry scan poses the fact, which lies above the node
+     limit, so the exported statement does not carry it. With its pieces
+     posed (as the exporter does, on a context it restores), the statement
+     carries all three. *)
+  Lemma fact_view_large_fact_export (pointer y : Z) :
+    alignedToken pointer (bigSize y) -∗ ⌜bigSize y <> 0 -> pointer + bigSize y < 8193⌝.
+  Proof.
+    iStartProof. iIntros "Htoken". FactViews.zesu_pose_fact_views.
+    iPureIntro. intros Hnz.
+    ltac2:(
+      let (facts, _, _) := ResidualExport.zesu_export_reach 2048 in
+      let (statement, _) := ResidualExport.zesu_export_statement facts in
+      if Constr.equal statement constr:(forall (pointer y : Z) (Hnz : bigSize y <> 0),
+          pointer + bigSize y < 8193)
+      then () else Control.throw (Tactic_failure None)).
+    ltac2:(ResidualExport.zesu_export_goal "final").
+    lazymatch goal with _ : bigSize y <> 0 -> 4096 <= pointer |- _ => fail | _ => idtac end.
+    ltac2:(
+      let _ := ZesuSsz.Automation2.ContextCollection.zesu_large_fact_pieces () in
+      let (facts, _, _) := ResidualExport.zesu_export_reach 2048 in
+      let (statement, _) := ResidualExport.zesu_export_statement facts in
+      if Constr.equal statement constr:(forall (pointer y : Z) (Hnz : bigSize y <> 0)
+          (H1 : bigSize y <> 0 -> 4096 <= pointer)
+          (H2 : bigSize y <> 0 -> pointer + bigSize y <= 8192)
+          (H3 : bigSize y <> 0 -> (bigSize y | pointer)), pointer + bigSize y < 8193)
+      then () else Control.throw (Tactic_failure None)).
+    lia.
+  Qed.
+
+  (* A residual lemma stated over a piece, registered in the relocatable
+     (exact) form, closes the goal: the context holds only the whole fact, and
+     the lemma's premise closes as a piece of it. *)
+  Lemma residual_piece_lemma (pointer y : Z)
+      (Hnz : bigSize y <> 0) (Hpiece : bigSize y <> 0 -> pointer + bigSize y <= 8192) :
+    pointer + bigSize y < 8193.
+  Proof. lia. Qed.
+  #[local] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas.zesu_residual_exact
+    constr:(residual_piece_lemma) : zesu_residual_exact.
+
+  Lemma fact_view_large_fact_residual (pointer y : Z) :
+    alignedToken pointer (bigSize y) -∗ ⌜bigSize y <> 0 -> pointer + bigSize y < 8193⌝.
+  Proof.
+    iStartProof. iIntros "Htoken". FactViews.zesu_pose_fact_views.
+    iPureIntro. intros Hnz.
+    lazymatch goal with _ : bigSize y <> 0 -> pointer + bigSize y <= 8192 |- _ => fail | _ => idtac end.
+    ResidualLemmas.zesu_residual_lemma.
   Qed.
 End fact_views.
 

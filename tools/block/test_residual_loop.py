@@ -2,6 +2,7 @@
 from contextlib import redirect_stdout
 from pathlib import Path
 import io
+import json
 import re
 import sys
 import tempfile
@@ -470,6 +471,104 @@ class RelocatableLoopTests(unittest.TestCase):
             self.assertIn("Require Import ResidualLoop.txAccessList.Block00c4.", rerun)
             self.assertNotIn(NEW_IMPORT, rerun)
             self.assertTrue(loop.read_json(run / "MANIFEST.json")["reruns"][0]["closed"])
+
+
+class InstalledCallerTests(unittest.TestCase):
+    """register of a function form re-renders the installed callers of the block (all its slots) through
+    the caller renderer's residual import and records their hashes in CALLERS.json, so the certificate of
+    the rerun caller matches the record store.py sync compares it with."""
+    FUNCTION, OFFSET = "keysToOwnedSlice", "000c"
+
+    def caller(self, pc, slot=""):
+        return ("Require Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation2.All.\n"
+                "Local Open Scope Z_scope.\n\nLemma DesignedBoundary_%s%s (x : Z) : True.\n"
+                "Proof.\n  zesu_block2.\nQed.\n" % (pc, slot))
+
+    def test_register_rerenders_installed_callers_and_their_hashes(self):
+        from function_profiles import load_profile
+        from render_fp301_statements import residual_import
+        import store
+        profile = load_profile(self.FUNCTION)
+        pc, other = profile.pc(self.OFFSET)[2:], profile.pc("0010")[2:]
+        with tempfile.TemporaryDirectory() as root:
+            root = Path(root)
+            rendered_dir, installed = root / "round-3" / "callers", root / "generated"
+            rendered_dir.mkdir(parents=True)
+            installed.mkdir()
+            texts = {"Caller000c_slot0.v": self.caller(pc, "_slot0"), "Caller000c_slot1.v": self.caller(pc, "_slot1"),
+                     "Caller0010.v": self.caller(other)}
+            rows = []
+            for name, text in texts.items():
+                for directory in (rendered_dir, installed):
+                    (directory / name).write_text(text)
+                rows.append(dict(case=name[6:-2], status="rendered",
+                                 caller=dict(path=str(rendered_dir / name), sha256=loop.sha(text))))
+            (installed / "CALLERS.json").write_text(json.dumps(dict(function=self.FUNCTION, rows=rows), indent=2))
+            run = root / "run"
+            statement = STATEMENT
+            name = "residual_%s_%s_%s" % (self.FUNCTION, self.OFFSET, loop.sha(statement)[:16])
+            d = run / "goals" / (self.OFFSET + "-1")
+            d.mkdir(parents=True)
+            goal = loop.goal_text(["Require Import ZesuSsz.Automation2.All.", "Local Open Scope Z_scope."],
+                                  name, statement)
+            (d / "goal.v").write_text(goal)
+            (d / "proof.v").write_text(loop.goal_head(goal) + ANSWER)
+            loop.write_json(d / "STATUS.json", dict(result="PASS", attempts=[]))
+            bench_copy = root / "bench" / "Caller000c_slot0.v"
+            bench_copy.parent.mkdir()
+            bench_copy.write_text(texts["Caller000c_slot0.v"])
+            loop.write_json(run / "MANIFEST.json", dict(
+                block=self.OFFSET, function=self.FUNCTION, caller=str(bench_copy), rounds=1, reruns=[], goals=[
+                    dict(id=self.OFFSET + "-1", name=name, statement=statement, source="final",
+                         binders=["x", "Hx"], reparse="exact")]))
+            residuals = root / "Residuals"
+            saved = loop.GENERATED
+            loop.GENERATED = root
+            try:
+                with redirect_stdout(io.StringIO()):
+                    loop.main(["register", "--run", str(run), "--residuals", str(residuals),
+                               "--caller", str(installed / "Caller000c_slot0.v")])
+                    # Registering again changes nothing.
+                    loop.main(["register", "--run", str(run), "--residuals", str(residuals)])
+            finally:
+                loop.GENERATED = saved
+            self.assertTrue((residuals / self.FUNCTION / "Block000c.v").is_file())
+            table = json.loads((installed / "CALLERS.json").read_text())
+            line = "Require Import ZesuSsz.Residuals.keysToOwnedSlice.Block000c."
+            for row in table["rows"]:
+                text = (installed / Path(row["caller"]["path"]).name).read_text()
+                self.assertEqual(row["caller"]["sha256"], loop.sha(text))
+                self.assertEqual(Path(row["caller"]["path"]).read_text(), text)
+                original = texts[Path(row["caller"]["path"]).name]
+                if row["case"] == "0010":
+                    self.assertEqual(text, original)
+                    continue
+                # Byte for byte what a re-render writes now that the module exists.
+                self.assertEqual(text, residual_import(original, residuals, profile, False))
+                self.assertEqual(text.split("\n").count(line), 1)
+            # The bench copy is no renderer output: rerun imports the module itself.
+            self.assertEqual(bench_copy.read_text(), texts["Caller000c_slot0.v"])
+            # A certificate of the rerun caller is the closed evidence of the block.
+            row = table["rows"][0]
+            certificate = run / "closures" / row["case"] / "CLOSURE.json"
+            certificate.parent.mkdir(parents=True)
+            certificate.write_text(json.dumps(dict(verdict="CLOSED", caller_sha256=row["caller"]["sha256"])))
+            self.assertEqual(store.block_evidence(row["case"], row, run, None, [])[0], "closed")
+
+    def test_register_refuses_a_caller_that_differs_from_its_record(self):
+        from function_profiles import load_profile
+        pc = load_profile(self.FUNCTION).pc(self.OFFSET)[2:]
+        with tempfile.TemporaryDirectory() as root:
+            root = Path(root)
+            caller = root / "Caller000c.v"
+            caller.write_text(self.caller(pc) + "(* edited *)\n")
+            (root / "CALLERS.json").write_text(json.dumps(dict(function=self.FUNCTION, rows=[dict(
+                case="000c", status="rendered", caller=dict(path=str(caller), sha256=loop.sha(self.caller(pc))))])))
+            residuals = root / "Residuals"
+            (residuals / self.FUNCTION).mkdir(parents=True)
+            (residuals / self.FUNCTION / "Block000c.v").write_text("")
+            with self.assertRaises(loop.LoopError):
+                loop.rerender_callers(dict(function=self.FUNCTION), self.FUNCTION + ".Block000c", caller, residuals)
 
 
 class OldFormGoldenTests(unittest.TestCase):
