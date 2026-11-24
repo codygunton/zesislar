@@ -235,3 +235,22 @@ explicit within the existing Level 1 resource interface. They are not public out
 The rung-2 compliance propositions are statements only; no machine proof or termination
 proof discharges them. A later proof must establish the memcpy return alignment and
 instantiate its runtime permissions.
+
+## Step-budget premises (plan Stage T)
+
+`ZesuSsz/Contracts/AltFlAllocBudgetPremises.v` restates the four runtime premises of the
+allocator (`alloc`, `remap`, `free`) and the general ZisK memcpy with a step budget in the
+precondition: `□ instr_pre <entry> (step_budget K ∗ <call spec>)`, the call specification
+unchanged. K is the number of instructions on the callee's longest path from its entry to
+its return in `build/stock-zisk/cfg.json` (`tools/block/budgets.py --function <callee>`:
+53, 9, 42 and 3; none of the four has a loop or a call). One unit is one fetch of a
+charged instruction; the fetch at the caller's return address is the caller's.
+
+The same file proves each budgeted premise from the existing one by dropping the budget
+(`*_from_existing_premise_uncounted`). Derived that way the callee's code is uncharged and
+its instructions are not counted: the bound of a charged caller is then relative, a bound
+on the caller's own instructions. The bound counts the allocator's and memcpy's
+instructions only in a run whose charged set holds their code and where the budgeted
+premises are assumed. That assumption is the trust item: each callee returns within K
+fetches. It is pinned in `ZesuSsz/Evidence/SignatureGates.v` and listed with the approved
+runtime premises; no Rocq proof establishes it.

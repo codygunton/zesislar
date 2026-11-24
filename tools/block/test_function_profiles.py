@@ -339,6 +339,31 @@ class ResidualImports(unittest.TestCase):
         # Another block of the function has no module.
         self.assertEqual(self.imported('DesignedBoundary_800cb474', legacy=False)[0], [])
 
+    def test_a_charged_variant_imports_the_residual_modules_of_its_uncharged_function(self):
+        self.profile.data.update(function='keysEnsureCapacityBudget', residual_functions=['keysEnsureCapacity'])
+        (self.residuals / 'keysEnsureCapacity').mkdir()
+        (self.residuals / 'keysEnsureCapacity/Block003c.v').write_text('')
+        shared = 'Require Import ZesuSsz.Residuals.keysEnsureCapacity.Block003c.'
+        imports, lines = self.imported('DesignedBoundary_800cb448', legacy=False)
+        self.assertEqual(imports, [shared])
+        self.assertEqual(lines[lines.index(shared) - 1], CORE_IMPORT)
+        # Its own module comes first; a second pass (residual_loop register) adds nothing twice.
+        (self.residuals / 'keysEnsureCapacityBudget').mkdir()
+        (self.residuals / 'keysEnsureCapacityBudget/Block003c.v').write_text('')
+        imports, lines = self.imported('DesignedBoundary_800cb448', legacy=False)
+        own = 'Require Import ZesuSsz.Residuals.keysEnsureCapacityBudget.Block003c.'
+        self.assertEqual(imports, [own, shared])
+        once = residual_import(self.caller('DesignedBoundary_800cb448'), self.residuals, profile=self.profile,
+                               legacy=False)
+        self.assertEqual(residual_import(once, self.residuals, profile=self.profile, legacy=False), once)
+        (self.residuals / 'keysEnsureCapacityBudget/Block003c.v').unlink()
+        partial = residual_import(self.caller('DesignedBoundary_800cb448'), self.residuals, profile=self.profile,
+                                  legacy=False)
+        (self.residuals / 'keysEnsureCapacityBudget/Block003c.v').write_text('')
+        self.assertEqual([line for line in residual_import(partial, self.residuals, profile=self.profile,
+                                                           legacy=False).split('\n') if 'Residuals' in line],
+                         [shared, own])
+
     def test_the_in_tree_form_only_in_legacy_mode(self):
         self.profile.data.update(function='decodeItem', pc_base='0x800d6960')
         (self.residuals / 'Block800d697c.v').write_text('')

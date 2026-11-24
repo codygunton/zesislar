@@ -154,22 +154,35 @@ def call_violations(registry, root=ROOT):
     return errors
 
 
+def defined_names(module, names, function, root):
+    """The errors for `names` that the Coq module `module` (under ZesuSsz/) does not define."""
+    path = Path(root) / ('ZesuSsz/' + module[len('ZesuSsz.'):].replace('.', '/') + '.v')
+    if not module.startswith('ZesuSsz.') or not path.exists():
+        return ['%s: premise module %s does not exist' % (function, module)]
+    text = code_of(path.read_text())
+    return ['%s: %s does not define %s' % (function, module, name)
+            for name in names if not re.search(r'\bDefinition\s+%s\b' % re.escape(name), text)]
+
+
 def premise_violations(entry, root=ROOT):
     """An `assumed` row without an interface is a trusted runtime premise: `premise` names the module,
-    the premise (`□ instr_pre <entry> <call spec>`) and the call spec, and the module defines both."""
+    the premise (`□ instr_pre <entry> <call spec>`) and the call spec, and the module defines both.
+    Its budgeted form for charged callers (plan Stage T): `budget` (the step budget a charged caller
+    hands over, tools/block/budgets.py) with `charged_premise` {module, name}, the premise
+    `□ instr_pre <entry> (step_budget <budget> ∗ <call spec>)`, which the module defines."""
     if entry['status'] != 'assumed' or entry.get('interface'):
         return []
     premise = entry.get('premise') or {}
     if sorted(premise) != ['call_spec', 'module', 'name']:
         return ['%s: an assumed row without an interface names premise {module, name, call_spec}'
                 % entry['function']]
-    path = Path(root) / ('ZesuSsz/' + premise['module'][len('ZesuSsz.'):].replace('.', '/') + '.v')
-    if not premise['module'].startswith('ZesuSsz.') or not path.exists():
-        return ['%s: premise module %s does not exist' % (entry['function'], premise['module'])]
-    text = code_of(path.read_text())
-    return ['%s: %s does not define %s' % (entry['function'], premise['module'], name)
-            for name in (premise['name'], premise['call_spec'])
-            if not re.search(r'\bDefinition\s+%s\b' % re.escape(name), text)]
+    errors = defined_names(premise['module'], (premise['name'], premise['call_spec']), entry['function'], root)
+    charged = entry.get('charged_premise')
+    if charged is None:
+        return errors
+    if sorted(charged) != ['module', 'name'] or not isinstance(entry.get('budget'), int):
+        return errors + ['%s: a charged_premise {module, name} goes with an integer budget' % entry['function']]
+    return errors + defined_names(charged['module'], (charged['name'],), entry['function'], root)
 
 
 def coverage_violations(registry, root=ROOT):

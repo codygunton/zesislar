@@ -383,25 +383,49 @@ def residual_module(source, residuals=RESIDUALS, profile=None, legacy=True):
     return None
 
 
+def shared_residual_modules(source, residuals=RESIDUALS, profile=None):
+    """The relocatable residual modules of the same block registered for the functions the profile
+    lists under `residual_functions` (a charged variant reuses its uncharged function's lemmas:
+    ZesuSsz/Residuals/<other>/Block<offset>.v), those that exist."""
+    if profile is None or not profile.get("residual_functions"):
+        return []
+    match = re.search(r"^Lemma DesignedBoundary_([0-9a-f]+)(?:_slot\d+)?\b", source, re.M)
+    if not match:
+        return []
+    offset = profile.key('0x' + match[1])
+    return [function + ".Block" + offset for function in profile.get("residual_functions")
+            if (Path(residuals) / function / ("Block" + offset + ".v")).is_file()]
+
+
 def residual_import(source, residuals=RESIDUALS, profile=None, legacy=True):
-    """Import the block's residual lemmas (residual_module) after the core import, when they exist.
+    """Import the block's residual lemmas (residual_module, then shared_residual_modules) after the
+    core import, when they exist.
 
     Import is not transitive, so the caller keeps its solver bindings; the
     residual module only adds its exact lemmas to the residual hints
     (`zesu_residual`, or `zesu_residual_exact` for the relocatable form).
     """
     module = residual_module(source, residuals, profile, legacy)
-    if module is None:
-        return source
-    line = "Require Import ZesuSsz.Residuals." + module + "."
     lines = source.split("\n")
+    imports = [line for line in ["Require Import ZesuSsz.Residuals." + name + "."
+                                 for name in ([module] if module else [])
+                                 + shared_residual_modules(source, residuals, profile)]
+               if line not in lines]
+    if not imports:
+        return source
     last = max(index for index, text in enumerate(lines) if text.startswith(("Require ", "From ")))
-    if lines[last] != CORE_IMPORT:
+    # Residual imports already present (and the return requires before them) follow the core import.
+    core = last
+    while core > 0 and lines[core] != CORE_IMPORT and (
+            lines[core].startswith("Require Import ZesuSsz.Residuals.")
+            or lines[core] in (profile or {}).get("return_requires", [])):
+        core -= 1
+    if lines[core] != CORE_IMPORT:
         raise ValueError("A caller must end its imports with the core import.")
     # A return block's residual lemmas may use the pure lemmas behind its exit facts.
     if "FunctionReturnEntries.fp_machineReturn" in source:
-        requires = (profile or load_profile()).get("return_requires", [])
+        requires = [line for line in (profile or load_profile()).get("return_requires", []) if line not in lines]
         lines[last + 1:last + 1] = requires
         last += len(requires)
-    lines.insert(last + 1, line)
+    lines[last + 1:last + 1] = imports
     return "\n".join(lines)

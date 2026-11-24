@@ -582,6 +582,8 @@
       "compliance_theorems": [],
       "owned_prefixes": [],
       "premise": {"module": "ZesuSsz.Contracts.AltFlAllocPremises", "name": "altFlAllocCallPremise", "call_spec": "altFlAllocCallSpec"},
+      "budget": 53,
+      "charged_premise": {"module": "ZesuSsz.Contracts.AltFlAllocBudgetPremises", "name": "altFlAllocBudgetCallPremise"},
       "reason": "Trusted runtime premise (plan B1, issue #347), reached by jalr through alt_fl_alloc.vtable slot 0; statement under user review."
     },
     {
@@ -591,6 +593,8 @@
       "compliance_theorems": [],
       "owned_prefixes": [],
       "premise": {"module": "ZesuSsz.Contracts.AltFlAllocPremises", "name": "altFlRemapCallPremise", "call_spec": "altFlRemapCallSpec"},
+      "budget": 9,
+      "charged_premise": {"module": "ZesuSsz.Contracts.AltFlAllocBudgetPremises", "name": "altFlRemapBudgetCallPremise"},
       "reason": "Trusted runtime premise (plan B1, issue #347), reached by jalr through alt_fl_alloc.vtable slot 16; statement under user review."
     },
     {
@@ -600,6 +604,8 @@
       "compliance_theorems": [],
       "owned_prefixes": [],
       "premise": {"module": "ZesuSsz.Contracts.AltFlAllocPremises", "name": "altFlFreeCallPremise", "call_spec": "altFlFreeCallSpec"},
+      "budget": 42,
+      "charged_premise": {"module": "ZesuSsz.Contracts.AltFlAllocBudgetPremises", "name": "altFlFreeBudgetCallPremise"},
       "reason": "Trusted runtime premise (plan B1, issue #347), reached by jalr through alt_fl_alloc.vtable slot 24; statement under user review."
     },
     {
@@ -609,6 +615,8 @@
       "compliance_theorems": [],
       "owned_prefixes": [],
       "premise": {"module": "ZesuSsz.Contracts.ZiskMemcpyPremise", "name": "ziskMemcpyCallPremise", "call_spec": "ziskMemcpyCallSpec"},
+      "budget": 3,
+      "charged_premise": {"module": "ZesuSsz.Contracts.AltFlAllocBudgetPremises", "name": "ziskMemcpyBudgetCallPremise"},
       "reason": "Trusted runtime premise (plan B1, issue #347), reached by direct call; any source, destination and length; statement under user review."
     }
   ]

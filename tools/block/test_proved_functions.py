@@ -135,6 +135,23 @@ class ProvedFunctionCheckTests(unittest.TestCase):
                                                   Path(root)),
                              ['alloc: an assumed row without an interface names premise {module, name, call_spec}'])
 
+    def test_a_charged_premise_names_its_definition_and_budget(self):
+        row = {'function': 'alloc', 'symbol': 'alloc', 'status': 'assumed', 'compliance_theorems': [],
+               'owned_prefixes': [], 'premise': {'module': 'ZesuSsz.Contracts.AllocPremise',
+                                                 'name': 'allocCallPremise', 'call_spec': 'allocCallSpec'},
+               'budget': 53, 'charged_premise': {'module': 'ZesuSsz.Contracts.AllocBudgetPremise',
+                                                 'name': 'allocBudgetCallPremise'}}
+        with tempfile.TemporaryDirectory() as root:
+            self.write(root, 'ZesuSsz/Contracts/AllocPremise.v',
+                       'Definition allocCallSpec := True.\nDefinition allocCallPremise := True.\n')
+            self.write(root, 'ZesuSsz/Contracts/AllocBudgetPremise.v', 'Definition other := True.\n')
+            self.assertEqual(C.premise_violations(row, Path(root)), [
+                'alloc: ZesuSsz.Contracts.AllocBudgetPremise does not define allocBudgetCallPremise'])
+            self.assertEqual(C.premise_violations(dict(row, budget='53'), Path(root)), [
+                'alloc: a charged_premise {module, name} goes with an integer budget'])
+            self.write(root, 'ZesuSsz/Contracts/AllocBudgetPremise.v', 'Definition allocBudgetCallPremise := True.\n')
+            self.assertEqual(C.premise_violations(row, Path(root)), [])
+
     def test_the_repository_passes(self):
         self.assertEqual(C.violations(), [])
 
