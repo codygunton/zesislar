@@ -6,6 +6,16 @@
   "function": "txAccessList",
   "entry_hist": "wrap",
   "frame_slots": true,
+  "array_words": [
+   {
+    "array": "arrayListHeaderBytes",
+    "words": {
+     "0": "arrayListPointer",
+     "8": "arrayListLength",
+     "16": "arrayListCapacity"
+    }
+   }
+  ],
   "array_spelling": "sealed",
   "hist_visible": [
    "^\\(?frame_old_m\\d+'* = ",
@@ -524,7 +534,15 @@
      },
      {
       "spec": "arrayListBuffer keysElementBytes keysLog2Alignment (ensureListAfter outcome)",
-      "use": "produced"
+      "use": "produced",
+      "as": [
+       {
+        "coq": "arrayListPointer (ensureListAfter outcome) ↦ₘ∗ arrayListItems (ensureListAfter outcome)",
+        "length": "arrayListLength (ensureListAfter outcome) * keysElementBytes"
+       },
+       "(arrayListPointer (ensureListAfter outcome) + arrayListLength (ensureListAfter outcome) * keysElementBytes) ↦ₘ? ((arrayListCapacity (ensureListAfter outcome) - arrayListLength (ensureListAfter outcome)) * keysElementBytes)",
+       "altFlBlock (arrayListPointer (ensureListAfter outcome)) (arrayListCapacity (ensureListAfter outcome) * keysElementBytes) keysLog2Alignment"
+      ]
      },
      {
       "spec": "altFlAllocatorObject (bv_unsigned (argv !!! 1%nat)) context",
@@ -1288,6 +1306,82 @@
     "tier": "opus-medium"
    },
    "why": "ld at +0x1d0 reads word 3 of the 32-byte storage key payload (see access-1c4)"
+  },
+  {
+   "id": "store-230",
+   "request": "txAccessList/decision/access_placement-0230",
+   "at": {
+    "pc": "+0x230",
+    "boundary": "access"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "placement": {
+    "region": "arrayListPointer (ensureListAfter (call6_outcome)) + arrayListLength (ensureListAfter (call6_outcome)) * keysElementBytes",
+    "offset": 0
+   },
+   "author": {
+    "tier": "opus-medium"
+   },
+   "why": "keys.appendAssumeCapacity: sd at a0 = keys.ptr + 32*keys.len (+0x204..+0x210, header words of the +0x1f4 result) stores key word 0 into the spare capacity after the items"
+  },
+  {
+   "id": "store-234",
+   "request": "txAccessList/decision/access_placement-0234",
+   "at": {
+    "pc": "+0x234",
+    "boundary": "access"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "placement": {
+    "region": "arrayListPointer (ensureListAfter (call6_outcome)) + arrayListLength (ensureListAfter (call6_outcome)) * keysElementBytes",
+    "offset": 8
+   },
+   "author": {
+    "tier": "opus-medium"
+   },
+   "why": "key word 1 (see store-230)"
+  },
+  {
+   "id": "store-238",
+   "request": "txAccessList/decision/access_placement-0238",
+   "at": {
+    "pc": "+0x238",
+    "boundary": "access"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "placement": {
+    "region": "arrayListPointer (ensureListAfter (call6_outcome)) + arrayListLength (ensureListAfter (call6_outcome)) * keysElementBytes",
+    "offset": 16
+   },
+   "author": {
+    "tier": "opus-medium"
+   },
+   "why": "key word 2 (see store-230)"
+  },
+  {
+   "id": "store-23c",
+   "request": "txAccessList/decision/access_placement-023c",
+   "at": {
+    "pc": "+0x23c",
+    "boundary": "access"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "placement": {
+    "region": "arrayListPointer (ensureListAfter (call6_outcome)) + arrayListLength (ensureListAfter (call6_outcome)) * keysElementBytes",
+    "offset": 24
+   },
+   "author": {
+    "tier": "opus-medium"
+   },
+   "why": "key word 3 (see store-230)"
   }
  ],
  "test": {

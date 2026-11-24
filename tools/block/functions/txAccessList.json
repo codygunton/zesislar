@@ -2,6 +2,16 @@
   "function": "txAccessList",
   "entry_hist": "wrap",
   "frame_slots": true,
+  "array_words": [
+    {
+      "array": "arrayListHeaderBytes",
+      "words": {
+        "0": "arrayListPointer",
+        "8": "arrayListLength",
+        "16": "arrayListCapacity"
+      }
+    }
+  ],
   "array_spelling": "sealed",
   "hist_visible": [
     "^\\(?frame_old_m\\d+'* = ",
@@ -504,7 +514,15 @@
         },
         {
           "spec": "arrayListBuffer keysElementBytes keysLog2Alignment (ensureListAfter outcome)",
-          "use": "produced"
+          "use": "produced",
+          "as": [
+            {
+              "coq": "arrayListPointer (ensureListAfter outcome) \u21a6\u2098\u2217 arrayListItems (ensureListAfter outcome)",
+              "length": "arrayListLength (ensureListAfter outcome) * keysElementBytes"
+            },
+            "(arrayListPointer (ensureListAfter outcome) + arrayListLength (ensureListAfter outcome) * keysElementBytes) \u21a6\u2098? ((arrayListCapacity (ensureListAfter outcome) - arrayListLength (ensureListAfter outcome)) * keysElementBytes)",
+            "altFlBlock (arrayListPointer (ensureListAfter outcome)) (arrayListCapacity (ensureListAfter outcome) * keysElementBytes) keysLog2Alignment"
+          ]
         },
         {
           "spec": "altFlAllocatorObject (bv_unsigned (argv !!! 1%nat)) context",
@@ -832,6 +850,26 @@
       "index": "(call5_payload_offset + 24)%Z",
       "scale": 1,
       "offset": 24
+    },
+    {
+      "pc": "+0x230",
+      "region": "arrayListPointer (ensureListAfter (call6_outcome)) + arrayListLength (ensureListAfter (call6_outcome)) * keysElementBytes",
+      "offset": 0
+    },
+    {
+      "pc": "+0x234",
+      "region": "arrayListPointer (ensureListAfter (call6_outcome)) + arrayListLength (ensureListAfter (call6_outcome)) * keysElementBytes",
+      "offset": 8
+    },
+    {
+      "pc": "+0x238",
+      "region": "arrayListPointer (ensureListAfter (call6_outcome)) + arrayListLength (ensureListAfter (call6_outcome)) * keysElementBytes",
+      "offset": 16
+    },
+    {
+      "pc": "+0x23c",
+      "region": "arrayListPointer (ensureListAfter (call6_outcome)) + arrayListLength (ensureListAfter (call6_outcome)) * keysElementBytes",
+      "offset": 24
     }
   ],
   "unreachable_entries": [
@@ -953,6 +991,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "2fb769531b6817e72361c0d2c41de8671cfaede0e8abc3d42300481a5dd0394b"
+    "sha256": "90844f58f0d6390a1453a7eabbd878df6a291e636e23a102b52445d15905602d"
   }
 }
