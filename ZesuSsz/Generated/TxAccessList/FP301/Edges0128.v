@@ -35,7 +35,7 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt0128_ForwardA0N0 -> fp_machineAt015c_ForwardA0N0 (call_return) *)
-Global Instance zesu_hist_edge_12 (args : TxAccessListArgs) (returnAddress : Z) (call3_after : DecodeItemOutcome) (call3_kept_x22 : bv 64) (call3_kept_x23 : bv 64) (call2_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (outer_x20 : bv 64) (outer_x21 : bv 64) (tx_entries : ArrayListState) (tx_done : list AccessListEntryValue) (tx_images : list TxAccessListEntryImage) (tx_scratch : list byte) (call3_payload_offset_succ : Z) :
+Global Instance zesu_hist_edge_20 (args : TxAccessListArgs) (returnAddress : Z) (call3_after : DecodeItemOutcome) (call3_kept_x22 : bv 64) (call3_kept_x23 : bv 64) (call2_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (outer_x20 : bv 64) (outer_x21 : bv 64) (tx_entries : ArrayListState) (tx_done : list AccessListEntryValue) (tx_images : list TxAccessListEntryImage) (tx_scratch : list byte) (call3_payload_offset_succ : Z) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0128_ForwardA0N0_Hist (args) (returnAddress) (call3_after) (call2_after) (call_after) (outer_x20) (outer_x21) (tx_entries) (tx_done) (tx_images) (tx_scratch))
     (fp_machineAt015c_ForwardA0N0_Hist (args) (returnAddress) (call3_after) (call3_kept_x22) (call3_kept_x23) (call3_payload_offset_succ) (call2_after) (call_after) (outer_x20) (outer_x21) (tx_entries) (tx_done) (tx_images) (tx_scratch))
