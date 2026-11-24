@@ -1581,6 +1581,7 @@ Ltac zesu_block2 :=
     (zesu_finish_package_deferring; try zesu_finish_split_conjunct; zesu_clear_split_baseline)
   | solve [zesu_finish_source_tail]];
   try (zesu_diag_stage "residual_lemma"; ResidualLemmas.zesu_residual_lemma);
+  try solve [ExistsPure.zesu_exists_pure_close ResidualLemmas.zesu_residual_lemma];
   try zesu_block_tail_one;
   zesu_diag_refusal "final".
 
