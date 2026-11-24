@@ -167,12 +167,64 @@ Ltac zesu_term_root t :=
   | _ => constr:(t)
   end.
 
+(* Whether [term] has no evar and no free local assumption, reading each
+   local definition it reaches once. The VM check `zesu_vm_closed` clears and
+   unfolds the context: 0.5 s on the 0204 store below, at every sample. *)
+Ltac2 zesu_sample_closed (term : constr) : bool :=
+  let memo := Ref.ref [] in
+  let rec closed term :=
+    match Constr.Unsafe.kind term with
+    | Constr.Unsafe.Var name =>
+        match List.find_opt (fun (known, _) => Ident.equal known name) (Ref.get memo) with
+        | Some (_, verdict) => verdict
+        | None =>
+            let verdict :=
+              match List.find_opt (fun (known, _, _) => Ident.equal known name) (Control.hyps ()) with
+              | Some (_, Some body, _) => closed body
+              | _ => false
+              end in
+            Ref.set memo ((name, verdict) :: Ref.get memo);
+            verdict
+        end
+    | Constr.Unsafe.Evar _ _ => false
+    | Constr.Unsafe.App head arguments =>
+        if closed head then Array.for_all closed arguments else false
+    | Constr.Unsafe.Lambda binder body =>
+        if closed (Constr.Binder.type binder) then closed body else false
+    | Constr.Unsafe.Prod binder body =>
+        if closed (Constr.Binder.type binder) then closed body else false
+    | Constr.Unsafe.LetIn binder value body =>
+        if closed (Constr.Binder.type binder) then
+          if closed value then closed body else false
+        else false
+    | Constr.Unsafe.Case _ (predicate, _) _ value branches =>
+        if closed predicate then
+          if closed value then Array.for_all closed branches else false
+        else false
+    | Constr.Unsafe.Cast value _ typ => if closed value then closed typ else false
+    | Constr.Unsafe.Proj _ _ value => closed value
+    | _ => true
+    end in
+  closed term.
+
+Ltac zesu_require_sample_closed term :=
+  let check := ltac2:(term |-
+    if zesu_sample_closed (Option.get (Ltac1.to_constr term)) then ()
+    else Control.zero (Tactic_failure (Some (Message.of_string "open sample expression")))) in
+  check term.
+
 (* The value of an expression over [root] at a sample root value. Used only
-   to decide which resource or literal to aim at; every use is proved. *)
+   to decide which resource or literal to aim at; every use is proved.
+   Only an expression closed but for its root is evaluated: on an open one
+   the VM normalises the stuck arithmetic of the other atoms. On
+   txAccessList 0204 the store address `LET4 + LET8 + 0` (root LET4, LET8 a
+   shifted word read from a list header) grew to 18 GB and the process died;
+   refused, the lookup moves on to the next alternative. *)
 Ltac zesu_eval_at_root root e :=
   let f := eval pattern root in e in
   lazymatch f with
   | ?g _ =>
+      let closed := constr:((ltac:(zesu_require_sample_closed g; exact I) : True)) in
       lazymatch type of root with
       | Z => let d := eval vm_compute in (g 2952790016%Z) in d
       | _ => let d := eval vm_compute in (g (Z_to_bv 64 2952790016)) in d
@@ -185,6 +237,7 @@ Ltac zesu_eval_at_root root e :=
 Ltac zesu_root_cancels z e :=
   lazymatch eval pattern z in e with
   | ?g _ =>
+      zesu_require_sample_closed g;
       let low := eval vm_compute in (g 0%Z) in
       let high := eval vm_compute in (g 2952790016%Z) in
       constr_eq low high
