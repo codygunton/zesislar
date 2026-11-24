@@ -13,6 +13,7 @@ From Coq Require Import ZArith Lia.
 From stdpp Require Import bitvector.definitions list.
 Require ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.LiaHook.
+Require Import ZesuSsz.Automation2.StepBudget.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
@@ -233,6 +234,28 @@ Ltac zesu_memory_assemble_leading :=
        zesu_memory_array_assemble | idtac]
   end.
 
+(* A charged entry requests `step_budget wanted` among its resources (plan
+   Stage T): the context's `step_budget owned` pays it by `step_budget_weaken`
+   (side condition `0 <= wanted <= owned`), and the remainder is dropped (the
+   successor entry pays every later fetch). Lithium serves such a request
+   during the run (StepBudget.v, `subsume_step_budget_split`); a package that
+   reaches the source route still holds it. *)
+Ltac zesu_memory_frame_budget :=
+  lazymatch goal with
+  | |- environments.envs_entails _ ?requested =>
+      lazymatch requested with
+      | context [@step_budget _ _ ?wanted] =>
+          iMatchHyp ltac:(fun name owner =>
+            lazymatch owner with
+            | @step_budget _ _ ?owned =>
+                let Hz := fresh "Hbudget" in
+                assert (Hz : (0 <= wanted <= owned)%Z) by zesu_lia;
+                iDestruct (step_budget_weaken owned wanted Hz with name) as name;
+                clear Hz; iFrame name
+            end)
+      end
+  end.
+
 Ltac zesu_memory_tuple consume_facts finish :=
   once (try zesu_memory_registered_intro;
   ResourceGroups.zesu_open_resource_groups;
@@ -242,7 +265,8 @@ Ltac zesu_memory_tuple consume_facts finish :=
   try zesu_memory_assemble_leading;
   repeat first [progress zesu_memory_frame_first |
     progress zesu_memory_join_arrays];
-  try zesu_memory_assemble_leading);
+  try zesu_memory_assemble_leading;
+  try zesu_memory_frame_budget);
   lazymatch goal with
   | |- environments.envs_entails _ ?requested => consume_facts requested
   end;
