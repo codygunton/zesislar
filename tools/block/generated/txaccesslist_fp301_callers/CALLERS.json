@@ -2,11 +2,11 @@
   "status": "SOURCE_DECLARATIONS_ONLY",
   "function": "txAccessList",
   "entries": {
-    "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/render/RESULT.json",
-    "sha256": "45e9bb027064467cc2792d387045b17ee5384ff4f44ea98e913701b06214811b"
+    "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/render/RESULT.json",
+    "sha256": "926ca188e05e02bc7a1b7793aff87fac9176e17bd197893e27b2ee26842f385d"
   },
   "cfg": {
-    "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/inputs-r40/FUNCTION.json",
+    "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/inputs-r48/FUNCTION.json",
     "sha256": "a20524c12269475ee1ba985db07f37b806443ebbb5e304076c4b0a0b0598e317"
   },
   "rows": [
@@ -18,7 +18,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/callers/Caller0000.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller0000.v",
         "sha256": "fa58e155b64f1b9926015d49298901dadb5668578c48640627cb67225a12b6ff"
       },
       "lemma": "DesignedBoundary_80000000",
@@ -65,7 +65,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/callers/Caller00ac.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller00ac.v",
         "sha256": "25bac1593d572c62863d10d71e38344437d8756b9147b29386c2b7df84e8ef72"
       },
       "lemma": "DesignedBoundary_800000ac",
@@ -81,7 +81,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/callers/Caller00c4.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller00c4.v",
         "sha256": "988885f5f4c0c9c3604009d7ac25508badda7c71b265539f7ad07d2bc59ed2fc"
       },
       "lemma": "DesignedBoundary_800000c4",
@@ -118,7 +118,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/callers/Caller00ec.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller00ec.v",
         "sha256": "82be3eed941a7c483e8ba5ec2c92dabb129ce07c38b9fda2fb02e12041adb826"
       },
       "lemma": "DesignedBoundary_800000ec",
@@ -165,7 +165,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/callers/Caller0128.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller0128.v",
         "sha256": "1cb87cc62970433698d8023d976a5da78152d6fe5e7bd86665c57829008f52d2"
       },
       "lemma": "DesignedBoundary_80000128",
@@ -203,7 +203,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/callers/Caller0170.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller0170.v",
         "sha256": "fd91629710e7e3851e161d0a692c28de6c2ca4afb0e45f2e84449fa89a2429cb"
       },
       "lemma": "DesignedBoundary_80000170",
@@ -220,7 +220,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/callers/Caller0188.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller0188.v",
         "sha256": "531d3188771af8a6a513d0f1f8cef1bbddbf1c4abbf62b25d250e3eb71781ed1"
       },
       "lemma": "DesignedBoundary_80000188",
@@ -236,7 +236,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/callers/Caller018c.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller018c.v",
         "sha256": "2d1fc4e6de1011b6377b8fc1c5b6df1fd8b1a887cd0ed64aaed048ad3f942417"
       },
       "lemma": "DesignedBoundary_8000018c",
@@ -283,7 +283,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/callers/Caller01bc.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller01bc.v",
         "sha256": "73affce33dc083f24af97d3a73b314001798fe41adde74e60d6f55ddf835d3ab"
       },
       "lemma": "DesignedBoundary_800001bc",
@@ -311,7 +311,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/callers/Caller0204.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller0204.v",
         "sha256": "78ab0710f403cbf61feaf7883351fd468a6064842c3cb0e0d5fffc222147e24b"
       },
       "lemma": "DesignedBoundary_80000204",
@@ -328,7 +328,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/callers/Caller0248.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller0248.v",
         "sha256": "19ec7c945a626e0e787bfe65f0c39d6fae031122e89f67feafb7d4e9d4f41d9f"
       },
       "lemma": "DesignedBoundary_80000248",
@@ -354,8 +354,16 @@
         "02a0",
         "0448"
       ],
-      "status": "refused",
-      "reason": "successor entry not rendered: 0448"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller0264.v",
+        "sha256": "be1e04f1bfc3f7941da05fbeb82f00327a3ff4b4d8bf18f020f714816537094b"
+      },
+      "lemma": "DesignedBoundary_80000264",
+      "preconditions": [
+        "instr_pre 0x800002a0 (ZesuSsz.Generated.TxAccessList.FP301.Pilot02a0Entries.fp_machineAt02a0 (args) (returnAddress) (K))%I",
+        "instr_pre 0x80000448 (ZesuSsz.Generated.TxAccessList.FP301.Pilot0448Entries.fp_machineAt0448 (args) (returnAddress) (K))%I"
+      ]
     },
     {
       "case": "02a0",
@@ -364,8 +372,16 @@
         "02d4",
         "02e0"
       ],
-      "status": "refused",
-      "reason": "successor entry not rendered: 02e0"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller02a0.v",
+        "sha256": "c39c68c54d63b3deec64df9b0e92be058958939a095a20e4de94c0525bbf9cc1"
+      },
+      "lemma": "DesignedBoundary_800002a0",
+      "preconditions": [
+        "instr_pre 0x800002d4 (ZesuSsz.Generated.TxAccessList.FP301.Pilot02d4Entries.fp_machineAt02d4 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800002e0 (ZesuSsz.Generated.TxAccessList.FP301.Pilot02e0Entries.fp_machineAt02e0 (args) (returnAddress) (K))%I"
+      ]
     },
     {
       "case": "02d4",
@@ -374,8 +390,16 @@
         "02e0",
         "02f4"
       ],
-      "status": "refused",
-      "reason": "successor entry not rendered: 02e0"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller02d4.v",
+        "sha256": "1399ed1fb14bec151bd78fbd8c3b632d1472e88d98a7d07008277f30d9d74d1a"
+      },
+      "lemma": "DesignedBoundary_800002d4",
+      "preconditions": [
+        "instr_pre 0x800002e0 (ZesuSsz.Generated.TxAccessList.FP301.Pilot02e0Entries.fp_machineAt02e0 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800002f4 (ZesuSsz.Generated.TxAccessList.FP301.Pilot02f4Entries.fp_machineAt02f4 (args) (returnAddress) (K))%I"
+      ]
     },
     {
       "case": "02e0",
@@ -383,8 +407,15 @@
       "successors": [
         "0390"
       ],
-      "status": "refused",
-      "reason": "own entry not rendered"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller02e0.v",
+        "sha256": "c1f02471efead1e7d86ff883892deaedb6fe19b5fb18223de6c7443848659f3a"
+      },
+      "lemma": "DesignedBoundary_800002e0",
+      "preconditions": [
+        "instr_pre 0x80000390 (ZesuSsz.Generated.TxAccessList.FP301.Pilot0390Entries.fp_machineAt0390 (args) (returnAddress) (K))%I"
+      ]
     },
     {
       "case": "02ec",
@@ -392,8 +423,15 @@
       "successors": [
         "043c"
       ],
-      "status": "refused",
-      "reason": "successor entry not rendered: 043c"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller02ec.v",
+        "sha256": "730835b8b67e91e32c0b302b2ca37a89829dbeb3bdb37f32834069caa3ce489b"
+      },
+      "lemma": "DesignedBoundary_800002ec",
+      "preconditions": [
+        "instr_pre 0x8000043c (ZesuSsz.Generated.TxAccessList.FP301.Pilot043cEntries.fp_machineAt043c (args) (returnAddress) (K))%I"
+      ]
     },
     {
       "case": "02f4",
@@ -403,7 +441,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/callers/Caller02f4.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller02f4.v",
         "sha256": "c398befb6e68d319da7f35d8ca7dbbc65fc058c1a8408928963bcd0be9cd0ba9"
       },
       "lemma": "DesignedBoundary_800002f4",
@@ -421,7 +459,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/callers/Caller0340.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller0340.v",
         "sha256": "4ee25e110962a30e58bef4ebbf3ff997b74933ca26db90137c3258b4be8b77b7"
       },
       "lemma": "DesignedBoundary_80000340",
@@ -438,7 +476,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/callers/Caller0344.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller0344.v",
         "sha256": "abfa3229910dc8de5a4a16a198613748fc2d7d1f904c3473d23d7dedc778cb4c"
       },
       "lemma": "DesignedBoundary_80000344",
@@ -454,7 +492,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-40/render/callers/Caller0364.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller0364.v",
         "sha256": "4e4b4662083e45fc64e8430d4b61bb7213e67ff96c8af52dc404c69b94f21cdb"
       },
       "lemma": "DesignedBoundary_80000364",
@@ -469,8 +507,16 @@
         "02ec",
         "0390"
       ],
-      "status": "refused",
-      "reason": "successor entry not rendered: 0390"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller0368.v",
+        "sha256": "47286fba8ab9fef89758e4da4fa26e9b5047330dd9d89afe56612ea6cf716019"
+      },
+      "lemma": "DesignedBoundary_80000368",
+      "preconditions": [
+        "instr_pre 0x800002ec (ZesuSsz.Generated.TxAccessList.FP301.Pilot02ecEntries.fp_machineAt02ec (args) (returnAddress) (K))%I",
+        "instr_pre 0x80000390 (ZesuSsz.Generated.TxAccessList.FP301.Pilot0390Entries.fp_machineAt0390 (args) (returnAddress) (K))%I"
+      ]
     },
     {
       "case": "0390",
@@ -480,7 +526,7 @@
         "04a8"
       ],
       "status": "refused",
-      "reason": "own entry not rendered"
+      "reason": "successor entry not rendered: 04a8"
     },
     {
       "case": "039c",
@@ -489,8 +535,16 @@
         "03c0",
         "03e0"
       ],
-      "status": "refused",
-      "reason": "own entry not rendered"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller039c.v",
+        "sha256": "12605b745eb88eb595dc44bcff2fce425801bb0a88012b08127553436780401f"
+      },
+      "lemma": "DesignedBoundary_8000039c",
+      "preconditions": [
+        "instr_pre 0x800003c0 (ZesuSsz.Generated.TxAccessList.FP301.Pilot03c0Entries.fp_machineAt03c0 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800003e0 (ZesuSsz.Generated.TxAccessList.FP301.Pilot03e0Entries.fp_machineAt03e0 (args) (returnAddress) (K))%I"
+      ]
     },
     {
       "case": "03c0",
@@ -498,8 +552,16 @@
       "successors": [
         "03d4"
       ],
-      "status": "refused",
-      "reason": "own entry not rendered"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller03c0.v",
+        "sha256": "2790e601501ad95512f957df45916778f072b5d29a0b23cec829d020daa08f79"
+      },
+      "lemma": "DesignedBoundary_800003c0",
+      "preconditions": [
+        "instr_pre 0x800003d4 (ZesuSsz.Generated.TxAccessList.FP301.Pilot03d4Entries.fp_machineAt03d4 (args) (returnAddress) (K))%I",
+        "instr_pre 0x80042494 (ZesuSsz.Contracts.AltFlAllocPremises.altFlAllocCallSpec)%I"
+      ]
     },
     {
       "case": "03d4",
@@ -508,8 +570,16 @@
         "03dc",
         "03e4"
       ],
-      "status": "refused",
-      "reason": "own entry not rendered"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller03d4.v",
+        "sha256": "7a1dc4d6f09d60221eeeb9c484fbeeaa316bf56f8e45064fc3c8114fb00ae63a"
+      },
+      "lemma": "DesignedBoundary_800003d4",
+      "preconditions": [
+        "instr_pre 0x800003dc (ZesuSsz.Generated.TxAccessList.FP301.Pilot03dcEntries.fp_machineAt03dc (args) (returnAddress) (K))%I",
+        "instr_pre 0x800003e4 (ZesuSsz.Generated.TxAccessList.FP301.Pilot03e4Entries.fp_machineAt03e4 (args) (returnAddress) (K))%I"
+      ]
     },
     {
       "case": "03dc",
@@ -518,7 +588,7 @@
         "04a8"
       ],
       "status": "refused",
-      "reason": "own entry not rendered"
+      "reason": "successor entry not rendered: 04a8"
     },
     {
       "case": "03e0",
@@ -526,8 +596,15 @@
       "successors": [
         "03e4"
       ],
-      "status": "refused",
-      "reason": "own entry not rendered"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller03e0.v",
+        "sha256": "a45f1c3497b5191b91ed889fdc0a74a857101591a39d262549aae3d268a898e8"
+      },
+      "lemma": "DesignedBoundary_800003e0",
+      "preconditions": [
+        "instr_pre 0x800003e4 (ZesuSsz.Generated.TxAccessList.FP301.Pilot03e4Entries.fp_machineAt03e4 (args) (returnAddress) (K))%I"
+      ]
     },
     {
       "case": "03e4",
@@ -535,8 +612,16 @@
       "successors": [
         "0400"
       ],
-      "status": "refused",
-      "reason": "own entry not rendered"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller03e4.v",
+        "sha256": "030c1d89fd42a834f9376edecb85cdb009ddee9f8c3e28d35980be1155e5c85c"
+      },
+      "lemma": "DesignedBoundary_800003e4",
+      "preconditions": [
+        "instr_pre 0x80000400 (ZesuSsz.Generated.TxAccessList.FP301.Pilot0400Entries.fp_machineAt0400 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800e06c0 (ZesuSsz.Contracts.ZiskMemcpyPremise.ziskMemcpyCallSpec)%I"
+      ]
     },
     {
       "case": "0400",
@@ -545,8 +630,16 @@
         "0404",
         "042c"
       ],
-      "status": "refused",
-      "reason": "own entry not rendered"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller0400.v",
+        "sha256": "93b1fad349d0abfc574cb0abf010a4ee4dcc1a839a34ea74fbdb13a1883ba553"
+      },
+      "lemma": "DesignedBoundary_80000400",
+      "preconditions": [
+        "instr_pre 0x80000404 (ZesuSsz.Generated.TxAccessList.FP301.Pilot0404Entries.fp_machineAt0404 (args) (returnAddress) (K))%I",
+        "instr_pre 0x8000042c (ZesuSsz.Generated.TxAccessList.FP301.Pilot042cEntries.fp_machineAt042c (args) (returnAddress) (K))%I"
+      ]
     },
     {
       "case": "0404",
@@ -554,8 +647,16 @@
       "successors": [
         "042c"
       ],
-      "status": "refused",
-      "reason": "own entry not rendered"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller0404.v",
+        "sha256": "c42ca5ae71e42030f3116bf4c98f630572437a30509f7085578e212e7e8450b1"
+      },
+      "lemma": "DesignedBoundary_80000404",
+      "preconditions": [
+        "instr_pre 0x8000042c (ZesuSsz.Generated.TxAccessList.FP301.Pilot042cEntries.fp_machineAt042c (args) (returnAddress) (K))%I",
+        "instr_pre 0x80041f38 (ZesuSsz.Contracts.AltFlAllocPremises.altFlFreeCallSpec)%I"
+      ]
     },
     {
       "case": "042c",
@@ -563,8 +664,15 @@
       "successors": [
         "043c"
       ],
-      "status": "refused",
-      "reason": "own entry not rendered"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller042c.v",
+        "sha256": "4b9debc76ec8bcbcf84a822023074ae8b2fa816f0000662b66edbfb2618dc80e"
+      },
+      "lemma": "DesignedBoundary_8000042c",
+      "preconditions": [
+        "instr_pre 0x8000043c (ZesuSsz.Generated.TxAccessList.FP301.Pilot043cEntries.fp_machineAt043c (args) (returnAddress) (K))%I"
+      ]
     },
     {
       "case": "043c",
@@ -572,8 +680,15 @@
       "successors": [
         "0448"
       ],
-      "status": "refused",
-      "reason": "own entry not rendered"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-48/render/callers/Caller043c.v",
+        "sha256": "cceb7735fbabacbcfcbb4df29e3a72b9d405bef3c62f73ce6dc2f68ae08c7628"
+      },
+      "lemma": "DesignedBoundary_8000043c",
+      "preconditions": [
+        "instr_pre 0x80000448 (ZesuSsz.Generated.TxAccessList.FP301.Pilot0448Entries.fp_machineAt0448 (args) (returnAddress) (K))%I"
+      ]
     },
     {
       "case": "0448",
@@ -583,7 +698,7 @@
         "048c"
       ],
       "status": "refused",
-      "reason": "own entry not rendered"
+      "reason": "successor entry not rendered: 048c"
     },
     {
       "case": "048c",
@@ -630,8 +745,8 @@
       "reason": "own entry not rendered"
     }
   ],
-  "rendered": 15,
+  "rendered": 30,
   "inlined": 0,
-  "refused": 38,
+  "refused": 23,
   "proof_ran": false
 }

@@ -46,7 +46,7 @@ Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt00ec_ForwardA0N0_Hist in Hh.
   destruct Hh as (fp_seed_mstatus_bits & forward_witness_791c5acc1109e8e6 & forward_witness_f1505c797ad3010d & forward_witness_d7543602bfbbe148 & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & forward_witness_407fca3a6f90b8db & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_d0511cb7161d8dd4 & forward_witness_0c9a8614ab622b44 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27).
   iIntros "HN".
-  iDestruct "HN" as (call3_payload_offset) "(%HN0 & %HN1 & %HV5 & %HV6 & %HV7 & _)".
+  iDestruct "HN" as (call3_payload_offset) "(%HN0 & %HN1 & %HV6 & %HV7 & %HV8 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt010c_ForwardA0N0_Hist.
   exists call3_payload_offset, fp_seed_mstatus_bits, forward_witness_791c5acc1109e8e6, forward_witness_f1505c797ad3010d, forward_witness_d7543602bfbbe148, forward_witness_83d3e6d46c3de70e, forward_witness_1d218312837c2f84, forward_witness_dc636cab9ffb40ae, forward_witness_184f6fc7524c683f, forward_witness_88383840afa7af74, forward_witness_1492ef7bd46b3b7a, forward_witness_d77b5950a2aea933, forward_witness_407fca3a6f90b8db, forward_witness_1eea82d2945b4618, forward_witness_751588b52f8a71ff, forward_witness_d0511cb7161d8dd4, forward_witness_0c9a8614ab622b44, (BV 64%N 0%Z), (BV 64%N 0%Z).
   split; [exact HF0|].
@@ -55,9 +55,9 @@ Proof.
   split; [exact HF3|].
   split; [exact HF4|].
   split; [exact HF5|].
-  split; [exact HF6|].
-  split; [exact HV5|].
   split; [exact HV6|].
+  split; [exact HV7|].
+  split; [exact HF6|].
   split; [exact HN0|].
   split; [exact HN1|].
   split; [exact HF7|].
@@ -79,7 +79,7 @@ Proof.
   split; [exact HF23|].
   split; [exact HF24|].
   split; [exact HF27|].
-  split; [exact HV7|].
+  split; [exact HV8|].
   split; [by vm_compute|].
   split; [by vm_compute|].
   exact HF25.

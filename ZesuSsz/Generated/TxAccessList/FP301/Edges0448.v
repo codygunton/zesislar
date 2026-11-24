@@ -1,0 +1,87 @@
+(* Generated from FP-20261102-Level1-domain-v1. Proofs use only EDGE_SENTENCES (tools/block/render_edges.py). *)
+Require ZesuSsz.Automation.Hooks.
+Require Import isla.riscv64.riscv64.
+From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
+Require Import stdpp.bitvector.definitions.
+Require Import InstrSpecs.Machine.
+Require Import EvmSailRlp.evm_rlp_types.
+Require Import ZesuSsz.Generated.Stock.Symbols.
+Require Export ZesuSsz.Interfaces.DecodeItem.
+Require Export ZesuSsz.Interfaces.KeysToOwnedSlice.
+Require Export ZesuSsz.Interfaces.EntriesToOwnedSlice.
+Require Export ZesuSsz.Interfaces.KeysEnsureCapacity.
+Require Import ZesuSsz.Contracts.AltFlAllocPremises.
+Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.
+Require Import ZesuSsz.Contracts.AbiBytes.
+Require Import ZesuSsz.Contracts.ZiskRuntime.
+Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
+Require Import ZesuSsz.Contracts.ArrayListContract.
+Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.
+Require Import ZesuSsz.Contracts.TxAccessListContract.
+Require Import ZesuSsz.Contracts.TxAccessListBlockEntries.
+Require Import ZesuSsz.Contracts.TxAccessListLoopFacts.
+Require Export ZesuSsz.Compliance.TxAccessListHints.
+Require Import ZesuSsz.Contracts.Level1.
+Local Open Scope Z_scope.
+Require Import lithium.lvar.
+Require Import ZesuSsz.Generated.TxAccessList.FP301.Pilot00c4Entries.
+Require Import ZesuSsz.Generated.TxAccessList.FP301.Pilot00c4Structural.
+Require Import ZesuSsz.Generated.TxAccessList.FP301.Pilot0448Entries.
+Require Import ZesuSsz.Generated.TxAccessList.FP301.Pilot0448Structural.
+Require Import ZesuSsz.Automation2.Hist.
+From iris.proofmode Require Import proofmode.
+
+Section edges.
+Context `{!islaG Sigma} `{!threadG}.
+
+(* fp_machineAt0448_ForwardA0N0 -> fp_machineAt00c4_LoopClass0 (loop_back) *)
+Global Instance zesu_hist_edge_50 (args : TxAccessListArgs) (returnAddress : Z) (machine_x11 : bv 64) (machine_x12 : bv 64) (machine_x16 : bv 64) (outer_x20 : bv 64) (outer_x21 : bv 64) (call3_kept_x26 : bv 64) (call5_outcome : ToOwnedSliceOutcome) (call4_after : DecodeItemOutcome) (call3_after : DecodeItemOutcome) (call3_payload_offset : Z) (call2_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (tx_entries : ArrayListState) (tx_done : list AccessListEntryValue) (tx_images : list TxAccessListEntryImage) (tx_appendable : ArrayListState) (tx_scratch_append : list byte) :
+  ZesuHistEdge (PROP := iProp Sigma)
+    (fp_machineAt0448_ForwardA0N0_Hist (args) (returnAddress) (machine_x11) (machine_x12) (machine_x16) (outer_x20) (outer_x21) (call3_kept_x26) (call5_outcome) (call4_after) (call3_after) (call3_payload_offset) (call2_after) (call_after) (tx_entries) (tx_done) (tx_images) (tx_appendable) (tx_scratch_append))
+    (fp_machineAt00c4_LoopClass0_Hist (args) (returnAddress) (call_after))
+    (True)%I.
+Proof.
+  rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0448_ForwardA0N0_Hist in Hh.
+  destruct Hh as (tx_scratch & tx_keys_done & tx_keys_list & tx_scratch_keys & fp_seed_mstatus_bits & forward_witness_d7543602bfbbe148 & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_791c5acc1109e8e6 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53 & HF54 & HF55 & HF56 & HF57 & HF58 & HF59 & HF60 & HF61 & HF62 & HF63 & HF64 & HF65 & HF66 & HF67 & HF68 & HF69 & HF70).
+  iIntros "HN".
+  iPureIntro. apply zesu_hist_intro. unfold fp_machineAt00c4_LoopClass0_Hist.
+  split; [exact (proj1 HF34)|].
+  split; [exact (proj1 HF35)|].
+  exact (proj1 HF36).
+Qed.
+
+Global Instance zesu_hist_reveal_34 (args : TxAccessListArgs) (returnAddress : Z) (machine_x11 : bv 64) (machine_x12 : bv 64) (machine_x16 : bv 64) (outer_x20 : bv 64) (outer_x21 : bv 64) (call3_kept_x26 : bv 64) (call5_outcome : ToOwnedSliceOutcome) (call4_after : DecodeItemOutcome) (call3_after : DecodeItemOutcome) (call3_payload_offset : Z) (call2_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (tx_entries : ArrayListState) (tx_done : list AccessListEntryValue) (tx_images : list TxAccessListEntryImage) (tx_appendable : ArrayListState) (tx_scratch_append : list byte) :
+  ZesuHistReveal (fp_machineAt0448_ForwardA0N0_Hist (args) (returnAddress) (machine_x11) (machine_x12) (machine_x16) (outer_x20) (outer_x21) (call3_kept_x26) (call5_outcome) (call4_after) (call3_after) (call3_payload_offset) (call2_after) (call_after) (tx_entries) (tx_done) (tx_images) (tx_appendable) (tx_scratch_append)) (∃ (call_arg_x13 : bv 64) (call_arg_x14 : bv 64) (call_arg_x15 : bv 64) (call_arg_x16 : bv 64) (call_arg_x17 : bv 64) (call_before : list byte), (decodeItemCallDomain
+          (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)) (BV 64%N 576%Z)) (BV 64%N 18446744073709551128%Z))); ((txInputPointer args)); ((txInputLength args)); (call_arg_x13); (call_arg_x14); (call_arg_x15); (call_arg_x16); (call_arg_x17)]) (((bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)))) (bv_unsigned (((txInputEnd args)))) (txInputBytes args) call_before)) /\ (decodeItemCallMeaning
+            (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)) (BV 64%N 576%Z)) (BV 64%N 18446744073709551128%Z))); ((txInputPointer args)); ((txInputLength args)); (call_arg_x13); (call_arg_x14); (call_arg_x15); (call_arg_x16); (call_arg_x17)]) (((bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)))) (bv_unsigned (((txInputEnd args)))) (txInputBytes args) call_before) (call_after))).
+Proof.
+  rewrite /ZesuHistReveal => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0448_ForwardA0N0_Hist in Hh.
+  destruct Hh as (tx_scratch & tx_keys_done & tx_keys_list & tx_scratch_keys & fp_seed_mstatus_bits & forward_witness_d7543602bfbbe148 & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_791c5acc1109e8e6 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53 & HF54 & HF55 & HF56 & HF57 & HF58 & HF59 & HF60 & HF61 & HF62 & HF63 & HF64 & HF65 & HF66 & HF67 & HF68 & HF69 & HF70).
+  exact HF0.
+Qed.
+
+Global Instance zesu_hist_reveal_35 (args : TxAccessListArgs) (returnAddress : Z) (machine_x11 : bv 64) (machine_x12 : bv 64) (machine_x16 : bv 64) (outer_x20 : bv 64) (outer_x21 : bv 64) (call3_kept_x26 : bv 64) (call5_outcome : ToOwnedSliceOutcome) (call4_after : DecodeItemOutcome) (call3_after : DecodeItemOutcome) (call3_payload_offset : Z) (call2_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (tx_entries : ArrayListState) (tx_done : list AccessListEntryValue) (tx_images : list TxAccessListEntryImage) (tx_appendable : ArrayListState) (tx_scratch_append : list byte) :
+  ZesuHistReveal (fp_machineAt0448_ForwardA0N0_Hist (args) (returnAddress) (machine_x11) (machine_x12) (machine_x16) (outer_x20) (outer_x21) (call3_kept_x26) (call5_outcome) (call4_after) (call3_after) (call3_payload_offset) (call2_after) (call_after) (tx_entries) (tx_done) (tx_images) (tx_appendable) (tx_scratch_append)) (arrayListLength tx_entries = Z.of_nat (length tx_done)).
+Proof.
+  rewrite /ZesuHistReveal => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0448_ForwardA0N0_Hist in Hh.
+  destruct Hh as (tx_scratch & tx_keys_done & tx_keys_list & tx_scratch_keys & fp_seed_mstatus_bits & forward_witness_d7543602bfbbe148 & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_791c5acc1109e8e6 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53 & HF54 & HF55 & HF56 & HF57 & HF58 & HF59 & HF60 & HF61 & HF62 & HF63 & HF64 & HF65 & HF66 & HF67 & HF68 & HF69 & HF70).
+  exact HF1.
+Qed.
+
+Global Instance zesu_hist_reveal_36 (args : TxAccessListArgs) (returnAddress : Z) (machine_x11 : bv 64) (machine_x12 : bv 64) (machine_x16 : bv 64) (outer_x20 : bv 64) (outer_x21 : bv 64) (call3_kept_x26 : bv 64) (call5_outcome : ToOwnedSliceOutcome) (call4_after : DecodeItemOutcome) (call3_after : DecodeItemOutcome) (call3_payload_offset : Z) (call2_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (tx_entries : ArrayListState) (tx_done : list AccessListEntryValue) (tx_images : list TxAccessListEntryImage) (tx_appendable : ArrayListState) (tx_scratch_append : list byte) :
+  ZesuHistReveal (fp_machineAt0448_ForwardA0N0_Hist (args) (returnAddress) (machine_x11) (machine_x12) (machine_x16) (outer_x20) (outer_x21) (call3_kept_x26) (call5_outcome) (call4_after) (call3_after) (call3_payload_offset) (call2_after) (call_after) (tx_entries) (tx_done) (tx_images) (tx_appendable) (tx_scratch_append)) (arrayListItems tx_entries = txAccessListEntriesBytes tx_done tx_images).
+Proof.
+  rewrite /ZesuHistReveal => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0448_ForwardA0N0_Hist in Hh.
+  destruct Hh as (tx_scratch & tx_keys_done & tx_keys_list & tx_scratch_keys & fp_seed_mstatus_bits & forward_witness_d7543602bfbbe148 & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_791c5acc1109e8e6 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53 & HF54 & HF55 & HF56 & HF57 & HF58 & HF59 & HF60 & HF61 & HF62 & HF63 & HF64 & HF65 & HF66 & HF67 & HF68 & HF69 & HF70).
+  exact HF2.
+Qed.
+
+Global Instance zesu_hist_reveal_37 (args : TxAccessListArgs) (returnAddress : Z) (machine_x11 : bv 64) (machine_x12 : bv 64) (machine_x16 : bv 64) (outer_x20 : bv 64) (outer_x21 : bv 64) (call3_kept_x26 : bv 64) (call5_outcome : ToOwnedSliceOutcome) (call4_after : DecodeItemOutcome) (call3_after : DecodeItemOutcome) (call3_payload_offset : Z) (call2_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (tx_entries : ArrayListState) (tx_done : list AccessListEntryValue) (tx_images : list TxAccessListEntryImage) (tx_appendable : ArrayListState) (tx_scratch_append : list byte) :
+  ZesuHistReveal (fp_machineAt0448_ForwardA0N0_Hist (args) (returnAddress) (machine_x11) (machine_x12) (machine_x16) (outer_x20) (outer_x21) (call3_kept_x26) (call5_outcome) (call4_after) (call3_after) (call3_payload_offset) (call2_after) (call_after) (tx_entries) (tx_done) (tx_images) (tx_appendable) (tx_scratch_append)) (Forall (fun image => Z.of_nat (length (imagePadding image)) = txAccessListPaddingSize) tx_images).
+Proof.
+  rewrite /ZesuHistReveal => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0448_ForwardA0N0_Hist in Hh.
+  destruct Hh as (tx_scratch & tx_keys_done & tx_keys_list & tx_scratch_keys & fp_seed_mstatus_bits & forward_witness_d7543602bfbbe148 & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_791c5acc1109e8e6 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53 & HF54 & HF55 & HF56 & HF57 & HF58 & HF59 & HF60 & HF61 & HF62 & HF63 & HF64 & HF65 & HF66 & HF67 & HF68 & HF69 & HF70).
+  exact HF3.
+Qed.
+
+End edges.
