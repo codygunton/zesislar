@@ -17,6 +17,7 @@
    }
   ],
   "array_spelling": "sealed",
+  "held_binders": ["call3_payload_offset", "call5_outcome"],
   "hist_visible": [
    "^\\(?frame_old_m\\d+'* = ",
    "^\\W*bv_unsigned call_x10 = 0\\W*$",
@@ -69,7 +70,9 @@
   "caller_contract_requires": [
    "Require Import ZesuSsz.Contracts.TxAccessListContract.",
    "Require Import ZesuSsz.Contracts.TxAccessListBlockEntries.",
-   "Require Import ZesuSsz.Contracts.TxAccessListLoopFacts."
+   "Require Import ZesuSsz.Contracts.TxAccessListLoopFacts.",
+   "Require Import ZesuSsz.Compliance.TxAccessListCallSlice.",
+   "Require Import ZesuSsz.Compliance.TxAccessListLoopIntro."
   ],
   "selected_code": {
    "module": "ZesuSsz.Contracts.TxAccessListSelected",
@@ -540,7 +543,15 @@
         "coq": "arrayListPointer (ensureListAfter outcome) ↦ₘ∗ arrayListItems (ensureListAfter outcome)",
         "length": "arrayListLength (ensureListAfter outcome) * keysElementBytes"
        },
-       "(arrayListPointer (ensureListAfter outcome) + arrayListLength (ensureListAfter outcome) * keysElementBytes) ↦ₘ? ((arrayListCapacity (ensureListAfter outcome) - arrayListLength (ensureListAfter outcome)) * keysElementBytes)",
+       {
+        "coq": "(arrayListPointer (ensureListAfter outcome) + arrayListLength (ensureListAfter outcome) * keysElementBytes) ↦ₘ? ((arrayListCapacity (ensureListAfter outcome) - arrayListLength (ensureListAfter outcome)) * keysElementBytes)",
+        "minimum": 32,
+        "when": {
+         "register": "x10",
+         "value": 0,
+         "low_bits": 16
+        }
+       },
        "altFlBlock (arrayListPointer (ensureListAfter outcome)) (arrayListCapacity (ensureListAfter outcome) * keysElementBytes) keysLog2Alignment"
       ]
      },
@@ -597,7 +608,7 @@
      {
       "binder": "state",
       "argument": 1,
-      "caller_value": "tx_keys"
+      "caller_value": "tx_keys_done"
      },
      {
       "binder": "resultBefore",
@@ -608,7 +619,7 @@
      {
       "binder": "scratchBefore",
       "constant": "ziskExtraParamsAddress",
-      "caller_value": "tx_scratch",
+      "caller_value": "tx_scratch_keys",
       "length": 8,
       "length_source": "txAccessListArgsWellFormed: length (txScratchBefore args) = 8; loop cuts carry it as tx_scratch with Z.of_nat (length tx_scratch) = 8"
      }
@@ -619,7 +630,7 @@
       "spec": "arrayListBuffer keysElementBytes keysLog2Alignment state",
       "use": "consumed",
       "caller": [
-       "arrayListBuffer keysElementBytes keysLog2Alignment tx_keys"
+       "arrayListBuffer keysElementBytes keysLog2Alignment tx_keys_done"
       ]
      },
      {
@@ -688,7 +699,6 @@
      {
       "binder": "scratchBefore",
       "constant": "ziskExtraParamsAddress",
-      "caller_value": "tx_scratch",
       "length": 8,
       "length_source": "txAccessListArgsWellFormed: length (txScratchBefore args) = 8; loop cuts carry it as tx_scratch with Z.of_nat (length tx_scratch) = 8"
      }
@@ -890,7 +900,6 @@
      {
       "binder": "scratch",
       "constant": "ziskExtraParamsAddress",
-      "caller_value": "tx_scratch",
       "length": 8,
       "length_source": "loop cut +0xc4: Z.of_nat (length tx_scratch) = 8"
      }
@@ -906,6 +915,108 @@
    },
    "why": "entries.append growth: memcpy(new (s8), old items (s6), len * 40); the destination is the block alloc returned, of new capacity * 40 bytes (the length spelling is re-read from the first render)"
   },
+  {
+   "id": "join-248",
+   "request": null,
+   "at": {
+    "pc": "+0x248",
+    "boundary": "join",
+    "predecessors": ["+0x15c", "+0x204"]
+   },
+   "binders": [
+    {"name": "tx_keys_done", "type": "ArrayListState"},
+    {"name": "tx_keys_list", "type": "list (list byte)"},
+    {"name": "tx_scratch_keys", "type": "list byte"}
+   ],
+   "resources": [
+    {"coq": "(bv_unsigned (txStackPointer args) - 280) ↦ₘ∗ arrayListHeaderBytes tx_keys_done", "length": "24"},
+    "(bv_unsigned (txStackPointer args) - 256) ↦ₘ? 152",
+    "arrayListBuffer keysElementBytes keysLog2Alignment tx_keys_done",
+    {"coq": "ziskExtraParamsAddress ↦ₘ∗ tx_scratch_keys", "length": "8"}
+   ],
+   "replaces": [
+    {"id": "loop_owned_1_call_after_call_after_call_after"},
+    {"id": "loop_owned_8000018c_0"},
+    {"id": "loop_owned_8000018c_1_call_output"},
+    {"id": "loop_owned_8000018c_1_call_after"},
+    {"id": "loop_owned_8000018c_1_call_after_span_32"},
+    {"id": "call6_produced_0"},
+    {"id": "call6_produced_1"},
+    {"id": "call6_produced_2"},
+    {"id": "loop_owned_6"}
+   ],
+   "facts": [
+    {"coq": "arrayListWellFormed keysElementBytes tx_keys_done", "role": "owned"},
+    {"coq": "arrayListItems tx_keys_done = List.concat tx_keys_list", "role": "owned"},
+    {"coq": "arrayListLength tx_keys_done = Z.of_nat (List.length tx_keys_list)", "role": "owned"},
+    {"coq": "∃ (keys_pointer keys_length : Z), firstn 16 call4_after = app (word64Bytes keys_pointer) (word64Bytes keys_length) /\\ txAccessListKeysWalked (take (Z.to_nat keys_length) (drop (Z.to_nat (keys_pointer - bv_unsigned (txInputPointer args))) (txInputBytes args))) keys_length tx_keys_list", "role": "owned"},
+    {"coq": "Z.of_nat (List.length tx_scratch_keys) = txAccessListScratchSize", "role": "owned"}
+   ],
+   "author": {"tier": "opus-medium"},
+   "why": "end of one entry's keys: the empty keys payload (+0x184, keys list {s9, 0, 0} stored at +0x178..+0x180) and the inner loop exit (+0x244, the list grown by keysEnsureCapacity) join before keysToOwnedSlice(&keys s0-0x118). The edges disagree on the keys list's resources (no buffer vs the produced pieces and the +0x18c owned frame pieces); each proves the owned keys list: header at s0-0x118, the 152 frame bytes after it, its buffer; tx_keys_list = the keys of the whole keys payload (call4_after words 0 and 1: pointer and length, +0x170/+0x174)."
+  },
+  {
+   "id": "join-42c",
+   "request": null,
+   "at": {"pc": "+0x42c", "boundary": "join", "predecessors": ["+0x400", "+0x404"]},
+   "binders": [{"name": "tx_grown", "type": "ArrayListState"}],
+   "resources": [
+    {"coq": "arrayListPointer tx_grown ↦ₘ∗ arrayListItems tx_grown", "length": "arrayListLength tx_grown * entriesElementBytes"},
+    "(arrayListPointer tx_grown + arrayListLength tx_grown * entriesElementBytes) ↦ₘ? ((arrayListCapacity tx_grown - arrayListLength tx_grown) * entriesElementBytes)",
+    "altFlBlock (arrayListPointer tx_grown) (arrayListCapacity tx_grown * entriesElementBytes) entriesLog2Alignment"
+   ],
+   "replaces": [{"id": "loop_owned_2"}, {"id": "loop_owned_3"}, {"id": "loop_owned_4"}],
+   "facts": [
+    {"coq": "bv_unsigned {x24} = arrayListPointer tx_grown", "role": "owned"},
+    {"coq": "bv_unsigned {x25} = arrayListCapacity tx_grown", "role": "owned"},
+    {"coq": "arrayListLength tx_grown = arrayListLength tx_entries", "role": "owned"},
+    {"coq": "arrayListItems tx_grown = arrayListItems tx_entries", "role": "owned"},
+    {"coq": "arrayListLength tx_grown < arrayListCapacity tx_grown", "role": "owned"},
+    {"coq": "arrayListWellFormed entriesElementBytes tx_grown", "role": "owned"}
+   ],
+   "author": {"tier": "opus-medium"},
+   "why": "entries.append growth after the copy: the old capacity was 0 (+0x400, no free) or the old block was freed (+0x428 returns here). Owned: the new list tx_grown (pointer s8 = alloc result, capacity s9 = the grown capacity, the old length and items copied by memcpy, one spare slot at least); the old buffer pieces leave (freed, or a zero-capacity block)."
+  },
+  {
+   "id": "join-448",
+   "request": null,
+   "at": {"pc": "+0x448", "boundary": "join", "predecessors": ["+0x264", "+0x43c"]},
+   "binders": [{"name": "tx_appendable", "type": "ArrayListState"}],
+   "resources": [
+    {"coq": "(bv_unsigned (txStackPointer args) - 448) ↦ₘ∗ arrayListHeaderBytes tx_appendable", "length": "24"},
+    {"coq": "arrayListPointer tx_appendable ↦ₘ∗ arrayListItems tx_appendable", "length": "arrayListLength tx_appendable * entriesElementBytes"},
+    "(arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes) ↦ₘ? ((arrayListCapacity tx_appendable - arrayListLength tx_appendable) * entriesElementBytes)",
+    "altFlBlock (arrayListPointer tx_appendable) (arrayListCapacity tx_appendable * entriesElementBytes) entriesLog2Alignment"
+   ],
+   "replaces": [{"id": "loop_owned_0"}, {"id": "loop_owned_2"}, {"id": "loop_owned_3"}, {"id": "loop_owned_4"},
+                {"id": "loop_owned_8000042c_0"}, {"id": "loop_owned_8000042c_1"}, {"id": "loop_owned_8000042c_2"}],
+   "facts": [
+    {"coq": "bv_unsigned {x11} = arrayListPointer tx_appendable", "role": "owned"},
+    {"coq": "arrayListLength tx_appendable = arrayListLength tx_entries", "role": "owned"},
+    {"coq": "arrayListItems tx_appendable = arrayListItems tx_entries", "role": "owned"},
+    {"coq": "arrayListLength tx_appendable < arrayListCapacity tx_appendable", "role": "owned"},
+    {"coq": "arrayListWellFormed entriesElementBytes tx_appendable", "role": "owned"},
+    {"coq": "bv_unsigned {x12} = 8 * arrayListLength tx_appendable", "role": "owned"},
+    {"coq": "bv_unsigned {x16} = 32 * arrayListLength tx_appendable", "role": "owned"}
+   ],
+   "author": {"tier": "opus-medium"},
+   "why": "entries.appendAssumeCapacity: the list has a spare slot, unchanged (+0x29c len < cap, +0x264) or grown (+0x43c: pointer s8 and capacity s9 stored into the header at s0-0x1c0, s0-0x1b0). a1 is the list pointer, a2 = 8 len, a6 = 32 len (reloaded from s0-0x1f8/s0-0x200 on the grown path). Owned: header and buffer pieces of tx_appendable, items and length those of tx_entries."
+  },
+  {"id": "store-460", "request": null, "at": {"pc": "+0x460", "boundary": "access"}, "binders": [], "resources": [], "facts": [],
+   "placement": {"region": "arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes", "offset": 0},
+   "author": {"tier": "opus-medium"}, "why": "entry word 0 (keys slice pointer, a4) into the spare slot at ptr + 40 len (a0 = a6 + a2 + a1, +0x458..+0x45c)"},
+  {"id": "store-464", "request": null, "at": {"pc": "+0x464", "boundary": "access"}, "binders": [], "resources": [], "facts": [],
+   "placement": {"region": "arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes", "offset": 8},
+   "author": {"tier": "opus-medium"}, "why": "entry word 1 (keys count, a5) into the spare slot"},
+  {"id": "store-46c", "request": null, "at": {"pc": "+0x46c", "boundary": "access"}, "binders": [], "resources": [], "facts": [],
+   "placement": {"region": "arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes", "offset": 16},
+   "author": {"tier": "opus-medium"}, "why": "address bytes 0..7 (copied at +0x284 to s0-0xa0) into the spare slot"},
+  {"id": "store-474", "request": null, "at": {"pc": "+0x474", "boundary": "access"}, "binders": [], "resources": [], "facts": [],
+   "placement": {"region": "arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes", "offset": 24},
+   "author": {"tier": "opus-medium"}, "why": "address bytes 8..15 into the spare slot"},
+  {"id": "store-484", "request": null, "at": {"pc": "+0x484", "boundary": "access"}, "binders": [], "resources": [], "facts": [],
+   "placement": {"region": "arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes", "offset": 32},
+   "author": {"tier": "opus-medium"}, "why": "address bytes 16..19 (sw) into the spare slot"},
   {
    "id": "dead-344",
    "request": null,
@@ -1000,7 +1111,12 @@
      "length": "24"
     },
     "(bv_unsigned (txStackPointer args) - 424) ↦ₘ? 320",
-    "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_entries",
+    {
+     "coq": "arrayListPointer tx_entries ↦ₘ∗ arrayListItems tx_entries",
+     "length": "arrayListLength tx_entries * entriesElementBytes"
+    },
+    "(arrayListPointer tx_entries + arrayListLength tx_entries * entriesElementBytes) ↦ₘ? ((arrayListCapacity tx_entries - arrayListLength tx_entries) * entriesElementBytes)",
+    "altFlBlock (arrayListPointer tx_entries) (arrayListCapacity tx_entries * entriesElementBytes) entriesLog2Alignment",
     "txAccessListKeysSlices tx_done tx_images",
     {
      "coq": "ziskExtraParamsAddress ↦ₘ∗ tx_scratch",
@@ -1025,6 +1141,16 @@
      "coq": "(0 < bv_unsigned outer_x21)%Z",
      "role": "bound",
      "need": "while (al.len > 0): the head is entered only with bytes left (+0xa8, +0x488)"
+    },
+    {
+     "coq": "(bv_unsigned (txInputPointer args) <= bv_unsigned outer_x20)%Z",
+     "role": "bound",
+     "need": "decodeItem call window (+0xd4, B5Bridges CallSlice): the cursor lies in the input; 00ac by txAccessListOuterWindow"
+    },
+    {
+     "coq": "(bv_unsigned outer_x20 + bv_unsigned outer_x21 <= bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)))%Z",
+     "role": "bound",
+     "need": "decodeItem call window (+0xd4): the remaining payload ends inside the input"
     },
     {
      "coq": "arrayListWellFormed entriesElementBytes tx_entries",
@@ -1127,6 +1253,16 @@
      "coq": "(0 < bv_unsigned inner_x22)%Z",
      "role": "bound",
      "need": "while (kp.len > 0): entered only with bytes left (+0x184, +0x244)"
+    },
+    {
+     "coq": "(bv_unsigned (txInputPointer args) <= bv_unsigned inner_x23)%Z",
+     "role": "bound",
+     "need": "decodeItem call window (+0x19c, B5Bridges CallSlice): the keys cursor lies in the input"
+    },
+    {
+     "coq": "(bv_unsigned inner_x23 + bv_unsigned inner_x22 <= bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)))%Z",
+     "role": "bound",
+     "need": "decodeItem call window (+0x19c): the remaining keys payload ends inside the input"
     },
     {
      "coq": "(33 * bv_unsigned inner_x24 = i)%Z",

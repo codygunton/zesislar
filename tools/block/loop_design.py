@@ -183,17 +183,20 @@ def owned_node(row, index, prefix='loop_owned_'):
             'element_bits': 8, 'length_original_coq': str(row['length'])}
 
 
-def owned_seed(seed, design, head, vocabulary):
+def owned_seed(seed, design, head, vocabulary, constants=None):
     """The loop-head seed with the design's owned state (`owned`): the components it `replaces` leave,
     its `resources` and its binders join, and each design fact that names an owned binder (and no
     entry register `{xN}`) is carried as a pure component, so the blocks after the head keep it."""
     from resource_seed import seed_owned_resources
     from symbolic_state import input_expr
     owned = design['owned']
-    sources = {component['id']: str(component['seed_component'].get(
-        'original_component', component['seed_component'].get('coq', ''))) for component in seed.ownership['components']}
+    # A pure component a join added (a relation, a design fact, its edge-guard fact) has no root seed node: its
+    # node is its text.
+    seeded = {component['id']: component.get('seed_component') or {'kind': 'opaque', 'coq': component['source']}
+              for component in seed.ownership['components']}
+    sources = {key: str(node.get('original_component', node.get('coq', ''))) for key, node in seeded.items()}
     removed = set(replaced_components(owned, sources))
-    nodes = [{**component['seed_component'], 'id': component['id']} for component in seed.ownership['components']
+    nodes = [{**seeded[component['id']], 'id': component['id']} for component in seed.ownership['components']
              if component['id'] not in removed]
     # A pure fact keeps the text the join gave it (a fact of a binder the join dropped is in its hidden
     # history group or `⌜True⌝`), not its text in the root seed.
@@ -234,7 +237,9 @@ def owned_seed(seed, design, head, vocabulary):
     facts = [fact for fact in seed.facts
              if fact['kind'] not in ('permission', 'nonwrap') and not fact['fact_id'].endswith(':separation')
              and not {fact.get('terms', {}).get(field) for field in ('left', 'right', 'resource_id')} & removed]
-    rebuilt = seed_owned_resources(public, entry_pc=head, vocabulary=vocabulary, facts=facts)
+    # `constants` (source constants) give a design resource at a fixed address, e.g. `ziskExtraParamsAddress`, its
+    # numeric base, as a call return seed does; without them its base stays symbolic.
+    rebuilt = seed_owned_resources(public, entry_pc=head, vocabulary=vocabulary, facts=facts, constants=constants)
     rebuilt.state.registers.update(seed.state.registers)
     rebuilt.state.retained_registers = dict(rebuilt.state.registers)
     rebuilt.state.conditions = list(seed.state.conditions)
@@ -242,6 +247,26 @@ def owned_seed(seed, design, head, vocabulary):
     rebuilt.state.memory = [known.get(region.ownership_id, region) for region in rebuilt.state.memory]
     rebuilt.state.word_links = [dict(link) for link in seed.state.word_links if link['resource_id'] not in removed]
     rebuilt.join_kind = 'loop_head'
+    return rebuilt
+
+
+def owned_join_seed(seed, owned, pc, vocabulary, constants=None):
+    """The seed of a join with an `owned` design (profile `join_owned`, annotations.py): the joined seed
+    without the components `replaces` names, plus the design's resources, existential binders and the
+    facts that name them (owned_seed). A fact's `{xN}` is register xN's value in the joined seed (its join
+    binder), so a fact may relate a register to an owned binder. The join keeps its kind, edges and witness
+    plan; each predecessor block proves the entry, so nothing of the design is assumed."""
+    def registers(text):
+        def value(match):
+            if match[1] not in seed.state.registers:
+                raise ValueError('An owned join fact names a register the join does not hold: ' + match[0])
+            return '(' + seed.state.registers[match[1]].coq() + ')'
+        return re.sub(r'\{(x\d+)\}', value, text)
+    facts = [{**row, 'coq': registers(row['coq'])} for row in owned.get('facts', [])]
+    owned = {**owned, 'facts': facts}
+    rebuilt = owned_seed(seed, {'owned': owned, 'facts': facts}, pc, vocabulary, constants=constants)
+    for field in ('join_kind', 'join_edges', 'join_witness_plan', 'join_refusals'):
+        setattr(rebuilt, field, getattr(seed, field))
     return rebuilt
 
 

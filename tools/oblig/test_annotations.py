@@ -260,6 +260,25 @@ class MachineRuns(unittest.TestCase):
         with self.assertRaises(annotations.AnnotationError):
             annotations.validate({**data, 'test': {'lets': [{'name': 'x y', 'exec': '0'}]}})
 
+    def test_an_owned_join_row_reports_the_visits_of_each_predecessor(self):
+        # A join at +0xb0 reached from +0xa8 (short input) and +0xac (long input); +0xa0 is in no run.
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for input_id, block, value in (('short', '00a8', 1), ('long', '00ac', 2)):
+                run = root / 'exec' / input_id
+                run.mkdir(parents=True)
+                snapshot(run, '0000', [{'visit': 0, 'insn': 0, 'regs': regs(a2=0, a3=0)}], input_id)
+                snapshot(run, block, [{'visit': 0, 'insn': 5, 'regs': regs(a2=value, a3=0)}], input_id)
+                snapshot(run, '00b0', [{'visit': 0, 'insn': 7, 'regs': regs(a2=value, a3=0)}], input_id)
+            row = {'id': 'join-b0', 'request': None,
+                   'at': {'pc': '+0xb0', 'boundary': 'join', 'predecessors': ['+0xa0', '+0xa8', '+0xac']},
+                   'binders': [{'name': 'state', 'type': 'Z', 'exec': 'bv_unsigned {reg:x12}'}],
+                   'resources': ['token state'],
+                   'facts': [{'coq': '(1 <= state <= 2)%Z', 'role': 'owned'}]}
+            result = annotations.test_rows(self.data(row), root)
+        self.assertEqual((result['verdict'], result['checked']), ('passed', 2))
+        self.assertEqual(result['join_coverage'], {'join-b0': {'+0xa0': 0, '+0xa8': 1, '+0xac': 1}})
+
 
 if __name__ == '__main__':
     unittest.main()
