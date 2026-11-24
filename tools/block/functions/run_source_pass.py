@@ -303,9 +303,14 @@ def main():
             except ValueError as error:
                 refusals[head] = 'loop head seed refused: ' + str(error)
                 continue
-            roots[head] = root
-            if head_drops:
-                seed_drops[head] = head_drops
+            if design.get('owned'):
+                # A head with owned state is rebuilt on its own tree (loop_design.loop_head_seed): it is the
+                # root of the seeds after it, so a call-return seed in the loop keeps the owned state.
+                roots[head], parents[head] = head, root
+            else:
+                roots[head] = root
+                if head_drops:
+                    seed_drops[head] = head_drops
             refusals.pop(head, None)
             added = head
             break
