@@ -1,4 +1,4 @@
-From Coq Require Import List ZArith.
+From Coq Require Import List ZArith Lia.
 From stdpp Require Import base list bitvector.definitions.
 Require Import ZesuSsz.Contracts.EntriesToOwnedSliceCallSpec2.
 Open Scope Z_scope.
@@ -12,6 +12,13 @@ Lemma entriesToOwnedSliceDomainIntro argv context state resultBefore scratchBefo
   entriesToOwnedSliceBoundaryDomain argv context state resultBefore scratchBefore ->
   entriesToOwnedSliceBoundaryDomain argv context state resultBefore scratchBefore.
 Proof. exact id. Qed.
+
+(* The result slot a call site passes holds 24 bytes: the length a caller
+   carves out of an uninitialised frame region for it. *)
+Lemma entriesToOwnedSliceDomainResultLength argv context state resultBefore scratchBefore :
+  entriesToOwnedSliceBoundaryDomain argv context state resultBefore scratchBefore ->
+  length resultBefore = 24%nat.
+Proof. intros (_ & _ & _ & _ & _ & _ & _ & Hlen & _). lia. Qed.
 
 Lemma entriesToOwnedSliceAllowsWellFormed state resultBefore outcome :
   entriesToOwnedSliceBoundaryAllows state resultBefore outcome ->
