@@ -192,7 +192,7 @@ def owned_seed(seed, design, head, vocabulary):
     sources = {component['id']: str(component['seed_component'].get(
         'original_component', component['seed_component'].get('coq', ''))) for component in seed.ownership['components']}
     removed = set(replaced_components(owned, sources))
-    nodes = [dict(component['seed_component']) for component in seed.ownership['components']
+    nodes = [{**component['seed_component'], 'id': component['id']} for component in seed.ownership['components']
              if component['id'] not in removed]
     # Before the closing component (`True`, or the continuation `K` of a seed that carries it).
     terminal = next((index for index, node in enumerate(nodes) if node.get('coq') in ('True', 'K')), len(nodes))
