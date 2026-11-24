@@ -267,6 +267,23 @@ class JoinOwnedTest(unittest.TestCase):
         binder, = [binder for binder in rebuilt.ownership['binders'] if binder['name'] == 'list_state']
         self.assertTrue(binder['owned'])
 
+    def test_a_resource_at_a_source_constant_gets_its_numeric_base(self):
+        from loop_design import owned_join_seed
+        public = {'schema': 'h1-public-entry-seed.v1', 'entry_pc': '0x42c', 'source_bindings': [],
+                  'assertion_tree': {'kind': 'exists', 'binders': [], 'components': [
+                      {'kind': 'opaque', 'id': 'true', 'coq': 'True'}]}}
+        public['_input_sha256'] = '0' * 64
+        seed = seed_owned_resources(public, entry_pc=0x42c, vocabulary={'rows': []})
+        owned = {'binders': [{'name': 'scratch', 'type': 'list byte'}],
+                 'resources': [{'coq': 'extraAddress ↦ₘ∗ scratch', 'length': '8'}], 'replaces': [], 'facts': [],
+                 'predecessors': ['0400', '0428']}
+        constants = {'extraAddress': {'value': 0xa0000f00, 'origin': {'source': 'test'}}}
+        bases = [resource.base.value for resource in owned_join_seed(seed, owned, 0x42c, {'rows': []},
+                                                                     constants=constants).resources]
+        self.assertEqual(bases, [0xa0000f00])
+        bases = [resource.base.value for resource in owned_join_seed(seed, owned, 0x42c, {'rows': []}).resources]
+        self.assertEqual(bases, ['(Z_to_bv 64%N (extraAddress))'])
+
 
 if __name__ == '__main__':
     unittest.main()

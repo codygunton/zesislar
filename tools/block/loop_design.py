@@ -183,7 +183,7 @@ def owned_node(row, index, prefix='loop_owned_'):
             'element_bits': 8, 'length_original_coq': str(row['length'])}
 
 
-def owned_seed(seed, design, head, vocabulary):
+def owned_seed(seed, design, head, vocabulary, constants=None):
     """The loop-head seed with the design's owned state (`owned`): the components it `replaces` leave,
     its `resources` and its binders join, and each design fact that names an owned binder (and no
     entry register `{xN}`) is carried as a pure component, so the blocks after the head keep it."""
@@ -237,7 +237,9 @@ def owned_seed(seed, design, head, vocabulary):
     facts = [fact for fact in seed.facts
              if fact['kind'] not in ('permission', 'nonwrap') and not fact['fact_id'].endswith(':separation')
              and not {fact.get('terms', {}).get(field) for field in ('left', 'right', 'resource_id')} & removed]
-    rebuilt = seed_owned_resources(public, entry_pc=head, vocabulary=vocabulary, facts=facts)
+    # `constants` (source constants) give a design resource at a fixed address, e.g. `ziskExtraParamsAddress`, its
+    # numeric base, as a call return seed does; without them its base stays symbolic.
+    rebuilt = seed_owned_resources(public, entry_pc=head, vocabulary=vocabulary, facts=facts, constants=constants)
     rebuilt.state.registers.update(seed.state.registers)
     rebuilt.state.retained_registers = dict(rebuilt.state.registers)
     rebuilt.state.conditions = list(seed.state.conditions)
@@ -248,12 +250,12 @@ def owned_seed(seed, design, head, vocabulary):
     return rebuilt
 
 
-def owned_join_seed(seed, owned, pc, vocabulary):
+def owned_join_seed(seed, owned, pc, vocabulary, constants=None):
     """The seed of a join with an `owned` design (profile `join_owned`, annotations.py): the joined seed
     without the components `replaces` names, plus the design's resources, existential binders and the
     facts that name them (owned_seed). The join keeps its kind, edges and witness plan; each predecessor
     block proves the entry, so nothing of the design is assumed."""
-    rebuilt = owned_seed(seed, {'owned': owned, 'facts': owned.get('facts', [])}, pc, vocabulary)
+    rebuilt = owned_seed(seed, {'owned': owned, 'facts': owned.get('facts', [])}, pc, vocabulary, constants=constants)
     for field in ('join_kind', 'join_edges', 'join_witness_plan', 'join_refusals'):
         setattr(rebuilt, field, getattr(seed, field))
     return rebuilt
