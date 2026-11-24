@@ -88,11 +88,49 @@ class FunctionProfile:
     def telescope(self):
         return ' `{!islaG Sigma} `{!threadG} (args : ' + self.args_type + ') (returnAddress : Z)'
 
+    @property
+    def charged(self):
+        """Profile `charged: true`: the code is charged and every entry owns its step budget."""
+        return self.data.get('charged') is True
+
+    def code(self):
+        """The selected code premise row: `charged_code` of a charged profile, else `selected_code`."""
+        return self.data['charged_code' if self.charged else 'selected_code']
+
     def selected_import(self):
-        return 'Require Import ' + self.data['selected_code']['module'] + '.\n'
+        return 'Require Import ' + self.code()['module'] + '.\n'
 
     def selected_premise(self):
-        return self.data['selected_code']['premise']
+        return self.code()['premise']
+
+
+STEP_BUDGET_MODULE = 'ZesuSsz.Automation2.StepBudget'
+
+
+def budget_import(profile):
+    """The step-budget library import of a charged profile's declarations; empty otherwise."""
+    return 'Require Import ' + STEP_BUDGET_MODULE + '.\n' if profile.get('charged') is True else ''
+
+
+def call_premise(profile, call):
+    """The callee spec premise of a call row, `instr_pre CALLEE (SPEC)%I`, and its modules.
+
+    A charged profile hands the callee its budget: the row's `charged_spec` (in `charged_spec_module`),
+    a spec that states the budget itself, or `step_budget (K) ∗ SPEC` with K the callee's registry
+    budget (tools/block/budgets.py); a K over the call's arguments needs a `charged_spec`."""
+    if profile.get('charged') is not True:
+        return ('instr_pre ' + call['callee_pc'] + ' (' + call['spec_module'] + '.' + call['spec'] + ')%I',
+                [call['spec_module']])
+    if call.get('charged_spec'):
+        return ('instr_pre ' + call['callee_pc'] + ' (' + call['charged_spec_module'] + '.'
+                + call['charged_spec'] + ')%I', [call['charged_spec_module'], STEP_BUDGET_MODULE])
+    from budgets import callee_budget
+    budget = callee_budget(int(call['callee_pc'], 16))
+    if '{argv:' in budget.text():
+        raise ValueError('The budget of the callee at %s reads its arguments: the call row needs a '
+                         'charged_spec' % call['callee_pc'])
+    return ('instr_pre ' + call['callee_pc'] + ' (step_budget (' + budget.text() + ') ∗ '
+            + call['spec_module'] + '.' + call['spec'] + ')%I', [call['spec_module'], STEP_BUDGET_MODULE])
 
 
 @lru_cache(maxsize=None)
@@ -272,7 +310,8 @@ def pilot_header(profile):
             'Require Import stdpp.bitvector.definitions.\n'
             + _lines(profile['contract_requires'])
             + 'Require Import ZesuSsz.Contracts.Level1.\n'
-            'Local Open Scope Z_scope.\n')
+            + budget_import(profile)
+            + 'Local Open Scope Z_scope.\n')
 
 
 def return_header(profile):
@@ -295,4 +334,5 @@ def loop_header(profile):
             + _lines(profile['loop_contract_requires'])
             + 'Require Import ZesuSsz.Contracts.Level1.\n'
             'Require Import ZesuSsz.Automation2.ByteWindowFold.\n'
-            'Local Open Scope Z_scope.\n')
+            + budget_import(profile)
+            + 'Local Open Scope Z_scope.\n')

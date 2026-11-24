@@ -23,11 +23,13 @@ def qualified_fold(text):
     return SHORT_FOLD.sub('ZesuSsz.Automation2.ByteWindowFold.zesu_byte_window_fold', text)
 
 
-def render_loop_head(block, header, structural=False, profile=None, loop_heads=None):
+def render_loop_head(block, header, structural=False, profile=None, loop_heads=None, budget=None):
     """Keep the source classes and frame the existing caller continuation.
 
     `loop_heads` is the loop-head file to read (default: the profile's committed fixture); a
-    scratch render passes its own so the committed fixture is never rewritten."""
+    scratch render passes its own so the committed fixture is never rewritten. `budget` (a charged
+    profile): the cut's potential, owned by every class as `step_budget (<potential>)` over the
+    class binders."""
     profile = profile or load_profile()
     entry_hist.configure(profile)
     domain_binder = ' (domain : ' + profile.args_type + ' -> Prop)'
@@ -55,6 +57,8 @@ def render_loop_head(block, header, structural=False, profile=None, loop_heads=N
         source = qualified_fold(source.replace(original, name).replace(
             domain_binder, '').replace(
             '⌜domain args⌝', domain))
+        if budget is not None:
+            source = class_with_budget(source, budget)
         authenticated_classes[name] = source
         # Hidden history and per-slot frame cells for the loop class (profile keys).
         design = next((item for item in profile.get('loop_designs', [])
@@ -122,6 +126,15 @@ def class_parts(source):
     if not all(term.startswith('⌜') and term.endswith('⌝') for term in pure):
         raise ValueError('An owned resource follows a pure class fact.')
     return binders, resources, [term[1:-1] for term in pure]
+
+
+def class_with_budget(source, budget):
+    """An authenticated class owning `step_budget (<budget>)` after its owned resources."""
+    from budgets import budget_conjunct
+    binders, resources, facts = class_parts(source)
+    prefix = source[:source.index(':=')]
+    terms = resources + [budget_conjunct(budget)] + ['⌜' + fact + '⌝' for fact in facts]
+    return prefix + ':= ((∃ ' + binders + ', (' + ' ∗ '.join(terms) + ')))%I.'
 
 
 def conjunction(terms):
