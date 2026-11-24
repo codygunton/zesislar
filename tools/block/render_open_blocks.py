@@ -37,7 +37,7 @@ from pathlib import Path
 import argparse, json, re, sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from function_profiles import load_profile
+from function_profiles import budget_import, call_premise, load_profile
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 from closure_cert import record_problems
 
@@ -64,9 +64,9 @@ def call_premises(profile, start, end):
     premises, modules = [], []
     for call in profile.get('calls', []) + profile.get('tail_calls', []):
         if start <= int(call['call_site_pc'], 16) < end:
-            modules.append(call['spec_module'])
-            premises.append('instr_pre ' + call['callee_pc'] + ' ('
-                            + call['spec_module'] + '.' + call['spec'] + ')%I')
+            premise, needed = call_premise(profile, call)
+            modules.append(needed[0])
+            premises.append(premise)
     return premises, modules
 
 
@@ -194,8 +194,8 @@ def main():
     text = '\n'.join(open_statements + closed_statements)
     modules = [profile.qualified(entry_module(case)) for case in entries]
     modules += generated_modules(profile, text)
-    modules += [call['spec_module'] for call in profile.get('calls', []) + profile.get('tail_calls', [])
-                if call['spec_module'] + '.' in text]
+    modules += [module for call in profile.get('calls', []) + profile.get('tail_calls', [])
+                for module in call_premise(profile, call)[1][:1] if module + '.' in text]
     closed_module = '.'.join(Path(options.closed_dir).parts) if options.closed_dir else None
     modules += [closed_module + '.Caller' + case for case, _, _ in closed_fields]
     modules = list(dict.fromkeys(modules))
@@ -209,6 +209,7 @@ def main():
              'Require Import ZesuSsz.Automation2.BlockTable.']
     requires = profile['caller_contract_requires'] + [profile.selected_import().strip(),
                                                        'Require Import ' + compliance['boundary'] + '.']
+    requires += [budget_import(profile).strip()] if budget_import(profile) else []
     lines += list(dict.fromkeys(requires))
     lines += ['Require ' + module + '.' for module in modules]
     lines += ['Import ListNotations.', 'Local Open Scope Z_scope.', '']

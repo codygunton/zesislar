@@ -189,6 +189,13 @@ loop_heads = set(profile["loop_heads"])
 cases = []
 emitted = []
 header = pilot_header(profile)
+# A charged profile: every block entry owns `step_budget (B)`, B from tools/block/budgets.py (BUDGETS.json
+# beside RESULT.json); a return package and an unreachable entry own none.
+budget_record = None
+if profile.charged:
+    import budgets
+    budget_record = budgets.entry_budgets(profile)
+    (O / "BUDGETS.json").write_text(json.dumps(budget_record, indent=1) + "\n")
 # These are the source-bound argument and continuation types from Level 1.
 base_telescope = profile.telescope()
 base_arguments = ["args", "returnAddress"]
@@ -339,13 +346,17 @@ for suffix, slot in units:
     else:
         pc = profile.pc(suffix)
         index = next(i for i, b in enumerate(data["boundaries"]) if b["pc"] == pc)
+    # The entry's step budget (a charged profile): a block entry's own; none for a return package.
+    entry_budget = (budgets.budget_text(budget_record, suffix)
+                    if budget_record is not None and index is not None else None)
     if suffix in loop_heads:
         from render_fp301_statements import render_loop_head
         directory = O / "sources" / profile.generated_directory
         directory.mkdir(parents=True, exist_ok=True)
         outputs = []
         try:
-            texts = [render_loop_head(suffix, header, structural, profile, options.loop_heads)
+            texts = [render_loop_head(suffix, header, structural, profile, options.loop_heads,
+                                      **({"budget": entry_budget} if entry_budget is not None else {}))
                      for structural in [False, True]]
         except (FileNotFoundError, ValueError) as error:
             # The pass produced no loop-head row (its entry edge is incomplete or refused).
@@ -592,7 +603,7 @@ for suffix, slot in units:
                 )
             return component_source(node, {}, {"source_hashes": {}}, W, None)
 
-        def body_source(body, seal_as=None):
+        def body_source(body, seal_as=None, budget=None):
             if body.get("lets") or body.get("loop"):
                 raise ValueError("This source adapter has no let/loop declaration binding.")
             rendered_components, slot_binders = [], []
@@ -613,6 +624,13 @@ for suffix, slot in units:
                     slot_binders.extend(split[1])
                     slot_reports.append({"address": component["address"], "pieces": len(split[0]),
                                          "binders": [binder["name"] for binder in split[1]]})
+            if budget is not None:
+                # The step budget, its `{reg:xR}` read in this alternative, among the owned resources.
+                conjunct = budgets.budget_conjunct(
+                    budgets.resolve_registers(budget, [text for _, text in rendered_components]))
+                rendered_components.insert(budgets.place_budget([component["kind"] for component, _
+                                                                 in rendered_components]),
+                                           ({"kind": "step_budget"}, conjunct))
             body = {**body, "existentials": body["existentials"] + slot_binders}
             result = "(" + " ∗ ".join(text for _, text in rendered_components) + ")"
             # A Level 1 entry witness whose register a path overwrote occurs
@@ -708,7 +726,7 @@ for suffix, slot in units:
                 + helpers[helper["suffix"]]
                 + base_telescope
                 + " : iProp Sigma := "
-                + body_source(helper["body"], seal_as=helpers[helper["suffix"]])
+                + body_source(helper["body"], seal_as=helpers[helper["suffix"]], budget=entry_budget)
                 + "%I.\n"
             )
             definition = render_entry_registers(definition, profile.name)
@@ -729,7 +747,8 @@ for suffix, slot in units:
             + name
             + base_telescope
             + " (K : iProp Sigma) : iProp Sigma := "
-            + body_source(formatted.response["body"])
+            + body_source(formatted.response["body"],
+                          budget=None if formatted.response["body"]["additional_definitions"] else entry_budget)
             + "%I.\n"
         )
         definition_introduction_source(definition, name)
