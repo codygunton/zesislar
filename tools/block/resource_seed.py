@@ -203,6 +203,16 @@ def seed_owned_resources(seed, *, entry_pc, vocabulary, constants=None, facts=()
                 raise ValueError('An end bound needs a bound fact and provenance')
             state.source_intervals.append({'end_bound': dict(end_bound), 'origin': fact['origin'],
                                            'fact_id': fact['fact_id']})
+        for key in ('low_bound', 'offset_minimum'):
+            row = fact.get('terms', {}).get(key)
+            if row is not None and fact.get('status') == 'supplied':
+                # A domain relation `L <= base` of an owned array's address (entry_interface_inputs.py) or a
+                # call row's minimum of a fresh result-word offset (call_boundary.py):
+                # symbolic_state._placed_low_refutation reads both beside an access row.
+                if fact.get('kind') != 'bounds' or not fact.get('origin'):
+                    raise ValueError('A %s needs a bound fact and provenance' % key.replace('_', ' '))
+                state.source_intervals.append({key: dict(row), 'origin': fact['origin'],
+                                               'fact_id': fact['fact_id']})
         alignment = fact.get('terms', {}).get('alignment')
         if alignment is not None and fact.get('status') in ('supplied', 'derived-by-pass'):
             if fact.get('kind') != 'alignment' or not fact.get('origin'):
