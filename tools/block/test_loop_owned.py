@@ -157,6 +157,32 @@ class SeedTest(unittest.TestCase):
         self.assertIn('loop_owned_20_fact_0', ids)
         self.assertEqual([resource.id for resource in nested.resources], ['loop_owned_0', 'loop_owned_20_0'])
 
+    def test_an_owned_resource_minimum_is_an_entry_fact_and_a_bounds_fact(self):
+        # txAccessList +0x448: the spare capacity (cap - len) * 40 holds at least one entry for the +0x460 stores.
+        public = {'schema': 'h1-public-entry-seed.v1', 'entry_pc': '0x10', 'source_bindings': [],
+                  'assertion_tree': {'kind': 'exists', 'binders': [], 'components': [
+                      {'kind': 'opaque', 'id': 'true', 'coq': 'True'}]}}
+        public['_input_sha256'] = '0' * 64
+        seed = seed_owned_resources(public, entry_pc=0x10, vocabulary={'rows': []})
+        owned = {'binders': [{'name': 's', 'type': 'ArrayListState'}], 'replaces': [],
+                 'resources': [{'coq': '(arrayListPointer s) ↦ₘ? ((arrayListCapacity s - arrayListLength s) * 40)',
+                                'minimum': 40}]}
+        rebuilt = owned_seed(seed, design(owned=owned, facts=[]), 0x10, {'rows': []})
+        texts = [str(c['seed_component'].get('original_component', c['seed_component'].get('coq')))
+                 for c in rebuilt.ownership['components']]
+        self.assertIn('⌜(40 <= (arrayListCapacity s - arrayListLength s) * 40)%Z⌝', texts)
+        bounds, = [fact for fact in rebuilt.facts if fact['fact_id'] == 'loop_owned_0:minimum']
+        self.assertEqual((bounds['kind'], bounds['terms']['resource_id'], bounds['terms']['count']),
+                         ('bounds', 'loop_owned_0', 40))
+        with self.assertRaises(ValueError):
+            owned_seed(seed, design(owned={**owned, 'resources': [{'coq': 'arrayListBuffer 40 3 s', 'minimum': 40}]},
+                                    facts=[]), 0x10, {'rows': []})
+        row = {'id': 'j', 'request': None, 'at': {'pc': '+0x20', 'boundary': 'join', 'predecessors': ['+0x8', '+0xc']},
+               'binders': [{'name': 's', 'type': 'ArrayListState'}], 'facts': [],
+               'resources': [{'coq': 'p ↦ₘ? 8', 'minimum': 0}]}
+        with self.assertRaisesRegex(annotations.AnnotationError, 'minimum a positive integer'):
+            annotations._join_owned(row)
+
     def test_a_pure_fact_keeps_the_text_the_join_gave_it(self):
         # The join before the head dropped the binder `kept` and moved its fact into its history (here
         # `⌜True⌝`); the owned seed must not restore the root's text, which names an unbound binder.
@@ -262,10 +288,47 @@ class JoinOwnedTest(unittest.TestCase):
         self.assertIn('arrayListBuffer 40 3 list_state', texts)
         self.assertIn('⌜arrayListLength list_state = n⌝', texts)
         self.assertIn('⌜r = 1⌝', texts)
+        # under an id of this seed, so a join below adds its own join_relation_0
+        self.assertIn('join_42c_join_relation_0', [c['id'] for c in rebuilt.ownership['components']])
         self.assertEqual((rebuilt.join_kind, rebuilt.join_edges, rebuilt.join_witness_plan),
                          ('call_return', [{'predecessor_pc': '0x400'}], {'x': 1}))
         binder, = [binder for binder in rebuilt.ownership['binders'] if binder['name'] == 'list_state']
         self.assertTrue(binder['owned'])
+
+    def test_a_resource_at_a_source_constant_gets_its_numeric_base(self):
+        from loop_design import owned_join_seed
+        public = {'schema': 'h1-public-entry-seed.v1', 'entry_pc': '0x42c', 'source_bindings': [],
+                  'assertion_tree': {'kind': 'exists', 'binders': [], 'components': [
+                      {'kind': 'opaque', 'id': 'true', 'coq': 'True'}]}}
+        public['_input_sha256'] = '0' * 64
+        seed = seed_owned_resources(public, entry_pc=0x42c, vocabulary={'rows': []})
+        owned = {'binders': [{'name': 'scratch', 'type': 'list byte'}],
+                 'resources': [{'coq': 'extraAddress ↦ₘ∗ scratch', 'length': '8'}], 'replaces': [], 'facts': [],
+                 'predecessors': ['0400', '0428']}
+        constants = {'extraAddress': {'value': 0xa0000f00, 'origin': {'source': 'test'}}}
+        bases = [resource.base.value for resource in owned_join_seed(seed, owned, 0x42c, {'rows': []},
+                                                                     constants=constants).resources]
+        self.assertEqual(bases, [0xa0000f00])
+        bases = [resource.base.value for resource in owned_join_seed(seed, owned, 0x42c, {'rows': []}).resources]
+        self.assertEqual(bases, ['(Z_to_bv 64%N (extraAddress))'])
+
+    def test_a_register_placeholder_is_the_join_registers_value(self):
+        from loop_design import owned_join_seed
+        public = {'schema': 'h1-public-entry-seed.v1', 'entry_pc': '0x448', 'source_bindings': [],
+                  'assertion_tree': {'kind': 'exists', 'binders': [], 'components': [
+                      {'kind': 'opaque', 'id': 'true', 'coq': 'True'}]}}
+        public['_input_sha256'] = '0' * 64
+        seed = seed_owned_resources(public, entry_pc=0x448, vocabulary={'rows': []})
+        seed.state.registers['x11'] = input_expr('machine_x11', 64)
+        owned = {'binders': [{'name': 'grown', 'type': 'ArrayListState'}], 'resources': ['arrayListBuffer 40 3 grown'],
+                 'replaces': [], 'facts': [{'coq': 'bv_unsigned {x11} = arrayListPointer grown'}],
+                 'predecessors': ['0264', '043c']}
+        rebuilt = owned_join_seed(seed, owned, 0x448, {'rows': []})
+        texts = [str(c['seed_component'].get('coq')) for c in rebuilt.ownership['components']]
+        self.assertIn('⌜bv_unsigned (machine_x11) = arrayListPointer grown⌝', texts)
+        with self.assertRaisesRegex(ValueError, 'register the join does not hold'):
+            owned_join_seed(seed, {**owned, 'facts': [{'coq': 'bv_unsigned {x12} = arrayListPointer grown'}]},
+                            0x448, {'rows': []})
 
 
 if __name__ == '__main__':
