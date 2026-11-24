@@ -1609,6 +1609,7 @@ Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Evidence.Block2Core.
 Require ZesuSsz.Automation2.ContextCollection.
 Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.FailureMemo.
 Import ListNotations.
 Local Open Scope Z_scope.
 
@@ -1905,9 +1906,16 @@ Ltac zesu_region_fault_library_solve :=
    a negated inequality closed dead decodeItem 6ac4 paths. When bv_solve
    fails both, the library lia tries them: the project lia failed the
    region-fault bound of decodeParentHeader 0300 that the library lia proves. *)
+(* A memory access's fault assertion is tried on `WPasm _ ∧ True` and again
+   on `WPasm _` after Lithium split the conjunction, with the same bound; the
+   two contexts differ outside the arithmetic (txAccessList 01bc, bench r30:
+   the failure-memo keys of the pairs share the goal and the hypothesis count
+   and differ in the context). After `prepare` only the arithmetic remains,
+   so the failure memo (FailureMemo.v) keyed there fails the repeat at once. *)
 Ltac zesu_region_fault_arithmetic_full :=
   zesu_region_fault_prepare;
-  first [bv_solve |
+  let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "zesu_region_fault_arithmetic" tac) in
+  memo ltac:(first [bv_solve |
     match goal with Hnegative : ~ ?bound |- _ =>
       zesu_region_arithmetic_statement bound;
       lazymatch bound with @eq _ _ _ => fail | _ => idtac end;
@@ -1918,7 +1926,7 @@ Ltac zesu_region_fault_arithmetic_full :=
       zesu_region_arithmetic_statement bound;
       lazymatch bound with @eq _ _ _ => fail | _ => idtac end;
       exfalso; apply Hnegative; zesu_region_fault_library_solve
-    end].
+    end]).
 
 (* The arithmetic first reads only the facts its bound reaches: the local
    definitions the bound mentions are unfolded in the bound, the facts that
