@@ -691,7 +691,8 @@ def symbolized_goal_text(d, header, name, statement):
         return goal_text(header, name, statement)
     sys.path.insert(0, str(ROOT / "tools/oblig"))
     import symbolize
-    return goal_text(symbolize.with_require(header), name, symbolize.statement(statement, symbolize.table())[0])
+    rewritten = symbolize.statement(statement, symbolize.table(), symbolize.sections())[0]
+    return goal_text(symbolize.with_require(header), name, rewritten)
 
 
 def module_path(residuals, module):
