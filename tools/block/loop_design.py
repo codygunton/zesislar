@@ -202,8 +202,9 @@ def owned_seed(seed, design, head, vocabulary):
                if _words(row['coq']) & names and '{x' not in row['coq']]
     nodes[terminal:terminal] = [owned_node(row, index) for index, row in enumerate(owned['resources'])] + carried
     binders = [{key: value for key, value in binder.items() if key != 'scope'} for binder in seed.ownership['binders']]
-    binders += [{'name': row['name'], 'type': row['type'], 'expression': input_expr(row['name'], None).to_dict()}
-                for row in owned.get('binders', [])]
+    # `owned`: a ghost binder of the loop's owned state; a join or loop head below keeps it (drop_unheld_binders).
+    binders += [{'name': row['name'], 'type': row['type'], 'expression': input_expr(row['name'], None).to_dict(),
+                 'owned': True} for row in owned.get('binders', [])]
     # A register's witness that no binder row expresses (a binder of an earlier seed the join kept by name)
     # gets one; the registers themselves are the loop-head state's (below).
     named = {binder['name'] for binder in binders if 'expression' in binder}
