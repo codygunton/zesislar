@@ -30,7 +30,8 @@
   "hist_visible": [
     "^\\(?frame_old_m\\d+'* = ",
     "^\\W*bv_unsigned call_x10 = 0\\W*$",
-    "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$"
+    "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$",
+    "^\\W*arrayListWellFormed \\w+ \\w+\\W*$"
   ],
   "args_type": "TxAccessListArgs",
   "symbol": "rlp_decode.txAccessList",
@@ -1418,6 +1419,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "ff8a1e76b0e96f642c8872d47a96a9fbf9e0658b66fa89b279d064dab1715328"
+    "sha256": "7ee0323d3dd71a75cc6b2a5dc41c21d77431da3c11f575d38f78d728d595c449"
   }
 }

@@ -25,7 +25,8 @@
   "hist_visible": [
    "^\\(?frame_old_m\\d+'* = ",
    "^\\W*bv_unsigned call_x10 = 0\\W*$",
-   "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$"
+   "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$",
+   "^\\W*arrayListWellFormed \\w+ \\w+\\W*$"
   ],
   "args_type": "TxAccessListArgs",
   "symbol": "rlp_decode.txAccessList",
