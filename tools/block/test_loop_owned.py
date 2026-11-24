@@ -157,6 +157,26 @@ class SeedTest(unittest.TestCase):
         self.assertIn('loop_owned_20_fact_0', ids)
         self.assertEqual([resource.id for resource in nested.resources], ['loop_owned_0', 'loop_owned_20_0'])
 
+    def test_a_pure_fact_keeps_the_text_the_join_gave_it(self):
+        # The join before the head dropped the binder `kept` and moved its fact into its history (here
+        # `⌜True⌝`); the owned seed must not restore the root's text, which names an unbound binder.
+        public = {'schema': 'h1-public-entry-seed.v1', 'entry_pc': '0x10', 'source_bindings': [],
+                  'assertion_tree': {'kind': 'exists', 'binders': [
+                      {'name': 'kept', 'type': 'bv 64', 'expression': input_expr('kept', 64).to_dict()}],
+                      'components': [
+                          {'kind': 'uninitialized_memory', 'id': 'frame', 'original_component': '(sp - 448) ↦ₘ? 24',
+                           'address_z': 'sp - 448', 'length_original_coq': '24'},
+                          {'kind': 'opaque', 'id': 'kept_value', 'coq': '⌜(zesu_named_eq kept 1)⌝'},
+                          {'kind': 'opaque', 'id': 'true', 'coq': 'True'}]}}
+        public['_input_sha256'] = '0' * 64
+        seed = seed_owned_resources(public, entry_pc=0x10, vocabulary={'rows': []})
+        component = next(row for row in seed.ownership['components'] if row['id'] == 'kept_value')
+        component['source'] = '⌜True⌝'
+        seed.ownership['binders'] = [row for row in seed.ownership['binders'] if row['name'] != 'kept']
+        rebuilt = owned_seed(seed, design(owned=OWNED), 0x10, {'rows': []})
+        texts = {c['id']: c['seed_component'].get('coq') for c in rebuilt.ownership['components']}
+        self.assertEqual(texts['kept_value'], '⌜True⌝')
+
 
 if __name__ == '__main__':
     unittest.main()

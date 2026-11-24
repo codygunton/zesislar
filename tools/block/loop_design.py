@@ -194,6 +194,16 @@ def owned_seed(seed, design, head, vocabulary):
     removed = set(replaced_components(owned, sources))
     nodes = [{**component['seed_component'], 'id': component['id']} for component in seed.ownership['components']
              if component['id'] not in removed]
+    # A pure fact keeps the text the join gave it (a fact of a binder the join dropped is in its hidden
+    # history group or `⌜True⌝`), not its text in the root seed.
+    texts = {component['id']: component.get('source') for component in seed.ownership['components']}
+    for node in nodes:
+        text = texts.get(node['id'])
+        if (node.get('kind') == 'opaque' and str(node.get('coq', '')).startswith('⌜')
+                and isinstance(text, str) and text.startswith('⌜') and text != node['coq']):
+            node['coq'] = text
+            if 'original_component' in node:
+                node['original_component'] = text
     # Before the closing component (`True`, or the continuation `K` of a seed that carries it).
     terminal = next((index for index, node in enumerate(nodes) if node.get('coq') in ('True', 'K')), len(nodes))
     names = {row['name'] for row in owned.get('binders', [])}
