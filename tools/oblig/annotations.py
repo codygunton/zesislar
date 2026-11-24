@@ -101,6 +101,10 @@ lets bound before every row's binders (a contract's `args` record from the entry
 takes a JSON list `[coqc, flag, ...]` (a render's coqc-args.json) whose load paths the imports need.
 Each fact is evaluated with `Eval vm_compute in bool_decide (...)`. One false fact rejects the row and names
 its input; a fact that does not elaborate (a contract name the snapshot cannot give) is reported unchecked.
+A `potential` row (its own binders, else those of the cut's loop_cut row) is tested against the fetch
+count of each run that returned (`RUN/exec/<input>/RESULT.json`, `insns`): at every visit of the cut, the
+instructions executed from that visit to the function return, both included, are at most the potential,
+and at the first visit after a loop entry at most the `entry_bound` too.
 """
 from pathlib import Path
 import argparse
@@ -683,13 +687,26 @@ def test_rows(data, run, row_ids=None, coqc=None):
                 if row['at']['boundary'] == 'join' and row['at'].get('predecessors')}
     with tempfile.TemporaryDirectory() as directory:
         for row in rows:
-            if not row.get('facts'):
+            if not row.get('facts') and not row.get('potential'):
                 continue
+            if row.get('potential') and not row.get('binders'):
+                # A potential row without binders is over the binders (and loop entry) of the cut's row.
+                cut = next((other for other in data['rows'] if other.get('binders') and other['at']['pc'] ==
+                            row['at']['pc'] and other['at']['boundary'] == 'loop_cut'), {})
+                row = {**row, 'at': {**cut.get('at', {}), **row['at']}, 'binders': cut.get('binders', [])}
             visits = snapshots(run, row)
             if not visits:
                 untested.append(row['id'])
                 continue
-            facts = list(row['facts'])
+            if row.get('potential'):
+                result = test_potential(row, run, visits, coqc, directory, imports, lets)
+                if result.get('verdict') == 'rejected':
+                    return result
+                checked += result['checked']
+                unchecked += result['unchecked']
+            facts = list(row.get('facts', []))
+            if not facts:
+                continue
 
             def terms_of(facts):
                 return [fact_term(row, fact, entry, visit, start, lets)
@@ -738,6 +755,49 @@ def join_coverage(run, row):
             source = max(before)[1] if before else 'unattributed'
             counts[source] = counts.get(source, 0) + 1
     return counts
+
+
+def fetch_counts(run):
+    """{input id: instructions the run executed} of every RUN/exec/<dir>/RESULT.json that returned."""
+    counts = {}
+    for path in sorted(Path(run, 'exec').glob('*/RESULT.json')):
+        result = json.loads(path.read_text())
+        if result.get('stop') == 'returned':
+            counts[result.get('input', path.parent.name)] = result['insns']
+    return counts
+
+
+def test_potential(row, run, visits, coqc, directory, imports=(), lets=()):
+    """The potential row's bound on the machine runs: at each visit of the cut, the instruction fetches
+    from that visit to the function return (the visit's own instruction and the return included:
+    `insns - insn + 1`, `insn` counting the visit's instruction) are at most the potential; at the
+    first visit after each loop entry they are at most the `entry_bound` as well. A run that did not
+    return gives no count. A term that does not elaborate is unchecked."""
+    counts = fetch_counts(run)
+    terms, labels = [], []
+    for input_id, entry, visit, start in visits:
+        if input_id not in counts:
+            continue
+        fetches = counts[input_id] - visit['insn'] + 1
+        bounds = [('potential', row['potential'])]
+        # snapshots() gives the loop-entry visit's own register map as the entry registers.
+        if row.get('entry_bound') and entry is visit['regs']:
+            bounds.append(('entry_bound', row['entry_bound']))
+        for kind, text in bounds:
+            fact = {'coq': '(%d <= (%s))%%Z' % (fetches, text)}
+            terms.append(fact_term(row, fact, entry, visit, start, lets))
+            labels.append((input_id, visit, kind, text, fetches))
+    values = evaluate(terms, coqc, directory, imports=imports) if terms else []
+    checked, unchecked = 0, []
+    for (input_id, visit, kind, text, fetches), value in zip(labels, values):
+        if value is True:
+            checked += 1
+        elif value is False:
+            return {'verdict': 'rejected', 'row': row['id'], 'input': input_id, 'visit': visit.get('visit'),
+                    'pc': row['at']['pc'], 'fact': '%s: %d fetches to the return > %s' % (kind, fetches, text)}
+        else:
+            unchecked.append({'row': row['id'], 'input': input_id, 'fact': '%s %s' % (kind, text), 'error': value})
+    return {'checked': checked, 'unchecked': unchecked}
 
 
 def main():
