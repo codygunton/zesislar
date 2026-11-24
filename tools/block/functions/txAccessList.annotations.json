@@ -526,11 +526,17 @@
      },
      {
       "spec": "altFlAllocatorObject (bv_unsigned (argv !!! 1%nat)) context",
-      "use": "framed"
+      "use": "framed",
+      "caller": [
+       "bv_unsigned (txAllocatorPointer args) ↦ₘ∗ altFlAllocatorBytes (bv_unsigned (txAllocatorContext args))"
+      ]
      },
      {
       "spec": "altFlVtable",
-      "use": "framed"
+      "use": "framed",
+      "caller": [
+       "sym_alt_fl_alloc_vtable ↦ₘ∗ altFlVtableBytes"
+      ]
      },
      {
       "spec": "altFlHeap",
@@ -606,11 +612,17 @@
      },
      {
       "spec": "altFlAllocatorObject (bv_unsigned (argv !!! 2%nat)) context",
-      "use": "framed"
+      "use": "framed",
+      "caller": [
+       "bv_unsigned (txAllocatorPointer args) ↦ₘ∗ altFlAllocatorBytes (bv_unsigned (txAllocatorContext args))"
+      ]
      },
      {
       "spec": "altFlVtable",
-      "use": "framed"
+      "use": "framed",
+      "caller": [
+       "sym_alt_fl_alloc_vtable ↦ₘ∗ altFlVtableBytes"
+      ]
      },
      {
       "spec": "altFlHeap",
@@ -680,11 +692,17 @@
      },
      {
       "spec": "altFlAllocatorObject (bv_unsigned (argv !!! 2%nat)) context",
-      "use": "framed"
+      "use": "framed",
+      "caller": [
+       "bv_unsigned (txAllocatorPointer args) ↦ₘ∗ altFlAllocatorBytes (bv_unsigned (txAllocatorContext args))"
+      ]
      },
      {
       "spec": "altFlVtable",
-      "use": "framed"
+      "use": "framed",
+      "caller": [
+       "sym_alt_fl_alloc_vtable ↦ₘ∗ altFlVtableBytes"
+      ]
      },
      {
       "spec": "altFlHeap",

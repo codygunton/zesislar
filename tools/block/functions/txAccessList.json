@@ -506,11 +506,17 @@
         },
         {
           "spec": "altFlAllocatorObject (bv_unsigned (argv !!! 1%nat)) context",
-          "use": "framed"
+          "use": "framed",
+          "caller": [
+            "bv_unsigned (txAllocatorPointer args) \u21a6\u2098\u2217 altFlAllocatorBytes (bv_unsigned (txAllocatorContext args))"
+          ]
         },
         {
           "spec": "altFlVtable",
-          "use": "framed"
+          "use": "framed",
+          "caller": [
+            "sym_alt_fl_alloc_vtable \u21a6\u2098\u2217 altFlVtableBytes"
+          ]
         },
         {
           "spec": "altFlHeap",
@@ -572,11 +578,17 @@
         },
         {
           "spec": "altFlAllocatorObject (bv_unsigned (argv !!! 2%nat)) context",
-          "use": "framed"
+          "use": "framed",
+          "caller": [
+            "bv_unsigned (txAllocatorPointer args) \u21a6\u2098\u2217 altFlAllocatorBytes (bv_unsigned (txAllocatorContext args))"
+          ]
         },
         {
           "spec": "altFlVtable",
-          "use": "framed"
+          "use": "framed",
+          "caller": [
+            "sym_alt_fl_alloc_vtable \u21a6\u2098\u2217 altFlVtableBytes"
+          ]
         },
         {
           "spec": "altFlHeap",
@@ -632,11 +644,17 @@
         },
         {
           "spec": "altFlAllocatorObject (bv_unsigned (argv !!! 2%nat)) context",
-          "use": "framed"
+          "use": "framed",
+          "caller": [
+            "bv_unsigned (txAllocatorPointer args) \u21a6\u2098\u2217 altFlAllocatorBytes (bv_unsigned (txAllocatorContext args))"
+          ]
         },
         {
           "spec": "altFlVtable",
-          "use": "framed"
+          "use": "framed",
+          "caller": [
+            "sym_alt_fl_alloc_vtable \u21a6\u2098\u2217 altFlVtableBytes"
+          ]
         },
         {
           "spec": "altFlHeap",
@@ -933,6 +951,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "2fdcad4609d2ba8839279261a13d4896ee0a3e323d9ff9b2d59a02f1fd7446f8"
+    "sha256": "5802e0b8fa2b16df1001f25f0235ac8e5d3c0791c71e85cd341172470913fa46"
   }
 }
