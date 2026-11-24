@@ -100,6 +100,19 @@ class MachineRuns(unittest.TestCase):
                         self.assertEqual((res['oob_reads'], res['writes_oob']), (0, []))
                         self.assertTrue(all('note' not in a for a in res['allocator']), res['allocator'])
 
+    def test_decode_item_inputs(self):
+        got = self.results('decodeItem', at=[0xc4, 0x164])
+        for rid, res in got.items():
+            with self.subTest(rid):
+                self.assertEqual(res['stop'], 'returned')
+                self.assertIsNot(res['expect_ok'], False, res['outcome'])
+                self.assertEqual((res['oob_reads'], res['writes_oob']), (0, []))
+                self.assertTrue(res['sp_restored'] and res['callee_saved_ok'])
+        # Both length-of-length loops run once per length byte, 8 at most; the longest run fetches 75.
+        self.assertEqual(got['long_string_lol8_too_long']['visits']['+0x00c4'], 8)
+        self.assertEqual(got['long_list_lol8_too_long']['visits']['+0x0164'], 8)
+        self.assertEqual(max(res['insns'] for res in got.values()), 75)
+
     def test_offsets_outside_function_refused(self):
         size = self.elf.symbols['rlp_decode.txAccessList'][1]
         self.assertEqual(run.parse_offsets('+0xc4,0x18c', size), [0xc4, 0x18c])
