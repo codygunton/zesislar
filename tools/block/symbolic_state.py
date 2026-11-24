@@ -1153,6 +1153,143 @@ def _source_comparison_refutation(condition, rows):
             'source_intervals': [rows[index] for index in sorted(indices)]}
 
 
+def _peel(expression):
+    """(core, k): an expression as `core + k` through zero extensions and constant additions."""
+    offset = 0
+    while True:
+        if expression.op == 'zero_extend' and len(expression.args) == 1:
+            expression = expression.args[0]
+        elif expression.op == 'bvadd' and len(expression.args) == 2 and expression.args[1].op == 'bits':
+            offset += expression.args[1].value
+            expression = expression.args[0]
+        else:
+            return expression, offset
+
+
+def _placed_end_refutation(initial, instruction_index, condition):
+    """The evidence that a path guard `address + n > E` is false, or None.
+
+    Two rows only: an access row (profile `access_placements`) at this instruction places the load in
+    an owned initialized array (the address is that array's base plus a symbolic rest plus a constant),
+    and a supplied domain relation `base + length <= E` of that array (a source row `end_bound`, from
+    entry_interface_inputs.py). A byte of the array lies below its end, so the load ends at or below E."""
+    placements = ACCESS_PLACEMENTS.get(instruction_index, ())
+    bounds = [row for row in initial.source_intervals if 'end_bound' in row]
+    if not placements or not bounds:
+        return None
+    negated = condition.op == 'not' and len(condition.args) == 1
+    comparison = condition.args[0] if negated else condition
+    if len(comparison.args) != 2:
+        return None
+    left, right = comparison.args
+    # The guard as the claim `high > low`.
+    claims = {('bvule', True): (left, right), ('bvsle', True): (left, right),
+              ('bvugt', False): (left, right), ('bvsgt', False): (left, right),
+              ('bvuge', True): (right, left), ('bvsge', True): (right, left),
+              ('bvult', False): (right, left), ('bvslt', False): (right, left)}
+    claim = claims.get((comparison.op, negated))
+    if claim is None:
+        return None
+    (address, _), (bound, bound_offset) = _peel(claim[0]), _peel(claim[1])
+    if bound_offset:
+        return None
+    terms, _ = _addends(address)
+    for row in bounds:
+        if Expr.from_dict(row['end_bound']['bound']) != bound:
+            continue
+        base = Expr.from_dict(row['end_bound']['base'])
+        for region in initial.memory:
+            if region.byte_array is None or region.ownership_id is None or region.uninitialized \
+                    or region.base != base:
+                continue
+            array = _array_text(region.byte_array.value if region.byte_array.op == 'input' else region.byte_array.coq())
+            placement = next((item for item in placements if _array_text(item['array']) == array), None)
+            rest = list(terms)
+            if placement is None or any(term not in rest or rest.remove(term) for term in _addends(base)[0]) \
+                    or not rest:
+                continue
+            return {'rule': 'placed_load_below_array_end', 'condition': condition.to_dict(),
+                    'owner': region.ownership_id, 'placement': dict(placement), 'end_bound': row}
+    return None
+
+
+def _refute_placed_past_end(initial, evaluator):
+    """Stop a path whose guard puts a placed load past its array's domain end (`_placed_end_refutation`).
+    A rendering choice only: the report keeps the guard as an open obligation, so the block proof
+    discharges that trace case itself, and a wrong row shows up as an open goal."""
+    if evaluator.status != 'complete':
+        return
+    for condition in evaluator.state.conditions:
+        if condition in initial.conditions:
+            continue
+        result = _placed_end_refutation(initial, evaluator.instruction_index, condition)
+        if result is not None:
+            evaluator.status = 'infeasible'
+            evaluator.report('placed_end_refutation', **result, proof_status='open',
+                             required_rocq_guard_projection=True, proof_premises_added=[])
+            return
+
+
+def _placed_low_refutation(initial, instruction_index, condition):
+    """The evidence that a path guard `address = c` is false, or None.
+
+    Three rows only: an access row (profile `access_placements`) at this instruction places the load in
+    an owned initialized array whose address is `base + rest + k` (rest one symbolic term, k a constant);
+    a supplied domain relation `L <= base` (a source row `low_bound`, from entry_interface_inputs.py);
+    and a supplied minimum `m <= rest` (a source row `offset_minimum`, a call row's `result_minimums`).
+    The address is at least L + m + k, so it differs from every constant c below that."""
+    placements = ACCESS_PLACEMENTS.get(instruction_index, ())
+    lows = [row for row in initial.source_intervals if 'low_bound' in row]
+    minimums = [row for row in initial.source_intervals if 'offset_minimum' in row]
+    if not placements or not lows or not minimums or condition.op != '=' or len(condition.args) != 2:
+        return None
+    left, right = condition.args
+    if left.op == 'bits':
+        left, right = right, left
+    if right.op != 'bits':
+        return None
+    address, offset = _peel(left)
+    terms, _ = _addends(address)
+    for low in lows:
+        base = Expr.from_dict(low['low_bound']['base'])
+        for region in initial.memory:
+            if region.byte_array is None or region.ownership_id is None or region.uninitialized \
+                    or region.base != base:
+                continue
+            array = _array_text(region.byte_array.value if region.byte_array.op == 'input' else region.byte_array.coq())
+            placement = next((item for item in placements if _array_text(item['array']) == array), None)
+            rest = list(terms)
+            if placement is None or any(term not in rest or rest.remove(term) for term in _addends(base)[0]) \
+                    or len(rest) != 1:
+                continue
+            for minimum in minimums:
+                if Expr.from_dict(minimum['offset_minimum']['expression']) != rest[0]:
+                    continue
+                least = low['low_bound']['minimum'] + minimum['offset_minimum']['minimum'] + offset
+                if right.value < least:
+                    return {'rule': 'placed_load_above_low_bound', 'condition': condition.to_dict(),
+                            'owner': region.ownership_id, 'placement': dict(placement), 'low_bound': low,
+                            'offset_minimum': minimum, 'least_address': least}
+    return None
+
+
+def _refute_placed_below_low(initial, evaluator):
+    """Stop a path whose guard equates a placed load's address with a constant below its least value
+    (`_placed_low_refutation`). A rendering choice only, like `_refute_placed_past_end`: the report keeps
+    the guard as an open obligation of the block proof."""
+    if evaluator.status != 'complete':
+        return
+    for condition in evaluator.state.conditions:
+        if condition in initial.conditions:
+            continue
+        result = _placed_low_refutation(initial, evaluator.instruction_index, condition)
+        if result is not None:
+            evaluator.status = 'infeasible'
+            evaluator.report('placed_low_refutation', **result, proof_status='open',
+                             required_rocq_guard_projection=True, proof_premises_added=[])
+            return
+
+
 def _apply_source_guard_facts(initial, evaluator):
     """Keep every new source pruning/rewrite obligation explicit for Rocq."""
     if evaluator.status != 'complete':
@@ -1191,6 +1328,8 @@ def evaluate_trace(source, state, *, live_registers=None, instruction_index=0, m
     results = []
     for evaluator in evaluators:
         _refute_ram_fault(source, state, evaluator)
+        _refute_placed_past_end(state, evaluator)
+        _refute_placed_below_low(state, evaluator)
         _apply_source_guard_facts(state, evaluator)
         _drop_source_implied_ram_guards(state, evaluator)
         if live_registers is not None:

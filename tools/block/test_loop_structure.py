@@ -240,9 +240,10 @@ class InferredRows(unittest.TestCase):
             rows = loop_head_rows(report, forward, Profile())
             self.assertEqual(rows['rows'], [])
             self.assertRegex(rows['inferred_refusals']['0x10'], 'exactly one entry edge')
-            # A hand design with the same defect still stops the render.
-            with self.assertRaisesRegex(ValueError, 'exactly one entry edge'):
-                loop_head_rows(report, forward, Profile(loop_designs=[{**inferred, 'inferred': False}]))
+            # A hand design whose head no entry edge reaches is a refused cut as well (00d624cef); a
+            # reached head with a defect still stops the render (test_loop_owned.py).
+            hand = loop_head_rows(report, forward, Profile(loop_designs=[{**inferred, 'inferred': False}]))
+            self.assertRegex(hand['inferred_refusals']['0x10'], 'exactly one entry edge')
             (Path(directory) / 'LOOP-DESIGNS.json').unlink()
             self.assertEqual(loop_head_rows(report, forward, Profile()),
                              {'schema': 'fp301-authenticated-loop-heads-v1', 'rows': []})

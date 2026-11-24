@@ -215,6 +215,15 @@ class Linear:
         return ({atom: c for atom, c in atoms.items() if c}, left[1] + scale * right[1])
 
 
+def _top_split(text, connective):
+    """The parts of `text` between its top-level occurrences of a two-character connective (`\\/`, `/\\`)."""
+    cuts = [position for position in _top_positions(text, connective[0])
+            if text[position + 1:position + 2] == connective[1]]
+    starts = [0] + [position + 2 for position in cuts]
+    ends = cuts + [len(text)]
+    return [normal(text[start:end]) for start, end in zip(starts, ends)]
+
+
 def comparisons(clause):
     """A conjunct `a <= b`, `a < b`, or a chain `a <= b <= c` as (left, relation, right) pairs."""
     text = normal(clause)
@@ -447,6 +456,66 @@ def domain(profile, contract, text, seed, constants, ram, notes=None):
                                         'scale': scale, 'offset': constant}},
                           'origin': {**clause(index), 'range': clause(low_from[quantity]),
                                      'derivation': 'the quantity lies in [0, 2^64), so its register value is it'}})
+            used.add(index)
+    # End bounds `bv_unsigned P + L <= bv_unsigned E` with P an owned initialized array's address and L
+    # one of its length spellings, or the right side of a conjunct `Z.of_nat (length V) = L` on its value:
+    # the array ends at or below E (symbolic_state._placed_end_refutation).
+    length_equations = {}
+    for index, item in enumerate(clauses):
+        match = re.fullmatch(r'Z\.of_nat \((?:List\.)?length \((.+)\)\) = (.+)', normal(item))
+        if match:
+            length_equations[(normal(match[1]), normal(match[2]))] = index
+    for index, item in enumerate(clauses):
+        pairs = comparisons(item) or []
+        if len(pairs) != 1 or pairs[0][1] != '<=':
+            continue
+        left, _, right = pairs[0]
+        plus = [position for position in _top_positions(left, '+')]
+        bound = re.fullmatch(r'bv_unsigned (.+)', right)
+        if len(plus) != 1 or bound is None:
+            continue
+        address, length = normal(left[:plus[0]]), normal(left[plus[0] + 1:])
+        owners = [node for node in components if node['kind'] == 'byte_array' and ranges[node['id']][0] == address
+                  and (length in ranges[node['id']][1]
+                       or (normal(Expr_value(node)), length) in length_equations)]
+        base = re.fullmatch(r'bv_unsigned (.+)', address)
+        if len(owners) != 1 or base is None:
+            continue
+        equation = length_equations.get((normal(Expr_value(owners[0])), length))
+        facts.append({'fact_id': 'wellformed:end-bound-%d' % index, 'kind': 'bounds', 'status': 'supplied',
+                      'terms': {'resource_id': owners[0]['id'], 'coq_statement': item, 'end_bound': {
+                          'base': input_expr(normal(base[1]), 64).to_dict(),
+                          'bound': input_expr(normal(bound[1]), 64).to_dict()}},
+                      'origin': {**clause(index), **({'length': clause(equation)} if equation is not None else {}),
+                                 'derivation': 'the owned array at the address with that length ends at or '
+                                               'below the bound'}})
+        used.add(index)
+    # Low bounds `L <= bv_unsigned P` with P an owned initialized array's address and L closed: a conjunct,
+    # or a disjunction each of whose alternatives has such a conjunct (L the least of them); the array
+    # starts at or above L (symbolic_state._placed_low_refutation).
+    addresses_ = {ranges[node['id']][0]: node for node in components if node['kind'] == 'byte_array'}
+    for index, item in enumerate(clauses):
+        least = None
+        for alternative in _top_split(normal(item), '\\/'):
+            found = {}
+            for part in _top_split(_strip_enclosure(alternative), '/\\'):
+                for left, relation, right in comparisons(part) or []:
+                    value, address = closed_value(left, constants), normal(right)
+                    if value is not None and address in addresses_:
+                        found[address] = max(found.get(address, value), value + (relation == '<'))
+            if least is None:
+                least = found
+            else:
+                least = {address: min(value, found[address]) for address, value in least.items() if address in found}
+        for address, value in sorted((least or {}).items()):
+            base = re.fullmatch(r'bv_unsigned (.+)', address)
+            if base is None or value <= 0:
+                continue
+            facts.append({'fact_id': 'wellformed:low-bound-%d' % index, 'kind': 'bounds', 'status': 'supplied',
+                          'terms': {'resource_id': addresses_[address]['id'], 'coq_statement': item, 'low_bound': {
+                              'base': input_expr(normal(base[1]), 64).to_dict(), 'minimum': value}},
+                          'origin': {**clause(index), 'derivation': 'every alternative of the clause bounds the '
+                                                                    'owned array address from below; the least'}})
             used.add(index)
     # Alignments and intervals of fixed register quantities (and, below, of word-link quantities).
     for index, item in enumerate(clauses):
