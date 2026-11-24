@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "function": "array_list.Aligned([32]u8,null).ensureTotalCapacity",
+  "scope_id": "keysEnsureCapacity-function-support-v1",
+  "inventory_only": true,
+  "contracts": [
+    "ZesuSsz/Contracts/KeysEnsureCapacityBlockEntries.v",
+    "ZesuSsz/Contracts/KeysEnsureCapacityCallSpec2.v",
+    "ZesuSsz/Contracts/KeysEnsureCapacityContract.v",
+    "ZesuSsz/Contracts/KeysEnsureCapacitySelected.v"
+  ],
+  "introductions": [],
+  "exit_meanings": [],
+  "loop_steps": [],
+  "registrations": [
+    "ZesuSsz/Compliance/KeysEnsureCapacityCompositionBoundary.v",
+    "ZesuSsz/Compliance/KeysEnsureCapacityDomainRanges.v",
+    "ZesuSsz/Compliance/KeysEnsureCapacityUnfoldRegistrations.v"
+  ],
+  "generator_json": [],
+  "files": [
+    {"path": "ZesuSsz/Contracts/KeysEnsureCapacityBlockEntries.v", "category": "contracts", "scope": "whole_file", "text_kind": "hand_written"},
+    {"path": "ZesuSsz/Contracts/KeysEnsureCapacityCallSpec2.v", "category": "contracts", "scope": "whole_file", "text_kind": "hand_written"},
+    {"path": "ZesuSsz/Contracts/KeysEnsureCapacityContract.v", "category": "contracts", "scope": "whole_file", "text_kind": "hand_written"},
+    {"path": "ZesuSsz/Contracts/KeysEnsureCapacitySelected.v", "category": "contracts", "scope": "whole_file", "text_kind": "hand_written"},
+    {"path": "ZesuSsz/Compliance/KeysEnsureCapacityCompositionBoundary.v", "category": "registrations", "scope": "whole_file", "text_kind": "hand_written"},
+    {"path": "ZesuSsz/Compliance/KeysEnsureCapacityDomainRanges.v", "category": "registrations", "scope": "whole_file", "text_kind": "hand_written"},
+    {"path": "ZesuSsz/Compliance/KeysEnsureCapacityUnfoldRegistrations.v", "category": "registrations", "scope": "whole_file", "text_kind": "hand_written"}
+  ],
+  "attribution_note": "Whole-file keysEnsureCapacity ownership of the registration modules. The block callers import KeysEnsureCapacityHints.v, which is not listed here: the composition boundary module is not exported to the callers. This inventory does not authorize native launches."
+}
