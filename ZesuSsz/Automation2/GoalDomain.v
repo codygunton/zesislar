@@ -45,6 +45,21 @@ Ltac zesu_goal_domain_open :=
      end
     |progress (autounfold with zesu_goal_domain)].
 
+(* The goal is a sealed callee domain: it has a registered introduction.
+   Such a goal is opaque to every solver; `lia` or `bv_solve` on it only
+   search the context for a contradiction, which on a large context does not
+   end (Finish.v runs the introduction instead). *)
+Ltac zesu_goal_domain_sealed :=
+  lazymatch goal with
+  | |- ?goal =>
+      assert_succeeds (
+        let premise := fresh "premise" in
+        evar (premise : Prop);
+        let intro := fresh "intro" in
+        assert (intro : ZesuGoalDomainIntro goal premise)
+          by (unfold premise; typeclasses eauto))
+  end.
+
 (* lia and bv_solve never close an existential, nor a witness that `split`
    leaves as a goal of a type such as `bv 64`: on a large context they only
    search the whole context for a contradiction (a call's precondition
