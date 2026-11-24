@@ -640,7 +640,17 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         return ('pointer', row['pointer']) if 'pointer' in row else ('argument', row['argument'], row.get('offset', 0))
     design = {row['binder']: row for row in call.get('arrays', [])}
     windows = []
-    pre_arrays = {row['binder']: row for row in spec['pre']['arrays']}
+    # A pre array whose value is an expression of one pre binder (`arrayListHeaderBytes state`) is that
+    # binder's array: the design names the binder and its caller value.
+    pre_names = {name for name, _ in spec['pre_binders']}
+    pre_arrays = {}
+    for row in spec['pre']['arrays']:
+        if 'binder' not in row:
+            named = sorted(set(_atoms(row['value'])) & pre_names)
+            if len(named) != 1:
+                raise CallRefused('The spec array value names no single pre binder: ' + row['value'])
+            row = {**row, 'binder': named[0]}
+        pre_arrays[row['binder']] = row
     returned_at = {spot(row): row for row in spec['post']['arrays']}
     if set(design) != set(pre_arrays):
         raise CallRefused('The call design binds other arrays than the spec: ' + ', '.join(sorted(design)))
@@ -699,6 +709,25 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                                 % (window['base'], start, start, count, window['base'], whole)))
             continue
         post, post_value = returned_value(returned)
+        if 'value' in row and 'argument' in row:
+            # The whole caller array at the argument holds the spec value of the design's caller value
+            # (the header of a list the callee may change); it now holds the returned post value.
+            caller_value = design[binder].get('caller_value')
+            if caller_value is None:
+                raise CallRefused('The design names no caller value of the spec array ' + binder)
+            expected = _normal_text(substitute(row['value'], {binder: caller_value if re.fullmatch(
+                r"[\w']+", caller_value) else '(' + caller_value + ')'}))
+            address = operation('bvadd', state.registers[ARGUMENTS[row['argument']]], bits(row.get('offset', 0), 64))
+            owner = [resource for resource in resources.values() if resource.byte_array is not None
+                     and _offset(address, resource.base) == 0
+                     and _normal_text(_strip_enclosure(resource.byte_array.coq())) == expected]
+            if len(owner) != 1 or image.updates[owner[0].id] or not isinstance(owner[0].length, int):
+                raise CallRefused('The spec array %s has no unchanged caller array %s of a known length at argument %d'
+                                  % (binder, expected, row['argument']))
+            splits[owner[0].id] = {'whole': True, 'length': owner[0].length, 'pre': binder, 'post': post,
+                                   'post_value': post_value}
+            instantiation[binder] = caller_value
+            continue
         if 'constant' in row:
             # The callee takes the whole caller array at a fixed address (its pre binder is
             # that array's value) and returns the whole array with its post value.
