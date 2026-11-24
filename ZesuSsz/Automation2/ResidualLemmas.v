@@ -1,6 +1,7 @@
 From iris.proofmode Require environments.
 From Ltac2 Require Import Ltac2.
 Require Import ZesuSsz.Automation2.Telemetry.
+Require ZesuSsz.Automation2.ContextCollection.
 Set Default Proof Mode "Classic".
 
 (* Residual lemmas: the pure tier after the selected-facts solvers.
@@ -185,12 +186,23 @@ Ltac zesu_residual_exact lemma :=
    database from the context (measured: 80 hypotheses, empty database,
    `eauto 1` 1.2 ms a call, `typeclasses eauto 1` 5 us). A goal whose
    conclusion mentions a local definition gets one more try of both with the
-   definitions unfolded (unfolded once). Telemetry names each try:
-   kind=alt|altfail site=residual_hint|residual_exact|residual_unfolded. *)
+   definitions unfolded (unfolded once). A context with a fact above the node
+   limit gets a last try of all of these with the fact's pieces posed, as the
+   exporter states them (`ContextCollection.zesu_large_fact_pieces`, which
+   fails at once when there is no such fact). Telemetry names each try:
+   kind=alt|altfail
+   site=residual_hint|residual_exact|residual_unfolded|residual_pieces. *)
 Ltac zesu_residual_lemma :=
   first [zesu_talt residual_hint (idtac; solve [eauto 2 with nocore zesu_residual])
         | zesu_talt residual_exact (idtac; solve [typeclasses eauto 1 with zesu_residual_exact])
         | zesu_talt residual_unfolded (idtac;
             solve [zesu_residual_unfold_goal;
                    first [solve [eauto 2 with nocore zesu_residual]
-                         | solve [typeclasses eauto 1 with zesu_residual_exact]]])].
+                         | solve [typeclasses eauto 1 with zesu_residual_exact]]])
+        | zesu_talt residual_pieces (idtac;
+            solve [ZesuSsz.Automation2.ContextCollection.zesu_large_fact_pieces;
+                   first [solve [eauto 2 with nocore zesu_residual]
+                         | solve [typeclasses eauto 1 with zesu_residual_exact]
+                         | solve [zesu_residual_unfold_goal;
+                                  first [solve [eauto 2 with nocore zesu_residual]
+                                        | solve [typeclasses eauto 1 with zesu_residual_exact]]]]])].

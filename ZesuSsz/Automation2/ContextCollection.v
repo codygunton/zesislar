@@ -378,3 +378,53 @@ Ltac zesu_small_fact term :=
     if zesu_select_small 2048 (Option.get (Ltac1.to_constr fact)) then ()
     else Control.zero (Tactic_failure None)) in
   check term.
+
+(* The pieces of a fact above the node limit. Such a fact reaches neither a
+   solver nor a residual statement (ResidualExport.v), though its parts may
+   lie below the limit: an allocator token's range, say, whose size is a long
+   bitvector expression stated once per conjunct. Its pieces are the two
+   sides of `B ∧ C`, and `A → B` and `A → C` for `A → B ∧ C`, to any depth.
+   Only the exporter and the residual tier pose them: the exporter on a
+   context it then restores, the tier before its last try. The solvers never
+   see them, so their cost is unchanged. *)
+Ltac zesu_large_fact_split H :=
+  lazymatch type of H with
+  | _ /\ _ =>
+      let H1 := fresh H in
+      pose proof (proj1 H) as H1;
+      let H2 := fresh H in
+      pose proof (proj2 H) as H2;
+      clear H; zesu_large_fact_split H1; zesu_large_fact_split H2
+  | ?A -> _ /\ _ =>
+      let H1 := fresh H in
+      pose proof (fun a : A => proj1 (H a)) as H1;
+      let H2 := fresh H in
+      pose proof (fun a : A => proj2 (H a)) as H2;
+      clear H; zesu_large_fact_split H1; zesu_large_fact_split H2
+  | _ => idtac
+  end.
+
+Ltac2 zesu_large_fact_shape (typ : constr) : bool :=
+  lazy_match! typ with
+  | _ /\ _ => true
+  | _ -> _ /\ _ => true
+  | _ => false
+  end.
+
+(* Poses the pieces of every fact above the limit beside it. Whether there
+   was such a fact. *)
+Ltac2 zesu_large_fact_pieces () : bool :=
+  let split_fact := ltac1val:(fact |-
+    let pieces := fresh "Hpiece" in pose proof fact as pieces; zesu_large_fact_split pieces) in
+  List.fold_left (fun found declaration =>
+    let (name, body, typ) := declaration in
+    match body with
+    | Some _ => found
+    | None =>
+        if Bool.and (zesu_large_fact_shape typ) (Bool.neg (zesu_select_small 2048 typ))
+        then (Ltac1.run (split_fact (Ltac1.of_constr (Control.hyp name))); true)
+        else found
+    end) false (Control.hyps ()).
+
+Ltac zesu_large_fact_pieces :=
+  ltac2:(if zesu_large_fact_pieces () then () else Control.zero (Tactic_failure None)).
