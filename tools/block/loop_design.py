@@ -194,7 +194,8 @@ def owned_seed(seed, design, head, vocabulary):
     removed = set(replaced_components(owned, sources))
     nodes = [dict(component['seed_component']) for component in seed.ownership['components']
              if component['id'] not in removed]
-    terminal = next(index for index, node in enumerate(nodes) if node.get('coq') == 'True')
+    # Before the closing component (`True`, or the continuation `K` of a seed that carries it).
+    terminal = next((index for index, node in enumerate(nodes) if node.get('coq') in ('True', 'K')), len(nodes))
     names = {row['name'] for row in owned.get('binders', [])}
     carried = [{'kind': 'opaque', 'id': 'loop_owned_fact_%d' % index, 'coq': '⌜' + row['coq'] + '⌝'}
                for index, row in enumerate(design.get('facts', []))
