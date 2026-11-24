@@ -646,10 +646,10 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     pre_arrays = {}
     for row in spec['pre']['arrays']:
         if 'binder' not in row:
-            named = sorted(set(_atoms(row['value'])) & pre_names)
-            if len(named) != 1:
+            mentioned = sorted(set(_atoms(row['value'])) & pre_names)
+            if len(mentioned) != 1:
                 raise CallRefused('The spec array value names no single pre binder: ' + row['value'])
-            row = {**row, 'binder': named[0]}
+            row = {**row, 'binder': mentioned[0]}
         pre_arrays[row['binder']] = row
     returned_at = {spot(row): row for row in spec['post']['arrays']}
     if set(design) != set(pre_arrays):
@@ -715,8 +715,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             caller_value = design[binder].get('caller_value')
             if caller_value is None:
                 raise CallRefused('The design names no caller value of the spec array ' + binder)
-            expected = _normal_text(substitute(row['value'], {binder: caller_value if re.fullmatch(
-                r"[\w']+", caller_value) else '(' + caller_value + ')'}))
+            atom = caller_value if re.fullmatch(r"[\w']+", caller_value) else '(' + caller_value + ')'
+            expected = _normal_text(re.sub(r"(?<![\w'])" + re.escape(binder) + r"(?![\w'])", lambda _: atom, row['value']))
             address = operation('bvadd', state.registers[ARGUMENTS[row['argument']]], bits(row.get('offset', 0), 64))
             owner = [resource for resource in resources.values() if resource.byte_array is not None
                      and _offset(address, resource.base) == 0

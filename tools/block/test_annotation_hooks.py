@@ -444,6 +444,61 @@ class OpaqueAndReturnedCall(unittest.TestCase):
             self.run_call(opaque=self.ROWS, returns=[{'index': 0, 'register': 'x1'}])
 
 
+class ListHeaderCall(OpaqueAndReturnedCall):
+    """A spec array whose value is an expression of one pre binder (an array list header): the caller's
+    array of that value at the argument takes the returned post value."""
+    SPEC = '''Definition growSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (machine_call someMap 0
+    (fun argv sp RET =>
+      ∃ (state : ListState),
+      bv_unsigned (argv !!! 0%nat) ↦ₘ∗ listHeader state ∗
+      RET (fun rets =>
+        ∃ outcome : Outcome,
+        bv_unsigned (argv !!! 0%nat) ↦ₘ∗ listHeader (listAfter outcome) ∗
+        ⌜bv_unsigned (rets !!! 0%nat) = outcomeCode outcome⌝ ∗
+        True)))%I.
+'''
+
+    def fixture(self, directory):
+        fixture, state, call = super().fixture(directory)
+        from resource_seed import seed_owned_resources
+        public = {'_input_sha256': 'fixture', 'source_bindings': [{'path': 'fixture.v', 'sha256': 'fixture'}],
+                  'assertion_tree': {'kind': 'exists', 'binders': [], 'components': [
+                      *[{'id': name, 'kind': 'register', 'register': name, 'width': 64, 'value_coq': value,
+                         'symbolic_witness': None}
+                        for name, value in [('x1', 'ra'), ('x2', 'Z_to_bv 64 dst'), ('x10', 'Z_to_bv 64 dst')]],
+                      {'id': 'collection', 'kind': 'opaque', 'coq': 'reg_col (exact_regs args)'},
+                      {'id': 'list', 'kind': 'byte_array', 'original_component': 'dst ↦ₘ∗ listHeader lst',
+                       'address_z': 'dst', 'byte_array_expr': input_expr('listHeader lst', None).to_dict(),
+                       'element_bits': 8, 'length_original_coq': '24'},
+                      {'id': 'terminal', 'kind': 'opaque', 'coq': 'True'}]}}
+        root = seed_owned_resources(public, entry_pc=16, vocabulary=fixture['vocabulary'],
+                                    constants=fixture['constants'])
+        state = root.state.copy()
+        state.registers.update({'PC': bits(64, 64), **{'x%d' % number: bits(0, 64) for number in range(11, 18)}})
+        call.update(spec='growSpec', returns=[{'index': 0, 'register': 'x10'}])
+        return {**fixture, 'root_seed': root}, state, call
+
+    def test_without_rows_the_old_refusals_stay(self):
+        pass
+
+    def test_rows_frame_consume_and_produce_and_name_the_returned_register(self):
+        pass
+
+    def test_a_wrong_row_is_refused(self):
+        pass
+
+    def test_the_header_array_takes_the_post_value(self):
+        seed, public, _ = self.run_call(arrays=[{'binder': 'state', 'argument': 0, 'caller_value': 'lst'}])
+        nodes = {node['id']: node for node in public['assertion_tree']['components']}
+        self.assertEqual(nodes['list']['original_component'], 'dst ↦ₘ∗ (listHeader (listAfter (call_outcome)))')
+        self.assertIn('bv_unsigned call_x10 = outcomeCode (call_outcome)', nodes['call_facts']['coq'])
+
+    def test_another_caller_value_is_refused(self):
+        from call_boundary import CallRefused
+        with self.assertRaisesRegex(CallRefused, 'no unchanged caller array listHeader other'):
+            self.run_call(arrays=[{'binder': 'state', 'argument': 0, 'caller_value': 'other'}])
+
 class WordLinkAcrossCall(unittest.TestCase):
     """A root word link survives a call that leaves its array alone and is dropped when the spec
     replaces the array (wrong-output fix: the return seed used to drop every link)."""
