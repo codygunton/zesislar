@@ -32,8 +32,8 @@ from function_profiles import add_return_alignment, load_profile
 from loop_design import loop_head_seed, owned_join_seed
 from forward_resource_design import _state_from_result, evaluate_owned_function
 from forward_resources import apply_owned_writes, load_resource_vocabulary, render_resource_boundary
-from join_generalize import (common_root_ancestor, drop_root_resources, generalize_owned_join, inherited_drops,
-                             lift_call_return_edges, normalize, seed_record)
+from join_generalize import (common_root_ancestor, drop_root_resources, generalize_owned_join, held_texts,
+                             inherited_drops, lift_call_return_edges, normalize, owned_replaced_texts, seed_record)
 from resource_seed import configure_array_words, load_public_seed, seed_owned_resources
 import symbolic_state
 from system_shape_seed import seed_system_shapes
@@ -67,8 +67,17 @@ def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuat
 
     The join does not own the resources of a profile `join_drops` row whose root is the join's
     root, nor those an incoming edge's seed already dropped (`seed_drops`: seed -> component
-    texts of its root tree); plan row `drops` lists them for the blocks after the join."""
+    texts of its root tree); plan row `drops` lists them for the blocks after the join.
+
+    An owned join (profile `join_owned`) takes what its row `replaces` (exact component texts, or
+    {"id": component id}, the text of that id in each seed that has it) as drops of each edge that
+    holds it (lifted or on the join's root) and of the root, before the edges are generalized: its
+    edges may disagree on those resources (a grown buffer on one, the old one on another); each
+    predecessor proves the row's owned state from what it holds. An item no edge and no root holds
+    is refused."""
     pc = int(boundary['pc'], 0)
+    owned = next((design for suffix, design in (profile.get('join_owned', {}) if profile else {}).items()
+                  if profile.pc(suffix) == hex(pc)), None)
     incoming = [row for row in boundary['alternatives'] if row['predecessor_pc'] is not None
                 or row['seed_pc'] == boundary['pc'] and roots.get(boundary['pc']) == boundary['pc']]
     if not incoming or boundary['reaching_stops']:
@@ -76,25 +85,28 @@ def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuat
                          'incomplete incoming edges: ' + str(boundary['reaching_stops'][0]))
     origins = {row['seed_pc'] for row in incoming}
     lifted_binders = []
-    if len({roots.get(origin) for origin in origins}) != 1:
+    mixed = len({roots.get(origin) for origin in origins}) != 1
+    root = (common_root_ancestor(sorted({roots.get(origin) for origin in origins}), parents) if mixed
+            else roots[next(iter(origins))])
+    if root is None:
+        raise ValueError('join edges from different roots: ' + ', '.join(sorted(origins)))
+    replaced = owned_replaced_texts(owned, [seeds[root], *(seeds[origin] for origin in sorted(origins)
+                                                          if origin in seeds)])
+    if mixed:
         # Edges from different call-return roots join on their deepest common ancestor.
-        root = common_root_ancestor(sorted({roots.get(origin) for origin in origins}), parents)
-        if root is None:
-            raise ValueError('join edges from different roots: ' + ', '.join(sorted(origins)))
         try:
             drops = [{'root': profile.pc(item['root']), 'resources': item['resources']}
                      for item in (profile.get('join_drops', {}).get(profile.key(hex(pc)), [])
                                   if profile else [])]
             incoming, lifted_binders = lift_call_return_edges(incoming, seeds=seeds, roots=roots,
                                                               ancestor=root, vocabulary=vocabulary,
-                                                              drops=drops)
+                                                              drops=drops, replaced=replaced)
         except ValueError as error:
             raise ValueError('join lift to ' + root + ' refused: ' + str(error)) from error
-    else:
-        root = roots[next(iter(origins))]
     own = [text for item in (profile.get('join_drops', {}).get(profile.key(hex(pc)), []) if profile else [])
            if profile.pc(item['root']) == root for text in item['resources']]
     dropped = list(dict.fromkeys([*own, *inherited_drops(seeds[root], origins, seed_drops)]))
+    owned_drops = [text for text in held_texts(seeds[root], replaced) if text not in dropped]
     try:
         # Edges through an earlier join seed are aligned on their root seed's tree.
         designs = profile.get('join_designs', {}) if profile else {}
@@ -107,7 +119,7 @@ def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuat
                                                           if profile.pc(suffix) == hex(pc)), []),
                                        live_registers=live_registers, lifted_binders=lifted_binders,
                                        frame_writes=entry_hist.frame_writes(frames, report) if frames else (),
-                                       dropped=dropped)
+                                       dropped=[*dropped, *owned_drops])
     except ValueError as error:
         raise ValueError('join generalization refused: ' + str(error) + ' (edge seeds: ' +
                          ', '.join(sorted(origins)) + ')') from error
@@ -123,16 +135,16 @@ def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuat
                if joined['plan'].get(key)},
             **({'drops': dropped} if dropped else {})}
     seed = carry_common_word_links(incoming, joined['seed'])
-    owned = next((design for suffix, design in (profile.get('join_owned', {}) if profile else {}).items()
-                  if profile.pc(suffix) == hex(pc)), None)
     if owned:
         # An owned join (annotation row, loop_cut owned schema) is the root of the seeds after it, as an
         # owned loop head is; its parent is the root the join's edges share.
         try:
-            seed = owned_join_seed(seed, owned, pc, vocabulary)
+            # Its `replaces` items were dropped from the edges and the root above.
+            seed = owned_join_seed(seed, dict(owned, replaces=[]), pc, vocabulary)
         except ValueError as error:
             raise ValueError('owned join refused: ' + str(error)) from error
-        plan['owned'] = {'parent': root, 'binders': [row['name'] for row in owned['binders']]}
+        plan['owned'] = {'parent': root, 'binders': [row['name'] for row in owned['binders']],
+                         **({'replaced': replaced} if replaced else {})}
         return seed, hex(pc), plan
     return seed, root, plan
 
