@@ -100,6 +100,7 @@
   },
   "trace_namespace": "ZesuSsz.Stock.Closure",
   "cfg_function": "rlp_decode.txAccessList",
+  "duplicated_joins": ["+0x4b8"],
   "compliance": {
    "boundary": "ZesuSsz.Compliance.TxAccessListCompositionBoundary",
    "continuation": "txAccessListContinuation",

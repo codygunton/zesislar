@@ -105,6 +105,9 @@
   },
   "trace_namespace": "ZesuSsz.Stock.Closure",
   "cfg_function": "rlp_decode.txAccessList",
+  "duplicated_joins": [
+    "+0x4b8"
+  ],
   "compliance": {
     "boundary": "ZesuSsz.Compliance.TxAccessListCompositionBoundary",
     "continuation": "txAccessListContinuation",
@@ -1426,6 +1429,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "ca32b74ab8dbef01e38c7c0ef24a052a6113f11b7cbaf9d8e5d73ebc18f5b6c7"
+    "sha256": "9e46d7dc58fc9c4a11d2003f241131640450b039400f72b7b1b94a87b6395cd4"
   }
 }
