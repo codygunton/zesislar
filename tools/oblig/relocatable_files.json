@@ -37,6 +37,15 @@
     "ZesuSsz/Contracts/KeysEnsureCapacityChargedSelected.v",
     "ZesuSsz/Compliance/KeysEnsureCapacityBudgetCallSpec.v",
     "ZesuSsz/Compliance/KeysEnsureCapacityBudgetCompositionBoundary.v",
+    "ZesuSsz/Contracts/ArrayListBudgetContract.v",
+    "ZesuSsz/Contracts/KeysToOwnedSliceBudgetContract.v",
+    "ZesuSsz/Contracts/KeysToOwnedSliceChargedSelected.v",
+    "ZesuSsz/Compliance/KeysToOwnedSliceBudgetCallSpec.v",
+    "ZesuSsz/Compliance/KeysToOwnedSliceBudgetCompositionBoundary.v",
+    "ZesuSsz/Contracts/EntriesToOwnedSliceBudgetContract.v",
+    "ZesuSsz/Contracts/EntriesToOwnedSliceChargedSelected.v",
+    "ZesuSsz/Compliance/EntriesToOwnedSliceBudgetCallSpec.v",
+    "ZesuSsz/Compliance/EntriesToOwnedSliceBudgetCompositionBoundary.v",
     "ZesuSsz/Residuals/*/*.v"
   ],
   "exclude": [

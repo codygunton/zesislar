@@ -213,13 +213,13 @@
       "function": "keysToOwnedSlice",
       "symbol": "array_list.Aligned([32]u8,null).toOwnedSlice",
       "status": "proved",
-      "reason": "Plan B2 (issue #347): keysToOwnedSliceCompliance proves KeysToOwnedSliceContractCorrect; every block of the region has a closure certificate (KeysToOwnedSliceBlockObligations.v has no open block). Plan T8: keysToOwnedSliceBudgetCompliance proves the charged KeysToOwnedSliceBudgetContractCorrect (budget 175, all 30 charged blocks certified).",
+      "reason": "Plan B2 (issue #347): keysToOwnedSliceCompliance proves KeysToOwnedSliceContractCorrect; every block of the region has a closure certificate (KeysToOwnedSliceBlockObligations.v has no open block). Plan T8: keysToOwnedSliceBudgetCompliance proves the charged KeysToOwnedSliceBudgetContractCorrect (budget 194, all 30 charged blocks certified).",
       "compliance_theorems": [
         "keysToOwnedSliceGeneratedCompliance",
         "keysToOwnedSliceCompliance",
         "keysToOwnedSliceBudgetCompliance"
       ],
-      "budget": 175,
+      "budget": 194,
       "charged": {
         "contract": {"module": "ZesuSsz.Contracts.KeysToOwnedSliceBudgetContract", "name": "KeysToOwnedSliceBudgetContractCorrect"},
         "compliance": {"module": "ZesuSsz.Compliance.KeysToOwnedSliceBudgetGeneratedComposition", "name": "keysToOwnedSliceBudgetCompliance"},
@@ -354,13 +354,13 @@
       "function": "entriesToOwnedSlice",
       "symbol": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
       "status": "proved",
-      "reason": "Plan B3 (issue #347): entriesToOwnedSliceCompliance proves EntriesToOwnedSliceContractCorrect; every block of the region has a closure certificate (EntriesToOwnedSliceBlockObligations.v has no open block). Plan T8: entriesToOwnedSliceBudgetCompliance proves the charged EntriesToOwnedSliceBudgetContractCorrect (budget 185, all 30 charged blocks certified).",
+      "reason": "Plan B3 (issue #347): entriesToOwnedSliceCompliance proves EntriesToOwnedSliceContractCorrect; every block of the region has a closure certificate (EntriesToOwnedSliceBlockObligations.v has no open block). Plan T8: entriesToOwnedSliceBudgetCompliance proves the charged EntriesToOwnedSliceBudgetContractCorrect (budget 204, all 30 charged blocks certified).",
       "compliance_theorems": [
         "entriesToOwnedSliceGeneratedCompliance",
         "entriesToOwnedSliceCompliance",
         "entriesToOwnedSliceBudgetCompliance"
       ],
-      "budget": 185,
+      "budget": 204,
       "charged": {
         "contract": {"module": "ZesuSsz.Contracts.EntriesToOwnedSliceBudgetContract", "name": "EntriesToOwnedSliceBudgetContractCorrect"},
         "compliance": {"module": "ZesuSsz.Compliance.EntriesToOwnedSliceBudgetGeneratedComposition", "name": "entriesToOwnedSliceBudgetCompliance"},

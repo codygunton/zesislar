@@ -1618,12 +1618,12 @@ Definition ReviewedKeysToOwnedSliceBudgetContractModel (returnAddress : Z) :
     IslarisContractModel ToOwnedSliceArgs ToOwnedSliceOutcome :=
   toOwnedSliceBudgetModel (fun Sigma HG HT => @keysToOwnedSliceBudgetContractCode Sigma HG HT)
     ZesuSsz.Stock.Closure.index_sliceBytes32.sliceBytes32_cfg_step
-    keysElementBytes keysLog2Alignment keysEmptyPointer 175 returnAddress.
+    keysElementBytes keysLog2Alignment keysEmptyPointer 194 returnAddress.
 Definition ReviewedEntriesToOwnedSliceBudgetContractModel (returnAddress : Z) :
     IslarisContractModel ToOwnedSliceArgs ToOwnedSliceOutcome :=
   toOwnedSliceBudgetModel (fun Sigma HG HT => @entriesToOwnedSliceBudgetContractCode Sigma HG HT)
     ZesuSsz.Stock.Closure.index_sliceAccessList.sliceAccessList_cfg_step
-    entriesElementBytes entriesLog2Alignment entriesEmptyPointer 185 returnAddress.
+    entriesElementBytes entriesLog2Alignment entriesEmptyPointer 204 returnAddress.
 Definition ReviewedKeysToOwnedSliceBudgetContractCorrect : Prop :=
   forall returnAddress,
     IslarisContractCorrect sym_array_list_Aligned_32_u8_null_toOwnedSlice returnAddress

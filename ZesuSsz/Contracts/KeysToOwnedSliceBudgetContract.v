@@ -22,7 +22,7 @@ Open Scope Z_scope.
      (`tools/block/budgets.py --function keysToOwnedSlice`).
    The uncharged contract stays. *)
 
-Notation keysToOwnedSliceBudget := ((175) : Z) (only parsing).
+Notation keysToOwnedSliceBudget := ((194) : Z) (only parsing).
 
 Definition keysToOwnedSliceBudgetContractCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   (keysToOwnedSliceChargedCode ∗ altFlAllocatorBudgetPremises ∗

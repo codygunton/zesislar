@@ -913,6 +913,62 @@
       "frame_parameters_in_closed_specs": 0,
       "unfold_without_typeclasses_opaque": 0
     },
+    "ZesuSsz/Compliance/EntriesToOwnedSliceBudgetBlockObligations.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/EntriesToOwnedSliceBudgetCallSpec.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/EntriesToOwnedSliceBudgetCompositionBoundary.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/EntriesToOwnedSliceBudgetGeneratedComposition.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/KeysToOwnedSliceBudgetBlockObligations.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/KeysToOwnedSliceBudgetCallSpec.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/KeysToOwnedSliceBudgetCompositionBoundary.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/KeysToOwnedSliceBudgetGeneratedComposition.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
     "ZesuSsz/Compliance/KeysEnsureCapacityBudgetBlockObligations.v": {
       "uninferable_existentials": 0,
       "predicates_without_unfold": 0,
