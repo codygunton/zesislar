@@ -126,6 +126,11 @@ check-support-freshness: stock-native-indexes
 	  --stem NextUint64 \
 	  --closed-dir ZesuSsz/Proofs/NextUint64/FP301 \
 	  --output ZesuSsz/Compliance/NextUint64BlockObligations.v --check
+	$(PYTHON) tools/block/render_open_blocks.py --function entriesToOwnedSlice \
+	  --callers tools/block/generated/entriestoownedslice_fp301_callers/CALLERS.json \
+	  --stem EntriesToOwnedSlice \
+	  --closed-dir ZesuSsz/Proofs/EntriesToOwnedSlice/FP301 \
+	  --output ZesuSsz/Compliance/EntriesToOwnedSliceBlockObligations.v --check
 
 check-evidence-tools: check-support-freshness check-tool-tests
 

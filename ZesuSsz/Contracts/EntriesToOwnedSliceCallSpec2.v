@@ -31,7 +31,7 @@ Definition entriesToOwnedSliceCallArgs (argv : list (bv 64)) (sp ret inputEnd : 
 
 (* The domain of toOwnedSliceDomain without its stack and return-address
    conjuncts, which machine_call states. *)
-Definition entriesToOwnedSliceCallDomain (argv : list (bv 64)) (context : Z)
+Definition entriesToOwnedSliceBoundaryDomain (argv : list (bv 64)) (context : Z)
     (state : ArrayListState) (resultBefore scratchBefore : list byte) : Prop :=
   arrayListWellFormed entriesElementBytes state /\
   arrayListRamRange (bv_unsigned (argv !!! 0%nat)) arrayListResultSize /\
@@ -46,7 +46,7 @@ Definition entriesToOwnedSliceCallDomain (argv : list (bv 64)) (context : Z)
 
 (* The outcome relation of toOwnedSliceAllows; it reads only the list state
    and the result bytes of its arguments. *)
-Definition entriesToOwnedSliceCallAllows (state : ArrayListState) (resultBefore : list byte)
+Definition entriesToOwnedSliceBoundaryAllows (state : ArrayListState) (resultBefore : list byte)
     (outcome : ToOwnedSliceOutcome) : Prop :=
   toOwnedSliceAllows entriesElementBytes entriesEmptyPointer
     (entriesToOwnedSliceCallArgs [] (BV 64 0) (BV 64 0) (BV 64 0)
@@ -79,7 +79,7 @@ Definition entriesToOwnedSliceCallSpecDefinition `{!islaG Sigma} `{!threadG} : i
       altFlAllocatorObject (bv_unsigned (argv !!! 2%nat)) context ∗
       altFlVtable ∗
       altFlHeap ∗
-      ⌜entriesToOwnedSliceCallDomain argv context state resultBefore scratchBefore⌝ ∗
+      ⌜entriesToOwnedSliceBoundaryDomain argv context state resultBefore scratchBefore⌝ ∗
       RET (fun _ =>
         ∃ outcome : ToOwnedSliceOutcome,
         "zisk_input_end" ↦ᵣ RVal_Bits inputEndBits ∗
@@ -97,7 +97,7 @@ Definition entriesToOwnedSliceCallSpecDefinition `{!islaG Sigma} `{!threadG} : i
         altFlAllocatorObject (bv_unsigned (argv !!! 2%nat)) context ∗
         altFlVtable ∗
         altFlHeap ∗
-        ⌜entriesToOwnedSliceCallAllows state resultBefore outcome⌝ ∗
+        ⌜entriesToOwnedSliceBoundaryAllows state resultBefore outcome⌝ ∗
         True)))%I.
 
 (* Inside the sealed interface the public spec is this template, so a proof

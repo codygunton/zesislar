@@ -210,6 +210,16 @@
       "interface": null
     },
     {
+      "function": "entriesToOwnedSlice",
+      "symbol": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
+      "status": "open",
+      "reason": "Plan B3 (issue #347): entriesToOwnedSliceGeneratedCompliance proves EntriesToOwnedSliceContractCorrect from EntriesToOwnedSliceOpenBlocks (ZesuSsz/Compliance/EntriesToOwnedSliceBlockObligations.v); the row becomes proved, with entriesToOwnedSliceCompliance and its interface, when no block is open.",
+      "compliance_theorems": ["entriesToOwnedSliceGeneratedCompliance"],
+      "owned_prefixes": ["ZesuSsz/Contracts/EntriesToOwnedSlice", "ZesuSsz/Compliance/EntriesToOwnedSlice",
+                         "ZesuSsz/Generated/EntriesToOwnedSlice/", "ZesuSsz/Proofs/EntriesToOwnedSlice/"],
+      "interface": null
+    },
+    {
       "function": "altFlAlloc",
       "symbol": "alt_fl_alloc.alloc",
       "status": "assumed",
