@@ -99,7 +99,8 @@ def class_components(order, sources, changed, path_conditions, names):
         register = re.match(r'"(x\d+)" ↦ᵣ', text)
         if register and register[1] in changed:
             owned.append('"%s" ↦ᵣ RVal_Bits (%s : bv 64%%N)' % (register[1], changed[register[1]]))
-        elif text == 'True':
+        elif text in ('True', 'K'):
+            # The closing leaf; below a loop-owned root it is the continuation K, framed outside the class.
             continue
         elif text.startswith('⌜'):
             pure.append(text)
