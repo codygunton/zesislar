@@ -475,6 +475,49 @@ Ltac2 zesu_linear_clear_dividing_facts () :=
 
 Ltac zesu_lia_clear_dividing_facts := ltac2:(zesu_linear_clear_dividing_facts ()).
 
+(* The distinct `Z.div`, `Z.modulo`, `Z.quot` and `Z.rem` subterms of a term. *)
+Ltac2 rec zesu_linear_division_terms (found : constr list) (term : constr) : constr list :=
+  let found :=
+    match Constr.Unsafe.kind term with
+    | Constr.Unsafe.App head arguments =>
+        if Bool.and (Int.equal (Array.length arguments) 2)
+             (List.exist (Constr.equal head)
+                [constr:(Z.div); constr:(Z.modulo); constr:(Z.quot); constr:(Z.rem)])
+        then (if List.exist (Constr.equal term) found then found else term :: found)
+        else found
+    | _ => found
+    end in
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App head arguments =>
+      Array.fold_left zesu_linear_division_terms (zesu_linear_division_terms found head) arguments
+  | Constr.Unsafe.Prod binder body =>
+      zesu_linear_division_terms
+        (zesu_linear_division_terms found (Constr.Binder.type binder)) body
+  | Constr.Unsafe.Cast value _ _ => zesu_linear_division_terms found value
+  | _ => found
+  end.
+
+(* On a large context (40 or more facts), a goal with more distinct
+   divisions and remainders than the linear-first path accepts
+   (`zesu_divmod_bound`) goes to no whole-context run: txAccessList 0264
+   (bench r53, r56) spent the rest of its cap in one xlia call on a
+   4,922-node goal with 37 distinct remainders and 129 facts after zify. A
+   small context keeps such a goal: decodeItem Block800d6a40's residual
+   proves a byte-reassembly identity with about 30 nested remainders in
+   0.03 s. *)
+Ltac2 zesu_linear_large_context_divisions_within () :=
+  let facts := List.length (List.filter (fun (_, body, typ) =>
+    match body with
+    | Some _ => false
+    | None => zesu_linear_is_prop typ
+    end) (Control.hyps ())) in
+  if Int.lt facts 40 then ()
+  else if Int.gt (List.length (zesu_linear_division_terms [] (Control.goal ()))) (zesu_divmod_bound ())
+  then Control.zero (Tactic_failure None) else ().
+
+Ltac zesu_lia_large_context_divisions_within :=
+  ltac2:(zesu_linear_large_context_divisions_within ()).
+
 (* A lower bound of `zesu_linear_remaining` on a term after a tactic that turns
    every application of a `collapsed` head into one node (a projection into a
    `match` when unfolded, a closed operation into a literal when reduced) and

@@ -3557,12 +3557,16 @@ Ltac liAAsm ::=
    whole context: on the final pure tail of decodeParentHeader 0300 (451
    facts) it grew past 8 GiB within two minutes. The whole-context run on a
    goal that does not divide reads no dividing fact (LinearFirstLia,
-   `zesu_lia_clear_dividing_facts`): on such facts it ran without end. *)
+   `zesu_lia_clear_dividing_facts`): on such facts it ran without end; on a
+   large context a goal with many distinct remainders is not run there
+   (`zesu_lia_large_context_divisions_within`). *)
 Ltac zesu_lia_context_bounded closer :=
   tryif zesu_switch_enabled constr:(ZesuStepFinisherOnce)
   then first [solve [zesu_context_prune_goal; zesu_lia_pruned_context_within_budget; closer]
-             | (zesu_lia_context_within_budget; zesu_lia_clear_dividing_facts; closer)]
-  else (zesu_lia_context_within_budget; zesu_lia_clear_dividing_facts; closer).
+             | (zesu_lia_context_within_budget; zesu_lia_clear_dividing_facts;
+                zesu_lia_large_context_divisions_within; closer)]
+  else (zesu_lia_context_within_budget; zesu_lia_clear_dividing_facts;
+        zesu_lia_large_context_divisions_within; closer).
 
 (* The project lia. Automation calls `zesu_lia`; `Lia.lia` points at it for
    the library tactics. A caller that imports Coq's Lia after this module
