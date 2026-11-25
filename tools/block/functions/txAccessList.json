@@ -38,6 +38,7 @@
     "^\\W*bv_unsigned \\(machine_x\\d+\\) = (arrayListPointer \\w+|arrayListCapacity \\w+|\\d+ \\* arrayListLength \\w+)\\W*(%Z\\W*)?$",
     "^\\W*Z\\.of_nat \\(List\\.length \\w+\\) = txAccessListScratchSize\\W*$",
     "^\\W*\u2203 \\(consumed : Z\\), tx_rest_error = ",
+    "^\\W*\u2203 \\(header_length payload_length : Z\\), candidateDecodeItem \\(txInputBytes args\\) = candidateSuccess true header_length payload_length ",
     "^\\W*Forall2 \\(fun entry image => entryKeys entry <> \\[\\] -> txRamRange ",
     "^\\W*bv_unsigned \\(bv_concat 16 \\(List\\.nth 33 \\w+ \\(BV 8 0\\)\\) \\(List\\.nth 32 \\w+ \\(BV 8 0\\)\\)\\) = 0 ->",
     "^\\W*Z\\.of_nat \\(List\\.length tx_entry_address\\) = 20\\W*$"
@@ -1522,6 +1523,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "63468e2e4ea600224aee5ab4c99831db9e9b5a81506173b64a106a88cbfe0057"
+    "sha256": "5c69598bb882752a6799115c50cb5cca87dadc4699459af068b92f1adf7e92ee"
   }
 }
