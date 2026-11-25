@@ -366,6 +366,31 @@ def generated_closure(workspace, rev, caller):
     return blobs
 
 
+def certificate_problem(workspace, record, case, caller, head):
+    """Why RECORD is not a valid certificate of CASE for the generated CALLER (a path relative to
+    WORKSPACE) at HEAD (a resolved commit); None when it is. It is valid when it is a CLOSED closure/1
+    record of CASE certifying CALLER at a head that is an ancestor of HEAD, and the caller, its entry
+    modules and its edge module are the same blobs at both heads."""
+    if record.get('schema') != SCHEMA or record.get('verdict') != 'CLOSED' or record.get('case') != case:
+        return 'not a CLOSED certificate of ' + case
+    if record.get('generated_caller') != caller:
+        return 'certifies %s, not %s' % (record.get('generated_caller'), caller)
+    cert_head = record.get('head') or ''
+    if not re.fullmatch(r'[0-9a-f]{40}', cert_head) or git(
+            workspace, 'merge-base', '--is-ancestor', cert_head, head, check=False).returncode:
+        return 'head %s is not an ancestor of %s' % (cert_head[:12], head[:12])
+    blob = git(workspace, 'cat-file', 'blob', cert_head + ':' + caller, check=False)
+    if blob.returncode or hashlib.sha256(blob.stdout).hexdigest() != record.get('caller_sha256'):
+        return 'caller hash differs from %s at %s' % (caller, cert_head[:12])
+    # A re-render of the caller, its entry modules or its edge module voids the certificate.
+    certified, current = (generated_closure(workspace, rev, caller) for rev in (cert_head, head))
+    changed = sorted(name for name in certified.keys() | current.keys()
+                     if certified.get(name) != current.get(name))
+    if changed:
+        return '%s changed since %s' % (', '.join(changed), cert_head[:12])
+    return None
+
+
 def record_problems(workspace, callers_dir, cases, head='HEAD'):
     """Why the closed cases of a compliance record lack valid certificates (empty: all valid).
 
@@ -383,24 +408,9 @@ def record_problems(workspace, callers_dir, cases, head='HEAD'):
         try:
             if not (workspace / path).is_file():
                 raise NotClosed('missing')
-            record = json.loads((workspace / path).read_text())
-            if record.get('schema') != SCHEMA or record.get('verdict') != 'CLOSED' or record.get('case') != case:
-                raise NotClosed('not a CLOSED certificate of ' + case)
-            if record.get('generated_caller') != caller:
-                raise NotClosed('certifies %s, not %s' % (record.get('generated_caller'), caller))
-            cert_head = record.get('head') or ''
-            if not re.fullmatch(r'[0-9a-f]{40}', cert_head) or git(
-                    workspace, 'merge-base', '--is-ancestor', cert_head, head, check=False).returncode:
-                raise NotClosed('head %s is not an ancestor of %s' % (cert_head[:12], head[:12]))
-            blob = git(workspace, 'cat-file', 'blob', cert_head + ':' + caller, check=False)
-            if blob.returncode or hashlib.sha256(blob.stdout).hexdigest() != record.get('caller_sha256'):
-                raise NotClosed('caller hash differs from %s at %s' % (caller, cert_head[:12]))
-            # A re-render of the caller, its entry modules or its edge module voids the certificate.
-            certified, current = (generated_closure(workspace, rev, caller) for rev in (cert_head, head))
-            changed = sorted(name for name in certified.keys() | current.keys()
-                             if certified.get(name) != current.get(name))
-            if changed:
-                raise NotClosed('%s changed since %s' % (', '.join(changed), cert_head[:12]))
+            problem = certificate_problem(workspace, json.loads((workspace / path).read_text()), case, caller, head)
+            if problem:
+                raise NotClosed(problem)
         except (NotClosed, ValueError) as error:
             problems.append('%s: %s' % (path, error))
     return problems

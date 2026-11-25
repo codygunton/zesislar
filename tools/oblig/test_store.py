@@ -4,6 +4,7 @@ import hashlib
 import io
 import json
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -137,17 +138,43 @@ def write(path, data):
     path.write_text(json.dumps(data) if not isinstance(data, str) else data)
 
 
+def git(workspace, *args):
+    return subprocess.run(['git', '-C', str(workspace), '-c', 'user.name=t', '-c', 'user.email=t@t',
+                           '-c', 'commit.gpgsign=false', *args], check=True, capture_output=True,
+                          text=True).stdout.strip()
+
+
+def commit_callers(run, cases):
+    """RUN as a git workspace whose callers/Caller<case>.v loads its entry module; (head, {case: caller sha256})."""
+    if not (run / '.git').exists():
+        git(run, 'init', '-q')
+    shas = {}
+    for case in cases:
+        text = 'Require Import ZesuSsz.Generated.Fn.Entries%s.\n' % case
+        write(run / 'callers' / ('Caller%s.v' % case), text)
+        write(run / 'ZesuSsz' / 'Generated' / 'Fn' / ('Entries%s.v' % case), 'Definition e := %s.\n' % case)
+        shas[case] = hashlib.sha256(text.encode()).hexdigest()
+    git(run, 'add', 'callers', 'ZesuSsz')
+    git(run, 'commit', '-q', '-m', 'render')
+    return git(run, 'rev-parse', 'HEAD'), shas
+
+
+def certificate(case, head, sha):
+    return {'schema': 'closure/1', 'verdict': 'CLOSED', 'case': case, 'head': head,
+            'generated_caller': 'callers/Caller%s.v' % case, 'caller_sha256': sha}
+
+
 class Sync(unittest.TestCase):
     def test_evidence(self):
         with tempfile.TemporaryDirectory() as tmp:
             run = Path(tmp)
-            rows = [{'case': c, 'status': 'rendered', 'caller': {'path': 'x', 'sha256': c * 16}}
-                    for c in ('0000', '0040', '0048', '0054')]
+            head, shas = commit_callers(run, ('0000', '0040', '0048', '0054'))
+            rows = [{'case': c, 'status': 'rendered', 'caller': {'path': 'x', 'sha256': shas[c]}} for c in shas]
             rows += [{'case': '0060', 'status': 'refused', 'reason': 'r'}, {'case': '0068', 'status': 'inlined'}]
             write(run / 'callers' / 'CALLERS.json', {'function': F, 'rows': rows})
-            write(run / 'runs' / '0000' / 'CLOSURE.json', {'verdict': 'CLOSED', 'caller_sha256': '0000' * 16})
-            write(run / 'runs' / '0040' / 'CLOSURE.json', {'verdict': 'CLOSED', 'caller_sha256': 'stale'})
-            write(run / 'b' / '0048' / 'NOT-CLOSED.json', {'verdict': 'NOT-CLOSED', 'caller_sha256': '0048' * 16})
+            write(run / 'runs' / '0000' / 'CLOSURE.json', certificate('0000', head, shas['0000']))
+            write(run / 'runs' / '0040' / 'CLOSURE.json', certificate('0040', head, 'stale'))
+            write(run / 'b' / '0048' / 'NOT-CLOSED.json', {'verdict': 'NOT-CLOSED', 'caller_sha256': shas['0048']})
             write(run / 'results.jsonl', json.dumps({'function': F, 'case': '0048', 'verdict': 'NOT-CLOSED',
                                                      'dir': str(run / 'b' / '0048')}) + '\n')
             res = run / 'residual' / '0048'
@@ -175,6 +202,30 @@ class Sync(unittest.TestCase):
             self.assertEqual(store.sync(F, run), 1)
             state = store.fold(store.read_events(run))
             self.assertEqual((state['fn/block/0000']['state'], state['fn/block/0000']['resets']), ('derived', 1))
+
+    def test_a_certificate_counts_only_with_the_entry_modules_it_compiled(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run = Path(tmp)
+            head, shas = commit_callers(run, ('0000',))
+            write(run / 'callers' / 'CALLERS.json', {'function': F, 'rows': [
+                {'case': '0000', 'status': 'rendered', 'caller': {'path': 'x', 'sha256': shas['0000']}}]})
+            write(run / 'runs' / '0000' / 'CLOSURE.json', certificate('0000', head, shas['0000']))
+            self.assertEqual(store.sync(F, run), 1)
+            self.assertEqual(store.fold(store.read_events(run))['fn/block/0000']['state'], 'closed')
+            # A re-render changes the entry module and leaves the caller's text alone: the certificate
+            # no longer certifies the block and it resets.
+            write(run / 'ZesuSsz' / 'Generated' / 'Fn' / 'Entries0000.v', 'Definition e := 1.\n')
+            git(run, 'commit', '-q', '-am', 'rerender')
+            self.assertEqual(store.derived_states(F, run)['fn/block/0000'][2:4], ('derived', 'stale_closure'))
+            self.assertEqual(store.sync(F, run), 1)
+            state = store.fold(store.read_events(run))['fn/block/0000']
+            self.assertEqual((state['state'], state['resets']), ('derived', 1))
+            # A certificate of the new head closes it again.
+            write(run / 'runs' / '0000' / 'CLOSURE.json', certificate('0000', git(run, 'rev-parse', 'HEAD'), shas['0000']))
+            self.assertEqual(store.derived_states(F, run)['fn/block/0000'][2], 'closed')
+            # Callers outside a git workspace: no certificate can be checked, none counts.
+            (run / '.git').rename(run / 'moved.git')
+            self.assertEqual(store.derived_states(F, run)['fn/block/0000'][2:4], ('derived', 'stale_closure'))
 
     def test_a_meaning_run_gives_meaning_ids_beside_the_blocks(self):
         # A meaning run's MANIFEST has block `meaning` (drive.locate): its goals are meaning obligations,

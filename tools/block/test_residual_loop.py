@@ -548,12 +548,14 @@ class InstalledCallerTests(unittest.TestCase):
                 self.assertEqual(text.split("\n").count(line), 1)
             # The bench copy is no renderer output: rerun imports the module itself.
             self.assertEqual(bench_copy.read_text(), texts["Caller000c_slot0.v"])
-            # A certificate of the rerun caller is the closed evidence of the block.
+            # A certificate of the rerun caller is the closed evidence of the block (its entry modules
+            # are checked by store.certificate_checker, accepted here).
             row = table["rows"][0]
             certificate = run / "closures" / row["case"] / "CLOSURE.json"
             certificate.parent.mkdir(parents=True)
             certificate.write_text(json.dumps(dict(verdict="CLOSED", caller_sha256=row["caller"]["sha256"])))
-            self.assertEqual(store.block_evidence(row["case"], row, run, None, [])[0], "closed")
+            accepted = lambda case, record: None  # noqa: E731
+            self.assertEqual(store.block_evidence(row["case"], row, run, None, [], accepted)[0], "closed")
 
     def test_register_refuses_a_caller_that_differs_from_its_record(self):
         from function_profiles import load_profile
