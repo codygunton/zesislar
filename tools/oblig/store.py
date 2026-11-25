@@ -31,7 +31,10 @@ CLOSURE.json / NOT-CLOSED.json (tools/closure_cert.py) in the run directory, in 
 dirs and in tools/block/closures/<callers>/<case>/, results.jsonl (tools/bench/bench.py) and
 goals/<id>/STATUS.json of residual runs under RUN (tools/block/residual_loop.py), and appends an
 event only where the derived state differs from the folded one. A CLOSURE.json counts only when its
-caller_sha256 equals the caller of the current CALLERS.json row. It files each open request of
+caller_sha256 equals the caller of the current CALLERS.json row and it certifies the entry modules
+of today: CALLERS.json lies in a git workspace whose HEAD has the certificate's head as an ancestor,
+and the caller, its entry modules and its edge module are the same at both heads
+(closure_cert.certificate_problem, the rule of render_open_blocks.py). It files each open request of
 RUN/round-<n>/derived/REQUESTS.json (derive.py, schema oblig-requests/1; latest round wins, `answered`
 ones left out) as a `decision` obligation under the request's id, state `derived`; a request with a
 `proposal` carries it as the artifact {path of that REQUESTS.json, sha256 of the proposal's canonical
@@ -58,6 +61,9 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import closure_cert  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 SCHEMA = 'oblig-event/1'
@@ -348,8 +354,27 @@ def bench_rows(function, run):
     return rows
 
 
-def block_evidence(case, row, run, callers_name, results):
-    """(state, class, artifact path) of one block from its closure records and bench rows."""
+def certificate_checker(callers_path):
+    """A function (case, record) -> None when RECORD certifies the caller of CASE beside CALLERS_PATH
+    as committed at the HEAD of the git workspace that holds it, with the same caller, entry modules
+    and edge module at the certificate's head (closure_cert.certificate_problem), else the reason.
+    Outside a git workspace no certificate can be checked, so none counts."""
+    directory = Path(callers_path).resolve().parent
+    top = subprocess.run(['git', '-C', str(directory), 'rev-parse', '--show-toplevel'],
+                         capture_output=True, text=True)
+    if top.returncode:
+        reason = '%s is in no git workspace: no certificate is checked against its entry modules' % callers_path
+        return lambda case, record: reason
+    workspace = Path(top.stdout.strip())
+    head = closure_cert.resolve_head(workspace, 'HEAD')
+    relative = directory.relative_to(workspace)
+    return lambda case, record: closure_cert.certificate_problem(
+        workspace, record, case, (relative / ('Caller%s.v' % case)).as_posix(), head)
+
+
+def block_evidence(case, row, run, callers_name, results, certified):
+    """(state, class, artifact path) of one block from its closure records and bench rows.
+    CERTIFIED (certificate_checker) decides whether a CLOSED record certifies the current entry modules."""
     want = (row.get('caller') or {}).get('sha256')
     directories = [Path(run) / 'runs' / case, Path(run) / case, Path(run) / 'closures' / case]
     directories += [Path(r['dir']) for r in results if r.get('case') == case and r.get('dir')]
@@ -359,7 +384,7 @@ def block_evidence(case, row, run, callers_name, results):
     for directory in directories:
         closure = read_json(directory / 'CLOSURE.json')
         if closure and closure.get('verdict') == 'CLOSED':
-            if want is None or closure.get('caller_sha256') == want:
+            if (want is None or closure.get('caller_sha256') == want) and certified(case, closure) is None:
                 return 'closed', None, directory / 'CLOSURE.json'
             stale = directory / 'CLOSURE.json'
         refusal = read_json(directory / 'NOT-CLOSED.json')
@@ -397,6 +422,7 @@ def derived_states(function, run, callers=None):
     results = bench_rows(function, run)
     if data:
         callers_name = path.parent.name
+        certified = certificate_checker(path)
         for row in data.get('rows', []):
             case = row['case']
             if row.get('status') == 'inlined':
@@ -404,7 +430,7 @@ def derived_states(function, run, callers=None):
             if row.get('status') == 'refused':
                 out[block_id(function, case)] = ('block', None, 'failed', 'REFUSED', path)
                 continue
-            st, cls, artifact = block_evidence(case, row, run, callers_name, results)
+            st, cls, artifact = block_evidence(case, row, run, callers_name, results, certified)
             out[block_id(function, case)] = ('block', None, st, cls, artifact)
     for directory in residual_runs(run):
         manifest = read_json(directory / 'MANIFEST.json', {})
