@@ -35,7 +35,13 @@ Require Import ZesuSsz.Interfaces.EntriesToOwnedSliceCorrect.
 Require Import ZesuSsz.Contracts.TxAccessListContract.
 Require Import ZesuSsz.Contracts.TxAccessListBlockEntries.
 Require Import ZesuSsz.Contracts.TxAccessListSelected.
+Require Import ZesuSsz.Contracts.RlpDecodeItem.
+Require Import ZesuSsz.Contracts.DecodeItemPayloadBounds.
+Require Import ZesuSsz.Contracts.ArrayListContract.
+Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.
+Require Import ZesuSsz.Contracts.TxAccessListLoopFacts.
 Require Import ZesuSsz.Compliance.ArrayListBridges.
+Require Import ZesuSsz.Compliance.TxAccessListExitMeaning.
 Require Import ZesuSsz.Compliance.TxAccessListCompositionBoundary.
 Require Import ZesuSsz.Compliance.TxAccessListBlockObligations.
 Require ZesuSsz.Generated.TxAccessList.FP301.Pilot0000Entries.
@@ -243,22 +249,265 @@ Proof.
     exists (BV 64 0). split; vm_compute; reflexivity.
 Qed.
 
-(* ---- The end bridges. ---- *)
+(* ---- The end bridges: each return package implies the contract postcondition. ---- *)
 
-(* The two return packages of the duplicated return block 0x04b8 imply the
-   contract postcondition. Stated as a record while the exit forms of the
-   error and success joins (+0x4a8, +0x48c) are being fixed in the render
-   (round 52: the joins own the `rest` slice): the proofs follow the render. *)
-Record TxAccessListExitBridges : Prop := {
-  txAccessList_end_bridge_slot0 :
-    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG} (args : TxAccessListArgs) (returnAddress : Z),
-    ZesuSsz.Generated.TxAccessList.FP301.FunctionReturnEntries.fp_machineReturn_slot0_ForwardA0N0 args returnAddress ⊢
-    txAccessListPost args returnAddress;
-  txAccessList_end_bridge_slot1 :
-    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG} (args : TxAccessListArgs) (returnAddress : Z),
-    ZesuSsz.Generated.TxAccessList.FP301.FunctionReturnEntries.fp_machineReturn_slot1_ForwardA0N0 args returnAddress ⊢
-    txAccessListPost args returnAddress
-}.
+(* reg_col stays folded while the resources are framed. *)
+#[local] Typeclasses Opaque reg_col.
+
+Lemma tx_extract_concat8 (b0 b1 b2 b3 b4 b5 b6 b7 : bv 8) (k : N) (b : bv 8) :
+  (k = 0 /\ b = b0 \/ k = 8 /\ b = b1 \/ k = 16 /\ b = b2 \/ k = 24 /\ b = b3 \/
+   k = 32 /\ b = b4 \/ k = 40 /\ b = b5 \/ k = 48 /\ b = b6 \/ k = 56 /\ b = b7)%N ->
+  bv_extract k 8 (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24
+    (bv_concat 16 b7 b6) b5) b4) b3) b2) b1) b0) = b.
+Proof.
+  intros H. Time (repeat destruct H as [[-> ->]|H]; [..|destruct H as [-> ->]]; bv_simplify; bitblast; f_equal; lia).
+Qed.
+Lemma tx_extract_concat2 (b0 b1 : bv 8) (k : N) (b : bv 8) :
+  (k = 0 /\ b = b0 \/ k = 8 /\ b = b1)%N -> bv_extract k 8 (bv_concat 16 b1 b0) = b.
+Proof. intros [[-> ->]|[-> ->]]; bv_simplify; bitblast; f_equal; lia. Qed.
+Ltac tx_byte_eq :=
+  first
+    [ apply tx_extract_concat8; repeat (first [left; split; reflexivity | right]); split; reflexivity
+    | apply tx_extract_concat2; repeat (first [left; split; reflexivity | right]); split; reflexivity
+    | reflexivity ].
+
+(* The success result of entriesToOwnedSlice: its result image names the
+   slice, which holds the final list's items, the kind is success (the
+   machine read error code 0). *)
+Lemma tx_entries_result (final : ArrayListState) (before : list byte) (outcome : ToOwnedSliceOutcome) :
+  entriesToOwnedSliceCallAllows final before outcome ->
+  arrayListWellFormed entriesElementBytes final ->
+  bv_unsigned (bv_concat 16 (nth 17 (toOwnedResultAfter outcome) (BV 8 0))
+                 (nth 16 (toOwnedResultAfter outcome) (BV 8 0))) = 0 ->
+  length before = 24%nat ->
+  toOwnedResultAfter outcome =
+    arrayListResultImage before (arrayListPointer (toOwnedSlice outcome)) (arrayListLength final) /\
+  arrayListLength (toOwnedSlice outcome) = arrayListLength final /\
+  arrayListItems (toOwnedSlice outcome) = arrayListItems final /\
+  arrayListWellFormed entriesElementBytes (toOwnedSlice outcome) /\
+  arrayListCapacity (toOwnedSlice outcome) = arrayListLength (toOwnedSlice outcome).
+Proof.
+  intros Hallows Hwf Hcode Hlen.
+  destruct (entriesToOwnedSliceCallAllowsWellFormed _ _ _ Hallows) as (_ & Hwfs & Hcap).
+  destruct (Z.eq_dec (arrayListLength final) 0) as [H0|H0].
+  - destruct (entriesToOwnedSliceCallAllowsEmpty _ _ _ Hallows H0) as (_ & _ & Hs & Hr).
+    assert (Hnil : arrayListItems final = []).
+    { destruct Hwf as (_ & Hitems & _). rewrite H0 in Hitems.
+      destruct (arrayListItems final); [done|cbn in Hitems; lia]. }
+    rewrite Hr. rewrite Hs in Hwfs Hcap |- *. cbn. rewrite H0 Hnil. split_and!; done.
+  - destruct (toOwnedKind outcome) eqn:Hk.
+    + destruct (entriesToOwnedSliceCallAllowsSuccess _ _ _ Hallows H0 Hk) as (_ & Hl & Hi & Hr).
+      rewrite Hr. split_and!; done.
+    + destruct (entriesToOwnedSliceCallAllowsOutOfMemory _ _ _ Hallows H0 Hk) as (_ & _ & Hr).
+      exfalso. rewrite Hr in Hcode. unfold arrayListErrorImage in Hcode.
+      do 18 (destruct before as [|? before]; [cbn in Hlen; lia|]).
+      vm_compute in Hcode. discriminate.
+Qed.
+
+
+Lemma tx_forall2_pad_keys (done : list AccessListEntryValue) (images : list TxAccessListEntryImage) :
+  length done = length images ->
+  Forall (fun image => Z.of_nat (length (imagePadding image)) = txAccessListPaddingSize) images ->
+  Forall2 (fun entry image => entryKeys entry <> [] ->
+    txRamRange (imageKeysPointer image) (txAccessListKeySize * Z.of_nat (length (entryKeys entry)))) done images ->
+  Forall2 (fun entry image =>
+    Z.of_nat (length (imagePadding image)) = txAccessListPaddingSize /\
+    (entryKeys entry <> [] ->
+     txRamRange (imageKeysPointer image) (txAccessListKeySize * Z.of_nat (length (entryKeys entry))))) done images.
+Proof.
+  intros _ Hpad Hkeys. induction Hkeys as [|e i done images Hk Hrest IH]; [constructor|].
+  inversion Hpad as [|? ? Hp Hpads]; subst. constructor; [split; assumption|]. apply IH. exact Hpads.
+Qed.
+
+Lemma tx_list_length_range (eb : Z) (state : ArrayListState) :
+  0 < eb -> arrayListWellFormed eb state -> 0 <= arrayListLength state < 2 ^ 64.
+Proof.
+  intros He (Hl & _ & _ & Hram).
+  destruct (Z.eq_dec (arrayListCapacity state) 0) as [Hc|Hc]; [lia|].
+  destruct (Hram ltac:(lia)) as [Hlo Hhi].
+  unfold machineRamEnd in *. cbn [mapRamBase mapRamSize defaultMap] in *. nia.
+Qed.
+
+Lemma tx_x2_restore (sp : bv 64) :
+  bv_add (bv_add sp (BV 64 18446744073709551040)) (BV 64 576) = sp.
+Proof. bv_solve. Qed.
+
+
+Lemma tx_take16_words (a b : Z) (rest : list byte) :
+  take 16 (word64Bytes a ++ word64Bytes b ++ rest) = word64Bytes a ++ word64Bytes b.
+Proof. reflexivity. Qed.
+
+Lemma tx_word64At_0 (a : Z) (rest : list byte) :
+  0 <= a < 2 ^ 64 -> word64At (word64Bytes a ++ rest) 0 a.
+Proof.
+  intros Ha. unfold word64At. cbn [skipn]. rewrite arrayList_take8_word.
+  split; [reflexivity|]. rewrite <- littleEndianBv. by apply arrayList_word64Bytes_word.
+Qed.
+
+Lemma tx_word64At_8 (a b : Z) (rest : list byte) :
+  0 <= b < 2 ^ 64 -> word64At (word64Bytes a ++ word64Bytes b ++ rest) 8 b.
+Proof.
+  intros Hb. unfold word64At.
+  replace (skipn 8 (word64Bytes a ++ word64Bytes b ++ rest)) with (word64Bytes b ++ rest)
+    by (rewrite skipn_app; reflexivity).
+  rewrite arrayList_take8_word.
+  split; [reflexivity|]. rewrite <- littleEndianBv. by apply arrayList_word64Bytes_word.
+Qed.
+
+Lemma txAccessList_end_bridge_slot1 `{!islaG Sigma} `{!threadG}
+    (args : TxAccessListArgs) (returnAddress : Z) :
+  ZesuSsz.Generated.TxAccessList.FP301.FunctionReturnEntries.fp_machineReturn_slot1_ForwardA0N0 args returnAddress ⊢
+  txAccessListPost args returnAddress.
+Proof.
+  rewrite /ZesuSsz.Generated.TxAccessList.FP301.FunctionReturnEntries.fp_machineReturn_slot1_ForwardA0N0 /txAccessListPost.
+  iIntros "(%x5 & %x6 & %x7 & %x12 & %x13 & %x14 & %x15 & %x16 & %x17 & %x28 & %x29 & %x30 & %x31 & %outcome & %call_after & %final & %done & %images & %scratch & %rest & Hsys & H1 & H2 & H5 & H6 & H7 & H8 & H9 & H10 & H11 & H12 & H13 & H14 & H15 & H16 & H17 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & H28 & H29 & H30 & H31 & Hin & Halloc & Hvt & Hheap & Hres & Hres18 & F0 & Fcall & S27 & S26 & S25 & S24 & S23 & S22 & S21 & S20 & S19 & S18 & S9 & S8 & S1 & Hcallee & Fhdr & F1 & Fres & F2 & Hkeys & Hscr & Hrest & Hlist & Hslice & %Hdom & %Hra & %Hcall & %Hwf & %Hkr & %Hscrlen & %Hhdrlen & %Hreslen & %Hscrlen2 & %Hb1 & %Hb2 & %Hhist)".
+  apply zesu_hist_elim in Hhist.
+  unfold ZesuSsz.Generated.TxAccessList.FP301.FunctionReturnEntries.fp_machineReturn_slot1_ForwardA0N0_Hist in Hhist.
+  destruct Hhist as (x21 & ms & w1 & w2 & w3 & w4 & w5 & w6 & w7 & (a13 & a14 & a15 & a16 & a17 & before & Hcd & Hcm) & Hx21 & Hlen & Hitems & Hpad & (h & p & Hdec & Hwalk & Hrestbytes) & (b13 & b14 & b15 & b16 & b17 & bscr & bctx & bres & Hetd & Heta) & Hrest_facts).
+  destruct_and? Hrest_facts.
+  match goal with H : bv_unsigned (bv_concat 16 (nth 17 (toOwnedResultAfter outcome) _) _) = 0 |- _ =>
+    rename H into Hcode end.
+  pose proof (proj2 Hdom) as Hbwf.
+  pose proof (txAccessListBlockArgsWellFormed_contract _ Hbwf) as Hcwf.
+  pose proof (txAccessList_stack_bound _ Hcwf) as Hsp.
+  pose proof (entriesToOwnedSliceCallDomainResultLength _ _ _ _ _ Hetd) as Hbres.
+  destruct (tx_entries_result final bres outcome Heta Hwf Hcode Hbres) as (HR & Hsl & Hsi & Hswf & Hscap).
+  remember (toOwnedResultAfter outcome) as R eqn:HRdef.
+  lazymatch iTypeOf (INamed "Hres") with
+  | Some (_, ?f ?L) => assert (HL : L = firstn 16 R ++ [BV 8 0; BV 8 0])
+  end.
+  { clear - Hreslen.
+    do 24 (destruct R as [|? R]; [cbn in Hreslen; lia|]).
+    destruct R; [|cbn in Hreslen; lia].
+    cbn [firstn nth app]. repeat f_equal; tx_byte_eq. }
+  rewrite HL. clear HL.
+  (* the frame: its pieces as uninitialised bytes, joined, then as bytes *)
+  iDestruct (arrayList_bytes_uninit with "Fcall") as "Fcall". rewrite Hcall.
+  iDestruct (arrayList_bytes_uninit with "Fhdr") as "Fhdr". rewrite Hhdrlen.
+  iDestruct (arrayList_bytes_uninit with "Fres") as "Fres". rewrite Hreslen.
+  cbn [Z.of_nat Pos.of_succ_nat Pos.succ].
+  iDestruct (arrayList_uninit_join with "F0 Fcall") as "Fl"; [lia|lia|].
+  replace (bv_unsigned (txStackPointer args) - 448) with (bv_unsigned (txStackPointer args) - 576 + (88 + 40)) by lia.
+  iDestruct (arrayList_uninit_join with "Fl Fhdr") as "Fl"; [lia|lia|].
+  replace (bv_unsigned (txStackPointer args) - 424) with (bv_unsigned (txStackPointer args) - 576 + (88 + 40 + 24)) by lia.
+  iDestruct (arrayList_uninit_join with "Fl F1") as "Fl"; [lia|lia|].
+  replace (bv_unsigned (txStackPointer args) - 576 + (88 + 40 + 24) + 288) with (bv_unsigned (txStackPointer args) - 576 + (88 + 40 + 24 + 288)) by lia.
+  iDestruct (arrayList_uninit_join with "Fl Fres") as "Fl"; [lia|lia|].
+  replace (bv_unsigned (txStackPointer args) - 576 + (88 + 40 + 24) + 312) with (bv_unsigned (txStackPointer args) - 576 + (88 + 40 + 24 + 288 + 24)) by lia.
+  iDestruct (arrayList_uninit_join with "Fl F2") as "Fl"; [lia|lia|].
+  replace (88 + 40 + 24 + 288 + 24 + 8) with 472 by lia.
+  tx_frame_addresses Hsp.
+  iDestruct (tx_frame_close with "Fl S27 S26 S25 S24 S23 S22 S21 S20 S19 S18 S9 S8 S1") as "Fl".
+  iDestruct (zesu_uninit_bytes _ 576 576 with "Fl") as (frame Hframe) "Fl"; [done|].
+  (* the result: its 18 written bytes and the 6 untouched ones *)
+  iDestruct (zesu_uninit_bytes _ 6 6 with "Hres18") as (pad Hpadlen) "Hres18"; [done|].
+  iDestruct (zesu_byte_array_join_sized _ _ _ _ _ 18 6 24 with "Hres Hres18") as "[Hres %Hreslen2]".
+  { rewrite length_app firstn_length Hreslen. done. }
+  { exact Hpadlen. } { lia. } { lia. }
+  (* the returned entries slice *)
+  pose proof Hswf as (_ & Hsitems & Hsptr & Hsram).
+  iDestruct (big_sepL2_length with "Hkeys") as %Hkl.
+  iAssert (txOwnedSlice (arrayListPointer (toOwnedSlice outcome)) txAccessListEntriesLog2Align
+             (txAccessListEntriesBytes done images))%I with "[Hslice]" as "Hown".
+  { rewrite /txOwnedSlice arrayListBuffer_unfold. iDestruct "Hslice" as "(Hitems & _ & Hblock)".
+    rewrite Hsi Hitems in Hsitems |- *.
+    destruct (txAccessListEntriesBytes done images) as [|b bs] eqn:Hb; [done|].
+    iFrame "Hitems". rewrite Hscap Hsl. rewrite Hsl in Hsitems.
+    replace (Z.of_nat (length (b :: bs))) with (arrayListLength final * 40) by lia.
+    iExact "Hblock". }
+  pose proof (tx_list_length_range 40 final ltac:(lia) Hwf) as Hlenr.
+  lazymatch iTypeOf (INamed "Hscr") with
+  | Some (_, ?f ?S) =>
+  iExists {| txOutcomeClass := txAccessListOk done; txConsumed := h + p;
+             txResultBytes := (take 16 R ++ [BV 8 0; BV 8 0]) ++ pad;
+             txAfterFrame := frame; txScratchAfter := S;
+             txEntriesPointer := arrayListPointer (toOwnedSlice outcome);
+             txEntryImages := images; txLeakedBlocks := [] |}
+  end.
+  iSplit.
+  { iPureIntro. cbn [islarisContractAllows txAccessListContractModel].
+    split; [exact (proj1 Hdom)|].
+    unfold txAccessListAllows; cbn [txOutcomeClass txConsumed txResultBytes txAfterFrame
+      txScratchAfter txEntriesPointer txEntryImages txLeakedBlocks].
+    split_and!.
+    - exact (txAccessList_success_meaning args h p done Hcwf Hdec Hwalk).
+    - unfold txAccessListResultImage; cbn [txOutcomeClass txResultBytes txEntriesPointer].
+      rewrite HR. unfold arrayListResultImage. rewrite tx_take16_words -!app_assoc.
+      split_and!.
+      + rewrite !length_app !arrayList_word64Bytes_length. cbn [length]. lia.
+      + apply tx_word64At_0. lia.
+      + rewrite -Hlen. apply tx_word64At_8. lia.
+      + unfold byteAt. reflexivity.
+      + unfold byteAt. reflexivity.
+    - unfold txAccessListHeapImage; cbn [txOutcomeClass txEntryImages txLeakedBlocks txEntriesPointer].
+      split_and!; [lia|done| |].
+      + intros Hne. destruct (Hsram ltac:(destruct done; [done|cbn in Hlen; lia])) as [Hlo Hhi].
+        unfold txRamRange. unfold machineRamEnd in *. cbn [mapRamBase mapRamSize defaultMap] in *. lia.
+      + apply tx_forall2_pad_keys; [lia|exact Hpad|exact Hkr].
+    - lia.
+    - rewrite Hscrlen2. reflexivity. }
+  rewrite /txAccessListExitResources /txAccessListReturnedHeap.
+  cbn [txOutcomeClass txConsumed txResultBytes txAfterFrame txScratchAfter txEntriesPointer
+    txEntryImages txLeakedBlocks].
+  iExists x5, x6, x7, _, _, x12, x13, x14, x15, x16, x17, x28, x29, x30, x31.
+  rewrite tx_x2_restore altFlAllocatorObject_unfold altFlVtable_unfold Hrestbytes.
+  unfold txAccessListFrameBase, txAccessListCalleeBase.
+  rewrite /txAccessListKeysSlices.
+  iFrame. done.
+Qed.
+
+Lemma tx_error_result_bytes :
+  [BV 8 0; BV 8 0; BV 8 0; BV 8 0; BV 8 0; BV 8 0; BV 8 0; BV 8 0;
+   BV 8 0; BV 8 0; BV 8 0; BV 8 0; BV 8 0; BV 8 0; BV 8 0; BV 8 0;
+   BV 8 3; BV 8 0; BV 8 0; BV 8 0; BV 8 0; BV 8 0; BV 8 0; BV 8 0] =
+  word64Bytes 0 ++ word64Bytes 0 ++ word64Bytes txAccessListInvalidBlockCode.
+Proof. unfold word64Bytes. cbn. repeat f_equal; apply bv_eq; reflexivity. Qed.
+
+Lemma txAccessList_end_bridge_slot0 `{!islaG Sigma} `{!threadG}
+    (args : TxAccessListArgs) (returnAddress : Z) :
+  ZesuSsz.Generated.TxAccessList.FP301.FunctionReturnEntries.fp_machineReturn_slot0_ForwardA0N0 args returnAddress ⊢
+  txAccessListPost args returnAddress.
+Proof.
+  rewrite /ZesuSsz.Generated.TxAccessList.FP301.FunctionReturnEntries.fp_machineReturn_slot0_ForwardA0N0 /txAccessListPost.
+  iIntros "(%x5 & %x6 & %x7 & %x11 & %x12 & %x13 & %x14 & %x15 & %x16 & %x17 & %x28 & %x29 & %x30 & %x31 & %call_after & %scratch & %rest & Hsys & H1 & H2 & H5 & H6 & H7 & H8 & H9 & H10 & H11 & H12 & H13 & H14 & H15 & H16 & H17 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & H28 & H29 & H30 & H31 & Hin & Halloc & Hvt & Hheap & Hres & F0 & Fcall & F1 & S27 & S26 & S25 & S24 & S23 & S22 & S21 & S20 & S19 & S18 & S9 & S8 & S1 & Hcallee & Hscr & Hrest & %Hdom & %Hra & %Hcall & %Hscrlen & %Hcons & %Hb1 & %Hb2 & _)".
+  destruct Hcons as (consumed & Hrestbytes & Hallowed).
+  pose proof (proj2 Hdom) as Hbwf.
+  pose proof (txAccessListBlockArgsWellFormed_contract _ Hbwf) as Hcwf.
+  pose proof (txAccessList_stack_bound _ Hcwf) as Hsp.
+  destruct (txAccessList_error_meaning args consumed Hcwf Hallowed) as (cls & Hcls & Hmeaning).
+  rewrite tx_error_result_bytes.
+  (* the frame *)
+  iDestruct (arrayList_bytes_uninit with "Fcall") as "Fcall". rewrite Hcall.
+  cbn [Z.of_nat Pos.of_succ_nat Pos.succ].
+  iDestruct (arrayList_uninit_join with "F0 Fcall") as "Fl"; [lia|lia|].
+  replace (bv_unsigned (txStackPointer args) - 576 + 128) with (bv_unsigned (txStackPointer args) - 576 + (88 + 40)) by lia.
+  iDestruct (arrayList_uninit_join with "Fl F1") as "Fl"; [lia|lia|].
+  replace (88 + 40 + 344) with 472 by lia.
+  tx_frame_addresses Hsp.
+  iDestruct (tx_frame_close with "Fl S27 S26 S25 S24 S23 S22 S21 S20 S19 S18 S9 S8 S1") as "Fl".
+  iDestruct (zesu_uninit_bytes _ 576 576 with "Fl") as (frame Hframe) "Fl"; [done|].
+  iExists {| txOutcomeClass := cls; txConsumed := consumed;
+             txResultBytes := word64Bytes 0 ++ word64Bytes 0 ++ word64Bytes txAccessListInvalidBlockCode;
+             txAfterFrame := frame; txScratchAfter := scratch;
+             txEntriesPointer := 0; txEntryImages := []; txLeakedBlocks := [] |}.
+  iSplit.
+  { iPureIntro. cbn [islarisContractAllows txAccessListContractModel].
+    split; [exact (proj1 Hdom)|].
+    unfold txAccessListAllows; cbn [txOutcomeClass txConsumed txResultBytes txAfterFrame
+      txScratchAfter txEntriesPointer txEntryImages txLeakedBlocks].
+    split_and!; [exact Hmeaning| | |lia|exact Hscrlen].
+    - unfold txAccessListResultImage. cbn [txOutcomeClass txResultBytes].
+      split; [reflexivity|]. destruct Hcls as [->| ->]; reflexivity.
+    - unfold txAccessListHeapImage. cbn [txOutcomeClass txEntryImages txLeakedBlocks].
+      destruct Hcls as [->| ->]; (split; [reflexivity|apply Forall_nil]). }
+  rewrite /txAccessListExitResources /txAccessListReturnedHeap.
+  cbn [txOutcomeClass txConsumed txResultBytes txAfterFrame txScratchAfter txEntriesPointer
+    txEntryImages txLeakedBlocks].
+  iExists x5, x6, x7, _, x11, x12, x13, x14, x15, x16, x17, x28, x29, x30, x31.
+  rewrite tx_x2_restore altFlAllocatorObject_unfold altFlVtable_unfold Hrestbytes.
+  unfold txAccessListFrameBase, txAccessListCalleeBase.
+  iFrame. destruct Hcls as [->| ->]; cbn; iSplit; done.
+Qed.
 
 (* ---- Composition over the block table. ---- *)
 
@@ -274,9 +523,6 @@ Proof.
   rewrite instr_pre'_eq /instr_pre'_def /=.
   iIntros "H [HF HK]". iApply ("H" with "HK"). by iFrame.
 Qed.
-
-(* reg_col stays folded while the resources are framed. *)
-#[local] Typeclasses Opaque reg_col.
 
 (* The membership of a slot: address and state both match; the index is
    found syntactically (no unification against the other entries). *)
@@ -315,7 +561,7 @@ Ltac tx_premise :=
 
 (* The return premise of a return package from the contract continuation:
    the end bridge of the package (chosen by its name) gives the contract exit. *)
-Ltac tx_exit_premise Hexits H :=
+Ltac tx_exit_premise H :=
   iEval (rewrite /txAccessListContinuation) in H;
   iApply (instr_pre_wand with H); [done|done|];
   unfold ZesuSsz.Generated.TxAccessList.FP301.FunctionReturnEntries.fp_machineReturn_slot0,
@@ -323,12 +569,12 @@ Ltac tx_exit_premise Hexits H :=
   iIntros "[Hexit _]";
   lazymatch iTypeOf (INamed "Hexit") with
   | Some (_, @ZesuSsz.Generated.TxAccessList.FP301.FunctionReturnEntries.fp_machineReturn_slot0_ForwardA0N0 _ _ _ _ _) =>
-      iApply (txAccessList_end_bridge_slot0 Hexits _ with "Hexit")
+      iApply (txAccessList_end_bridge_slot0 with "Hexit")
   | Some (_, @ZesuSsz.Generated.TxAccessList.FP301.FunctionReturnEntries.fp_machineReturn_slot1_ForwardA0N0 _ _ _ _ _) =>
-      iApply (txAccessList_end_bridge_slot1 Hexits _ with "Hexit")
+      iApply (txAccessList_end_bridge_slot1 with "Hexit")
   end.
 
-Ltac tx_slot Hexits :=
+Ltac tx_slot :=
   iIntros "#Htab";
   iPoseProof (block_table_pre_code with "Htab") as "#Hcode";
   iEval (unfold txAccessListBlockTable; cbn [block_table_code];
@@ -344,7 +590,7 @@ Ltac tx_slot Hexits :=
           [ iApply tx_body_weaken; iApply statement; tx_premise
           | iApply tx_return_slot; iIntros "Hret";
             iApply (statement with "[Hret]");
-            [ tx_exit_premise Hexits "Hret" | tx_premise .. ] ]
+            [ tx_exit_premise "Hret" | tx_premise .. ] ]
       end
   end.
 
@@ -356,7 +602,6 @@ Ltac tx_block_statements Sigma Hopen :=
   end.
 
 Lemma txAccessList_entry_body `{!islaG Sigma} `{!threadG} :
-  TxAccessListExitBridges ->
   TxAccessListOpenBlocks ->
   forall (args : TxAccessListArgs) (returnAddress : Z),
   ⊢ □ txAccessListTableCode -∗
@@ -364,7 +609,7 @@ Lemma txAccessList_entry_body `{!islaG Sigma} `{!threadG} :
       (ZesuSsz.Generated.TxAccessList.FP301.Pilot0000Entries.fp_machineAt0000 args returnAddress
         (txAccessListContinuation args returnAddress)).
 Proof.
-  intros Hexits Hopen args returnAddress.
+  intros Hopen args returnAddress.
   tx_block_statements Sigma Hopen.
   iIntros "#Htop".
   iApply (block_table_body (txAccessListBlockTable args returnAddress)).
@@ -375,7 +620,7 @@ Proof.
   repeat (apply elem_of_cons in Hin as [Hin|Hin]).
   all: try (apply elem_of_nil in Hin as []).
   all: injection Hin as Haddress Hstate; subst address state.
-  all: tx_slot Hexits.
+  all: tx_slot.
 Qed.
 
 (* ---- The callee premises of the table, from the contract code. ---- *)
@@ -434,11 +679,10 @@ Qed.
 
 (* ---- The theorem, from the open blocks. ---- *)
 Theorem txAccessListComplianceFrom :
-  TxAccessListExitBridges ->
   TxAccessListOpenBlocks ->
   TxAccessListContractCorrect.
 Proof.
-  intros Hexits Hopen returnAddress Sigma HG HT.
+  intros Hopen returnAddress Sigma HG HT.
   change (⊢ txAccessListContractCode -∗ ∀ args : TxAccessListArgs,
     instr_body sym_rlp_decode_txAccessList
       ((⌜bv_unsigned (txReturnAddress args) = returnAddress⌝ ∗ txAccessListEntryResources args) ∗
@@ -454,7 +698,7 @@ Proof.
   iPoseProof (tx_keysEnsureCapacity_boxed with "Hkec Halloc Hremap Hfree Hmemcpy") as "#Hkec2".
   iPoseProof (tx_keysToOwnedSlice_boxed with "Hkto Halloc Hremap Hfree Hmemcpy") as "#Hkto2".
   iPoseProof (tx_entriesToOwnedSlice_boxed with "Heto Halloc Hremap Hfree Hmemcpy") as "#Heto2".
-  iPoseProof (txAccessList_entry_body Hexits Hopen args returnAddress with "[]") as "Hbody".
+  iPoseProof (txAccessList_entry_body Hopen args returnAddress with "[]") as "Hbody".
   { iModIntro. rewrite /txAccessListTableCode. iFrame "#". }
   iApply (instr_pre_wand with "Hbody"); [done|done|].
   iIntros "[Hentry Hexit]".
