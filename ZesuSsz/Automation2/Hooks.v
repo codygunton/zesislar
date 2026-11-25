@@ -849,6 +849,12 @@ Ltac zesu_heap_take H address value lower count k kind range :=
   iSplitL "HheapWrite"; [iExact "HheapWrite" |].
 
 Ltac zesu_heap_write :=
+  (* The reading follows local definitions: an address it refuses costs no
+     change to the goal. *)
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+      HeapAddress.zesu_heap_with_reading address ltac:(fun _ _ => idtac)
+  end;
   zesu_expose_environment_alias;
   repeat match goal with
   | Hlocal := _ |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
@@ -856,10 +862,10 @@ Ltac zesu_heap_write :=
   end;
   lazymatch goal with
   | |- envs_entails _ (find_in_context (FindMemMapsTo ?address) ?continuation) =>
+      HeapAddress.zesu_heap_with_reading address ltac:(fun value c =>
       (* A load continues with `False` on an uninitialized region: such a
          region is offered to stores only. *)
       let on_uninit := eval cbv beta iota in (continuation (MKUninit 0 0)) in
-      HeapAddress.zesu_heap_with_reading address ltac:(fun value c =>
       iMatchHyp ltac:(fun H body =>
         lazymatch body with
         | (?lower ↦ₘ? ?count)%I =>
