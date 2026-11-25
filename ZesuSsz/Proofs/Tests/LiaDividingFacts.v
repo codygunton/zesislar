@@ -25,6 +25,32 @@ Proof.
   rewrite Z.add_mod by lia. rewrite Hmod. reflexivity.
 Qed.
 
+(* A refutation keeps them: the contradiction may rest on a dividing fact. *)
+Lemma dividing_facts_kept_for_false (x : Z) :
+  x mod 16 = 3 -> x = 32 -> False.
+Proof.
+  intros Hmod Hx.
+  zesu_lia_clear_dividing_facts.
+  match goal with H : _ mod _ = _ |- _ => idtac end.
+  subst x. vm_compute in Hmod. discriminate.
+Qed.
+
+(* Machine-word wraps are not dividing facts: a remainder by `2 ^ w`, by a
+   literal of more than 32 binary digits, or a constant quotient stays (the
+   unfolded `bv_unsigned (base + limit)` bound of a cursor, CalleeBoundedCursor.v). *)
+Lemma wrap_facts_kept (x y c : Z) :
+  (x + y) mod 2 ^ 64 <= c -> (x + y) mod 18446744073709551616 <= c ->
+  x + 2 ^ 128 / 2 <= c -> x mod 16 = 0 -> x <= x + 1.
+Proof.
+  intros Hpow Hlit Hconst Hmod.
+  zesu_lia_clear_dividing_facts.
+  Fail match goal with H : _ mod 16 = _ |- _ => idtac end.
+  match goal with H : _ mod 2 ^ 64 <= _ |- _ => idtac end.
+  match goal with H : _ mod 18446744073709551616 <= _ |- _ => idtac end.
+  match goal with H : _ + 2 ^ 128 / 2 <= _ |- _ => idtac end.
+  lia.
+Qed.
+
 (* The linked-facts solver refuses a goal with more than 24 distinct
    remainders, even one it would prove (the goal closes by reflexivity once
    the solver has refused); with few it runs (the unrelated fact is cleared
