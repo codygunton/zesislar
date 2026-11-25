@@ -538,3 +538,39 @@ Ltac txAccessListErrorExitRest :=
         reflexivity
       | right; apply txAccessListAllocationFailureItem; [exact Hc | lia] ]
   end.
+
+(* A word the block reloads from a byte list (a frame copy of a callee's
+   record) is the concatenation of the list's bytes at the reload offset,
+   the form the entries and the call facts state words in. *)
+Lemma txAccessListReloadedWord (l : list byte) :
+  (8 <= length l)%nat ->
+  Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) l)) = listWord64At0 l.
+Proof.
+  intros Hlen.
+  do 8 (destruct l as [|? l]; [cbn in Hlen; lia|]).
+  apply bv_eq. rewrite Z_to_bv_unsigned.
+  change (N.to_nat 8) with 8%nat. cbn [take List.nth].
+  rewrite !concatByteUnsigned by reflexivity.
+  rewrite littleEndianBv. cbn [littleEndian take]. clear Hlen.
+  change (littleEndian (take 0 l)) with 0.
+  repeat match goal with x : byte |- _ =>
+    lazymatch goal with
+    | _ : 0 <= bv_unsigned x < _ |- _ => fail
+    | _ => pose proof (bv_unsigned_in_range _ x)
+    end end.
+  unfold bv_wrap, bv_modulus in *.
+  change (MachineWord.MachineWord.Z_idx 8) with 8%N in *.
+  change (2 ^ Z.of_N 8) with 256 in *. change (2 ^ Z.of_N 64) with 18446744073709551616.
+  rewrite Z.mod_small by lia. lia.
+Qed.
+
+(* The reload offset of such a word is a frame difference that is 0 by
+   ring (`sp - 136 - (sp - 424 + 288)`). *)
+Ltac txAccessListReloadedWordAt :=
+  match goal with
+  | |- context [Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop (Z.to_nat ?d) ?l)))] =>
+      let Hd := fresh "Hd" in
+      assert (Hd : d = 0) by lia;
+      rewrite Hd; change (Z.to_nat 0) with 0%nat; rewrite drop_0;
+      rewrite (txAccessListReloadedWord l) by lia
+  end.
