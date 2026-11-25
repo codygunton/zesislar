@@ -1010,17 +1010,20 @@
    "id": "join-448",
    "request": null,
    "at": {"pc": "+0x448", "boundary": "join", "predecessors": ["+0x264", "+0x43c"]},
-   "binders": [{"name": "tx_appendable", "type": "ArrayListState"}, {"name": "tx_scratch_append", "type": "list byte"}],
+   "binders": [{"name": "tx_appendable", "type": "ArrayListState"}, {"name": "tx_scratch_append", "type": "list byte"},
+               {"name": "tx_entry_address", "type": "list byte"}],
    "resources": [
     {"coq": "(bv_unsigned (txStackPointer args) - 448) ↦ₘ∗ arrayListHeaderBytes tx_appendable", "length": "24"},
     {"coq": "arrayListPointer tx_appendable ↦ₘ∗ arrayListItems tx_appendable", "length": "arrayListLength tx_appendable * entriesElementBytes"},
     {"coq": "(arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes) ↦ₘ? ((arrayListCapacity tx_appendable - arrayListLength tx_appendable) * entriesElementBytes)", "minimum": 40},
     "altFlBlock (arrayListPointer tx_appendable) (arrayListCapacity tx_appendable * entriesElementBytes) entriesLog2Alignment",
-    {"coq": "ziskExtraParamsAddress ↦ₘ∗ tx_scratch_append", "length": "8"}
+    {"coq": "ziskExtraParamsAddress ↦ₘ∗ tx_scratch_append", "length": "8"},
+    {"coq": "((bv_unsigned (txStackPointer args) - 256) + 96) ↦ₘ∗ tx_entry_address", "length": "20"},
+    "(((bv_unsigned (txStackPointer args) - 256) + 96) + 20) ↦ₘ? 36"
    ],
    "replaces": [{"id": "loop_owned_0"}, {"id": "loop_owned_2"}, {"id": "loop_owned_3"}, {"id": "loop_owned_4"},
                 {"id": "loop_owned_8000042c_0"}, {"id": "loop_owned_8000042c_1"}, {"id": "loop_owned_8000042c_2"},
-                {"id": "loop_owned_80000248_3"}],
+                {"id": "loop_owned_80000248_3"}, {"id": "loop_owned_80000248_1_call_after"}],
    "facts": [
     {"coq": "bv_unsigned {x11} = arrayListPointer tx_appendable", "role": "owned"},
     {"coq": "arrayListLength tx_appendable = arrayListLength tx_entries", "role": "owned"},
@@ -1029,10 +1032,11 @@
     {"coq": "arrayListWellFormed entriesElementBytes tx_appendable", "role": "owned"},
     {"coq": "(bv_unsigned {x12} = 8 * arrayListLength tx_appendable)%Z", "role": "owned"},
     {"coq": "(bv_unsigned {x16} = 32 * arrayListLength tx_appendable)%Z", "role": "owned"},
-    {"coq": "Z.of_nat (List.length tx_scratch_append) = txAccessListScratchSize", "role": "owned"}
+    {"coq": "Z.of_nat (List.length tx_scratch_append) = txAccessListScratchSize", "role": "owned"},
+    {"coq": "tx_entry_address = take 20 (drop (Z.to_nat call3_payload_offset) (txInputBytes args))", "role": "owned"}
    ],
    "author": {"tier": "opus-medium"},
-   "why": "entries.appendAssumeCapacity: the list has a spare slot, unchanged (+0x29c len < cap, +0x264) or grown (+0x43c: pointer s8 and capacity s9 stored into the header at s0-0x1c0, s0-0x1b0). a1 is the list pointer, a2 = 8 len, a6 = 32 len (reloaded from s0-0x1f8/s0-0x200 on the grown path). Owned: header and buffer pieces of tx_appendable, items and length those of tx_entries."
+   "why": "entries.appendAssumeCapacity: the list has a spare slot, unchanged (+0x29c len < cap, +0x264) or grown (+0x43c: pointer s8 and capacity s9 stored into the header at s0-0x1c0, s0-0x1b0). a1 is the list pointer, a2 = 8 len, a6 = 32 len (reloaded from s0-0x1f8/s0-0x200 on the grown path). Owned: header and buffer pieces of tx_appendable, items and length those of tx_entries; the entry's 20 address bytes, copied at +0x284..+0x28c to s0-0xa0..s0-0x8c (call3's payload: the address item) and reloaded at +0x468/+0x470/+0x478 for the entry stores (B5Bridges4 diag: +0x468 loaded an uninitialized slot)."
   },
   {"id": "store-460", "request": null, "at": {"pc": "+0x460", "boundary": "access"}, "binders": [], "resources": [], "facts": [],
    "placement": {"region": "arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes", "offset": 0},
