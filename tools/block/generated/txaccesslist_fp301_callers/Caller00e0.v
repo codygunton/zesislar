@@ -16,6 +16,7 @@ Require Import ZesuSsz.Compliance.TxAccessListLoopIntro.
 Require Import ZesuSsz.Contracts.TxAccessListSelected.
 Require Import ZesuSsz.Generated.TxAccessList.FP301.Edges00e0.
 Require Import ZesuSsz.Automation2.All.
+Require Import ZesuSsz.Residuals.txAccessList.Block00e0.
 Local Open Scope Z_scope.
 #[local] Typeclasses Transparent txAccessListSelectedCode.
 
