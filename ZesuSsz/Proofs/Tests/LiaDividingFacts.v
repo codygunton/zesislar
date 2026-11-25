@@ -1,6 +1,6 @@
 From Coq Require Import ZArith.ZArith.
-Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Automation2.LinearFirstLia.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 (* The whole-context arm of the project lia reads no dividing fact on a goal
