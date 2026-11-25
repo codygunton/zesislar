@@ -38,9 +38,23 @@ Section tests.
     iSplit; [done | iIntros "_"; done].
   Qed.
 
+  (* After the first store: the region left starts 8 bytes later, and the
+     address's own offset 8 meets the region start (txAccessList +0x464). *)
+  Lemma heap_write_after_store (p len cap : Z) (x11 x12 x16 : bv 64) :
+    bv_unsigned x11 = p -> bv_unsigned x12 = 8 * len -> bv_unsigned x16 = 32 * len ->
+    40 <= (cap - len) * 40 ->
+    (p + len * 40 + 8) ↦ₘ? (p + len * 40 + (cap - len) * 40 - (p + len * 40 + 8)) -∗
+    find_in_context (FindMemMapsTo (bv_unsigned (x11 + (x16 + x12))%bv + 8))
+      (fun mk : mem_mapsto_kind => match mk with
+        | MKUninit start _ => ⌜start = (p + len * 40 + 8)%Z⌝
+        | _ => False end)%I.
+  Proof.
+    intros. iIntros "H". ZesuSsz.Automation2.Hooks.zesu_heap_write. done.
+  Qed.
+
   (* Casts and a shift, no register equation (txAccessList +0x204). *)
   Lemma heap_write_cast_shift (p len cap : Z) :
-    len < cap ->
+    0 <= p -> 0 <= len -> len < cap ->
     (p + len * 32) ↦ₘ? ((cap - len) * 32) -∗
     find_in_context
       (FindMemMapsTo (bv_unsigned (Z_to_bv 64 p + bv_shiftl (Z_to_bv 64 len) (BV 64 5))))

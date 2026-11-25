@@ -817,15 +817,14 @@ Ltac zesu_stack_write_if_enabled :=
 
 (* The heap twin of the stack write: an access whose address equals a place
    of an owned uninitialized region or array only through the context's
-   register equations (HeapAddress.v). The region is selected by a
-   syntactic reading; the address is rewritten to `start + k` (or `start`)
-   and the region is offered as the found resource, so the store or load
-   rule continues on syntactically related terms. *)
-Ltac zesu_heap_take H address lower count k kind range :=
+   register equations (HeapAddress.v). The address is read once; a region is
+   selected by a syntactic test on that reading; the address is rewritten to
+   `start + k` (or `start`) and the region is offered as the found resource,
+   so the store or load rule continues on syntactically related terms. *)
+Ltac zesu_heap_take H address value lower count k kind range :=
   iRename H into "HheapWrite";
-  let Hlow := fresh "HheapLow" in
   let Hhigh := fresh "HheapHigh" in
-  range "HheapWrite" Hlow Hhigh;
+  range "HheapWrite" Hhigh;
   let Hinside := fresh "HheapInside" in
   assert (Hinside : (k < count)%Z) by
     (ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
@@ -835,13 +834,17 @@ Ltac zesu_heap_take H address lower count k kind range :=
   | 0%Z =>
       assert (Heq : address = lower) by
         (transitivity (lower + 0)%Z;
-         [HeapAddress.zesu_heap_address_equation address lower k count Hlow Hhigh Hinside |
+         [HeapAddress.zesu_heap_address_equation address value lower k count Hhigh Hinside
+            ltac:(ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+              ("heap_write.nonneg"%string) ltac:(zesu_lia)) |
           apply Z.add_0_r])
   | _ =>
       assert (Heq : address = (lower + k)%Z) by
-        (HeapAddress.zesu_heap_address_equation address lower k count Hlow Hhigh Hinside)
+        (HeapAddress.zesu_heap_address_equation address value lower k count Hhigh Hinside
+          ltac:(ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+            ("heap_write.nonneg"%string) ltac:(zesu_lia)))
   end;
-  rewrite Heq; clear Heq Hinside Hlow Hhigh;
+  rewrite Heq; clear Heq Hinside Hhigh;
   iExists kind;
   iSplitL "HheapWrite"; [iExact "HheapWrite" |].
 
@@ -853,26 +856,27 @@ Ltac zesu_heap_write :=
   end;
   lazymatch goal with
   | |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+      HeapAddress.zesu_heap_with_reading address ltac:(fun value c =>
       iMatchHyp ltac:(fun H body =>
         lazymatch body with
         | (?lower ↦ₘ? ?count)%I =>
-            HeapAddress.zesu_heap_region_offset address lower count ltac:(fun k =>
-              zesu_heap_take H address lower count k constr:(MKUninit lower count)
-                ltac:(fun R Hlow Hhigh =>
-                  iDestruct (mem_mapsto_uninit_in_range with R) as %[Hlow [_ Hhigh]]))
+            HeapAddress.zesu_heap_region_offset address value c lower count ltac:(fun k =>
+              zesu_heap_take H address value lower count k constr:(MKUninit lower count)
+                ltac:(fun R Hhigh =>
+                  iDestruct (mem_mapsto_uninit_in_range with R) as %[_ [_ Hhigh]]))
         | (?lower ↦ₘ∗ ?values)%I =>
             lazymatch type of values with list (bv ?width) =>
               let count := constr:((Z.of_nat (length values) * Z.of_N (width `div` 8))%Z) in
-              HeapAddress.zesu_heap_region_offset address lower count ltac:(fun k =>
-                zesu_heap_take H address lower count k constr:(MKArray width lower values)
-                  ltac:(fun R Hlow Hhigh =>
+              HeapAddress.zesu_heap_region_offset address value c lower count ltac:(fun k =>
+                zesu_heap_take H address value lower count k constr:(MKArray width lower values)
+                  ltac:(fun R Hhigh =>
                     let Harray := fresh "HheapArray" in
-                    iDestruct (mem_mapsto_array_in_range with R) as %[Hlow Harray];
+                    iDestruct (mem_mapsto_array_in_range with R) as %[_ Harray];
                     assert (Hhigh : (lower + Z.of_nat (length values) * Z.of_N (width `div` 8)
                       <= 2 ^ 64)%Z) by (rewrite Z.mul_comm; exact Harray);
                     clear Harray))
             end
-        end)
+        end))
   end.
 
 

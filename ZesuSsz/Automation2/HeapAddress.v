@@ -26,23 +26,26 @@ From Ltac2 Require Import Ltac2 Constr Std.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 
-Lemma zesu_heap_address_offset (pointer : bv 64) (lower k c count : Z) :
-  pointer = Z_to_bv 64 (lower + (k - c)) ->
-  0 <= lower -> lower + count <= 2 ^ 64 -> 0 <= c <= k -> k < count ->
+(* `value` is the integer reading of the pointer: nonnegative, and equal to
+   the region place `lower + k` less the address's own offset `c`. *)
+Lemma zesu_heap_address_offset (pointer : bv 64) (value lower k c count : Z) :
+  pointer = Z_to_bv 64 value -> value + c = lower + k -> 0 <= value ->
+  lower + count <= 2 ^ 64 -> 0 <= c -> k < count ->
   bv_unsigned pointer + c = lower + k.
 Proof.
-  intros -> Hlow Hhigh Hc Hk.
+  intros -> Hvalue Hnonneg Hhigh Hc Hk.
   rewrite Z_to_bv_small; [lia|]. unfold bv_modulus. cbn [Z.of_N]. lia.
 Qed.
 
-Lemma zesu_heap_address_base (pointer : bv 64) (lower k count : Z) :
-  pointer = Z_to_bv 64 (lower + (k - 0)) ->
-  0 <= lower -> lower + count <= 2 ^ 64 -> 0 <= k -> k < count ->
+Lemma zesu_heap_address_base (pointer : bv 64) (value lower k count : Z) :
+  pointer = Z_to_bv 64 value -> value + 0 = lower + k -> 0 <= value ->
+  lower + count <= 2 ^ 64 -> k < count ->
   bv_unsigned pointer = lower + k.
 Proof.
-  intros Hp Hlow Hhigh Hk Hcount.
+  intros Hp Hvalue Hnonneg Hhigh Hcount.
   rewrite <- (Z.add_0_r (bv_unsigned pointer)).
-  exact (zesu_heap_address_offset pointer lower k 0 count Hp Hlow Hhigh (conj (Z.le_refl 0) Hk) Hcount).
+  exact (zesu_heap_address_offset pointer value lower k 0 count Hp Hvalue Hnonneg Hhigh
+    (Z.le_refl 0) Hcount).
 Qed.
 
 Lemma zesu_heap_register_cast (x : bv 64) (t : Z) :
@@ -71,10 +74,11 @@ Ltac2 zesu_heap_closed_value (term : constr) : constr :=
   Std.eval_vm None constr:(bv_unsigned $term).
 
 (* The integer reading of a 64-bit term, equal to its unsigned value modulo
-   2^64. `used` collects the registers read through an equation. *)
-Ltac2 rec zesu_heap_read (facts : (constr * constr * ident) list)
-    (used : (constr * ident) list ref) (term : constr) : constr :=
-  let read := zesu_heap_read facts used in
+   2^64. `used` collects the registers read through an equation, `casts`
+   records a cast read as its integer. *)
+Ltac2 rec zesu_heap_read_casts (facts : (constr * constr * ident) list)
+    (used : (constr * ident) list ref) (casts : bool ref) (term : constr) : constr :=
+  let read := zesu_heap_read_casts facts used casts in
   lazy_match! term with
   | bv_add ?a ?b => let a := read a in let b := read b in constr:(Z.add $a $b)
   | bv_sub ?a ?b => let a := read a in let b := read b in constr:(Z.sub $a $b)
@@ -90,7 +94,7 @@ Ltac2 rec zesu_heap_read (facts : (constr * constr * ident) list)
       else if zesu_bvlin_closed a then
         let b := read b in let a := zesu_heap_closed_value a in constr:(Z.mul $a $b)
       else constr:(@bv_unsigned 64 $term)
-  | Z_to_bv _ ?z => z
+  | Z_to_bv _ ?z => (if zesu_mem_numeral z then () else Ref.set casts true); z
   | _ =>
       if zesu_bvlin_closed term then zesu_heap_closed_value term else
       match zesu_heap_fact facts term with
@@ -101,6 +105,10 @@ Ltac2 rec zesu_heap_read (facts : (constr * constr * ident) list)
       | None => constr:(@bv_unsigned 64 $term)
       end
   end.
+
+Ltac2 zesu_heap_read (facts : (constr * constr * ident) list)
+    (used : (constr * ident) list ref) (term : constr) : constr :=
+  zesu_heap_read_casts facts used (Ref.ref false) term.
 
 (* `Some k` when value - lower is the constant k in the linear normal form. *)
 Ltac2 zesu_heap_constant_difference (value : constr) (lower : constr) : constr option :=
@@ -132,37 +140,79 @@ Ltac2 zesu_heap_address_parts (address : constr) : (constr * constr) option :=
   | _ => None
   end.
 
-(* The offset k of the address in the region at `lower` of `size` bytes,
-   read through the context's register equations; it fails when the region
-   start and the address differ by no constant, when the constant lies
-   before the region or before the address's own offset, or when the
-   membership classifier already relates the address to the region (its
-   rules handle that region). Runs `found k` on success. *)
-Ltac2 zesu_heap_region_offset (address : constr) (lower : constr) (size : constr)
-    (found : Ltac1.t) :=
+(* The reading of the address's pointer, once per access: (value, c). None
+   when the address has another shape, or when no register equation and no
+   cast entered the reading (the address is then related to a region, if at
+   all, syntactically, and other rules handle it). *)
+Ltac2 zesu_heap_reading (address : constr) : (constr * constr) option :=
   match zesu_heap_address_parts address with
-  | None => Control.zero (Tactic_failure None)
+  | None => None
   | Some (pointer, c) =>
-      (match zesu_mem_range_verdict lower address size with
-       | ZesuMemPossible => Control.zero (Tactic_failure None)
-       | _ => ()
-       end);
-      let used := Ref.ref [] in
-      let value := zesu_heap_read (zesu_heap_facts ()) used pointer in
-      match zesu_heap_constant_difference constr:(Z.add $value $c) lower with
-      | Some k =>
-          if Constr.equal (Std.eval_vm None constr:(andb (Z.leb 0 $c) (Z.leb $c $k))) constr:(true) then
-            Ltac1.apply found [Ltac1.of_constr k] Ltac1.run
-          else Control.zero (Tactic_failure None)
-      | None => Control.zero (Tactic_failure None)
-      end
+      if Constr.equal (Std.eval_vm None constr:(Z.leb 0 $c)) constr:(true) then
+        let used := Ref.ref [] in
+        let casts := Ref.ref false in
+        let value := zesu_heap_read_casts (zesu_heap_facts ()) used casts pointer in
+        match Ref.get used with
+        | [] => if Ref.get casts then Some (value, c) else None
+        | _ :: _ => Some (value, c)
+        end
+      else None
   end.
 
-Ltac zesu_heap_region_offset address lower size found :=
-  let run := ltac2:(address lower size found |-
+(* The atoms of a reading: subterms that are no sum, difference, product or
+   numeral. *)
+Ltac2 rec zesu_heap_atoms (term : constr) : constr list :=
+  lazy_match! term with
+  | Z.add ?a ?b => List.append (zesu_heap_atoms a) (zesu_heap_atoms b)
+  | Z.sub ?a ?b => List.append (zesu_heap_atoms a) (zesu_heap_atoms b)
+  | Z.mul ?a ?b => List.append (zesu_heap_atoms a) (zesu_heap_atoms b)
+  | _ => if zesu_mem_numeral term then [] else [term]
+  end.
+
+Ltac2 rec zesu_heap_mentions (atom : constr) (term : constr) : bool :=
+  if Constr.equal atom term then true else
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App head arguments =>
+      if zesu_heap_mentions atom head then true
+      else Array.exist (zesu_heap_mentions atom) arguments
+  | _ => false
+  end.
+
+(* The offset k of the address in the region at `lower` of `size` bytes:
+   fails when the region start shares no atom with the reading, when the
+   membership classifier already relates the address to the region (its
+   rules handle that region), or when the start and the reading differ by
+   no constant. Runs `found k` on success. *)
+Ltac2 zesu_heap_region_offset (address : constr) (value : constr) (c : constr)
+    (lower : constr) (size : constr) (found : Ltac1.t) :=
+  if List.exist (fun atom => zesu_heap_mentions atom lower) (zesu_heap_atoms value) then
+    (match zesu_mem_range_verdict lower address size with
+     | ZesuMemPossible => Control.zero (Tactic_failure None)
+     | _ => ()
+     end);
+    match zesu_heap_constant_difference constr:(Z.add $value $c) lower with
+    | Some k =>
+        if Constr.equal (Std.eval_vm None constr:(Z.leb 0 $k)) constr:(true)
+        then Ltac1.apply found [Ltac1.of_constr k] Ltac1.run
+        else Control.zero (Tactic_failure None)
+    | None => Control.zero (Tactic_failure None)
+    end
+  else Control.zero (Tactic_failure None).
+
+Ltac zesu_heap_with_reading address found :=
+  let run := ltac2:(address found |-
+    match zesu_heap_reading (Option.get (Ltac1.to_constr address)) with
+    | Some (value, c) => Ltac1.apply found [Ltac1.of_constr value; Ltac1.of_constr c] Ltac1.run
+    | None => Control.zero (Tactic_failure None)
+    end) in
+  run address found.
+
+Ltac zesu_heap_region_offset address value c lower size found :=
+  let run := ltac2:(address value c lower size found |-
     zesu_heap_region_offset (Option.get (Ltac1.to_constr address))
+      (Option.get (Ltac1.to_constr value)) (Option.get (Ltac1.to_constr c))
       (Option.get (Ltac1.to_constr lower)) (Option.get (Ltac1.to_constr size)) found) in
-  run address lower size found.
+  run address value c lower size found.
 
 Ltac zesu_heap_cast_register x name :=
   let Hcast := fresh "HheapRegister" in
@@ -184,14 +234,32 @@ Ltac2 zesu_heap_pointer_cast () :=
 
 Ltac zesu_heap_pointer_cast := ltac2:(zesu_heap_pointer_cast ()).
 
-(* `address = lower + k` from the region range `Hrange` (0 <= lower and
-   lower + count <= 2^64) and `Hinside` (k < count). *)
-Ltac zesu_heap_address_equation address lower k count Hlow Hhigh Hinside :=
+(* `0 <= value` for a reading: sums and products by nonnegative literals of
+   unsigned values, of terms equal to unsigned values by a context equation,
+   and of nonnegative literals; other terms by the solver on selected facts. *)
+Ltac zesu_heap_nonneg :=
+  lazymatch goal with
+  | |- 0 <= ?t =>
+      first [apply Z.leb_le; reflexivity |
+        exact (proj1 (bv_unsigned_in_range _ _)) |
+        match goal with
+        | H : @bv_unsigned _ _ = t |- _ => rewrite <- H; exact (proj1 (bv_unsigned_in_range _ _))
+        end |
+        lazymatch t with
+        | _ + _ => apply Z.add_nonneg_nonneg; zesu_heap_nonneg
+        | _ * _ => apply Z.mul_nonneg_nonneg; zesu_heap_nonneg
+        end]
+  end.
+
+(* `address = lower + k` from `Hhigh` (lower + count <= 2^64) and `Hinside`
+   (k < count); `value` is the pointer's integer reading. *)
+Ltac zesu_heap_address_equation address value lower k count Hhigh Hinside nonneg :=
   lazymatch address with
   | (bv_unsigned ?pointer + ?c)%Z =>
-      refine (zesu_heap_address_offset pointer lower k c count _ Hlow Hhigh _ Hinside);
-      [zesu_heap_pointer_cast | split; apply Z.leb_le; reflexivity]
+      refine (zesu_heap_address_offset pointer value lower k c count _ _ _ Hhigh _ Hinside);
+      [zesu_heap_pointer_cast | ring | first [solve [zesu_heap_nonneg] | nonneg] |
+       apply Z.leb_le; reflexivity]
   | bv_unsigned ?pointer =>
-      refine (zesu_heap_address_base pointer lower k count _ Hlow Hhigh _ Hinside);
-      [zesu_heap_pointer_cast | apply Z.leb_le; reflexivity]
+      refine (zesu_heap_address_base pointer value lower k count _ _ _ Hhigh Hinside);
+      [zesu_heap_pointer_cast | ring | first [solve [zesu_heap_nonneg] | nonneg]]
   end.
