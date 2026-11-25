@@ -31,7 +31,8 @@
    "^\\W*\\d+ <= \\(arrayListCapacity \\w+ - arrayListLength \\w+\\) \\* \\w+\\W*%Z\\W*$",
    "^\\W*arrayListLength \\w+ < arrayListCapacity \\w+\\W*%Z\\W*$",
    "^\\W*bv_unsigned \\(machine_x\\d+\\) = (arrayListPointer \\w+|arrayListCapacity \\w+|\\d+ \\* arrayListLength \\w+)\\W*(%Z\\W*)?$",
-   "^\\W*Z\\.of_nat \\(List\\.length \\w+\\) = txAccessListScratchSize\\W*$"
+   "^\\W*Z\\.of_nat \\(List\\.length \\w+\\) = txAccessListScratchSize\\W*$",
+   "^\\W*∃ \\(consumed : Z\\), tx_rest_error = "
   ],
   "args_type": "TxAccessListArgs",
   "symbol": "rlp_decode.txAccessList",
@@ -1090,7 +1091,7 @@
    "replaces": [{"id": "resource_35"}, {"id": "resource_31"}],
    "forget_unplaced": true,
    "facts": [{"coq": "Z.of_nat (List.length tx_scratch_error) = txAccessListScratchSize", "role": "owned"},
-             {"coq": "∃ (consumed : Z), tx_rest_error = app (word64Bytes (bv_unsigned (txInputPointer args) + consumed)) (word64Bytes (bv_unsigned (txInputLength args) - consumed))", "role": "owned"}],
+             {"coq": "∃ (consumed : Z), tx_rest_error = app (word64Bytes (bv_unsigned (txInputPointer args) + consumed)) (word64Bytes (bv_unsigned (txInputLength args) - consumed)) /\\ (txAccessListOutcomeAllowed (txInputBytes args) txAccessListInvalidInput consumed \\/ txAccessListOutcomeAllowed (txInputBytes args) txAccessListAllocationFailure consumed)", "role": "owned"}],
    "author": {"tier": "opus-medium"},
    "why": "error exit (result {0, 0, 3}, +0x4a8..+0x4b4, then the epilogue): 17 edges from every decodeItem, keysEnsureCapacity, keysToOwnedSlice, alloc and entriesToOwnedSlice failure and the overflow tests. The join keeps the frame and the saved registers (the epilogue reloads them) and the result slot; what an edge holds on the heap (lists, slices, a fresh block) has no place on the join root and is forgotten (leaked, as the code leaks it). The scratch word is owned with any value of 8 bytes."
   },
