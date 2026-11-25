@@ -44,7 +44,7 @@ Global Instance zesu_hist_edge_28 (args : TxAccessListArgs) (returnAddress : Z) 
             (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)) (BV 64%N 576%Z)) (BV 64%N 18446744073709551296%Z))); ((bv_add call3_kept_x23 (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 31%nat call4_arg_after (BV 8%N 0%Z)) (List.nth 30%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 29%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 28%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 27%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 26%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 25%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 24%nat call4_arg_after (BV 8%N 0%Z))))); ((bv_sub call3_kept_x22 (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 31%nat call4_arg_after (BV 8%N 0%Z)) (List.nth 30%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 29%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 28%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 27%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 26%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 25%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 24%nat call4_arg_after (BV 8%N 0%Z))))); ((bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N ((List.nth (Z.to_nat ((bv_unsigned (bv_add (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) (BV 64%N 7%Z)) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z))) ((List.nth (Z.to_nat ((bv_unsigned (bv_add (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) (BV 64%N 6%Z)) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z)))) ((List.nth (Z.to_nat ((bv_unsigned (bv_add (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) (BV 64%N 5%Z)) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z)))) ((List.nth (Z.to_nat ((bv_unsigned (bv_add (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) (BV 64%N 4%Z)) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z)))) ((List.nth (Z.to_nat ((bv_unsigned (bv_add (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) (BV 64%N 3%Z)) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z)))) ((List.nth (Z.to_nat ((bv_unsigned (bv_add (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) (BV 64%N 2%Z)) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z)))) ((List.nth (Z.to_nat ((bv_unsigned (bv_add (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) (BV 64%N 1%Z)) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z)))) ((List.nth (Z.to_nat ((bv_unsigned (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z))))); ((bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N ((List.nth (Z.to_nat ((bv_unsigned (bv_add (bv_add (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) (BV 64%N 8%Z)) (BV 64%N 7%Z)) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z))) ((List.nth (Z.to_nat ((bv_unsigned (bv_add (bv_add (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) (BV 64%N 8%Z)) (BV 64%N 6%Z)) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z)))) ((List.nth (Z.to_nat ((bv_unsigned (bv_add (bv_add (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) (BV 64%N 8%Z)) (BV 64%N 5%Z)) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z)))) ((List.nth (Z.to_nat ((bv_unsigned (bv_add (bv_add (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) (BV 64%N 8%Z)) (BV 64%N 4%Z)) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z)))) ((List.nth (Z.to_nat ((bv_unsigned (bv_add (bv_add (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) (BV 64%N 8%Z)) (BV 64%N 3%Z)) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z)))) ((List.nth (Z.to_nat ((bv_unsigned (bv_add (bv_add (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) (BV 64%N 8%Z)) (BV 64%N 2%Z)) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z)))) ((List.nth (Z.to_nat ((bv_unsigned (bv_add (bv_add (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) (BV 64%N 8%Z)) (BV 64%N 1%Z)) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z)))) ((List.nth (Z.to_nat ((bv_unsigned (bv_add (bv_add (txInputPointer args) ((Z_to_bv 64%N (call4_arg_payload_offset)))) (BV 64%N 8%Z)) - bv_unsigned (txInputPointer args))%Z)) (txInputBytes args) (BV 8%N 0%Z))))); (call4_arg_x15); (call4_arg_x16); (call4_arg_x17)]) (((bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)))) (bv_unsigned (((txInputEnd args)))) (take (Z.to_nat (bv_unsigned ((bv_sub call3_kept_x22 (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 31%nat call4_arg_after (BV 8%N 0%Z)) (List.nth 30%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 29%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 28%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 27%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 26%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 25%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 24%nat call4_arg_after (BV 8%N 0%Z))))))) (drop (Z.to_nat (bv_unsigned ((bv_add call3_kept_x23 (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 31%nat call4_arg_after (BV 8%N 0%Z)) (List.nth 30%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 29%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 28%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 27%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 26%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 25%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 24%nat call4_arg_after (BV 8%N 0%Z))))) - bv_unsigned (txInputPointer args))) (txInputBytes args))) call4_before) (call4_after)) /\ ((bv_unsigned (txInputPointer args) <= bv_unsigned ((bv_add call3_kept_x23 (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 31%nat call4_arg_after (BV 8%N 0%Z)) (List.nth 30%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 29%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 28%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 27%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 26%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 25%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 24%nat call4_arg_after (BV 8%N 0%Z))))) /\ bv_unsigned ((bv_add call3_kept_x23 (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 31%nat call4_arg_after (BV 8%N 0%Z)) (List.nth 30%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 29%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 28%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 27%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 26%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 25%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 24%nat call4_arg_after (BV 8%N 0%Z))))) + bv_unsigned ((bv_sub call3_kept_x22 (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 31%nat call4_arg_after (BV 8%N 0%Z)) (List.nth 30%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 29%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 28%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 27%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 26%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 25%nat call4_arg_after (BV 8%N 0%Z))) (List.nth 24%nat call4_arg_after (BV 8%N 0%Z))))) <= bv_unsigned (txInputPointer args) + Z.of_nat (List.length (txInputBytes args)))%Z)⌝ ∗ True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt018c_LoopClass0_Hist in Hh.
-  destruct Hh as (call2_kept_x23 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28).
+  destruct Hh as (call2_kept_x23 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29).
   iIntros "HN".
   iDestruct "HN" as (call5_payload_offset) "(%HN0 & %HN1 & %HN2 & %HN3 & %HN4 & %HN5 & %HN6 & %HN7 & %HN8 & %HN9 & %HN10 & %HN11 & %HN12 & %HN13 & %HN14 & %HN15 & %HN16 & %HN17 & %HN18 & %HN19 & %HN20 & %HN21 & %HN22 & %HV6 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt01a0_ForwardA0N0_Hist.
@@ -53,13 +53,13 @@ Proof.
   split; [exact HF2|].
   split; [exact HF3|].
   split; [exact HF4|].
-  split; [exact HF5|].
   split; [exact HF6|].
-  split; [exact (ex_intro _ call3_kept_x22 (ex_intro _ call3_kept_x23 (ex_intro _ call2_kept_x23 (conj HF7 (conj HF11 (conj HF12 (conj HF14 (conj HF15 HV6))))))))|].
-  split; [exact HF8|].
+  split; [exact HF7|].
+  split; [exact (ex_intro _ call3_kept_x22 (ex_intro _ call3_kept_x23 (ex_intro _ call2_kept_x23 (conj HF8 (conj HF12 (conj HF13 (conj HF15 (conj HF16 HV6))))))))|].
   split; [exact HF9|].
-  split; [exact HF16|].
+  split; [exact HF10|].
   split; [exact HF17|].
+  split; [exact HF18|].
   split; [exact HN0|].
   split; [exact HN1|].
   split; [exact HN2|].
@@ -71,19 +71,19 @@ Proof.
   split; [by vm_compute|].
   split; [by vm_compute|].
   split; [by vm_compute|].
-  split; [zesu_hist_view HF18|].
-  split; [by vm_compute|].
-  split; [by vm_compute|].
   split; [zesu_hist_view HF19|].
+  split; [by vm_compute|].
+  split; [by vm_compute|].
   split; [zesu_hist_view HF20|].
-  split; [by vm_compute|].
-  split; [by vm_compute|].
   split; [zesu_hist_view HF21|].
-  split; [zesu_hist_view HF22|].
   split; [by vm_compute|].
+  split; [by vm_compute|].
+  split; [zesu_hist_view HF22|].
   split; [zesu_hist_view HF23|].
+  split; [by vm_compute|].
   split; [zesu_hist_view HF24|].
   split; [zesu_hist_view HF25|].
+  split; [zesu_hist_view HF26|].
   split; [exact HN3|].
   split; [exact HN4|].
   split; [exact HN5|].
@@ -104,10 +104,10 @@ Proof.
   split; [exact HN20|].
   split; [exact HN21|].
   split; [exact HN22|].
-  split; [zesu_hist_view HF26|].
   split; [zesu_hist_view HF27|].
-  split; [by vm_compute|].
   split; [zesu_hist_view HF28|].
+  split; [by vm_compute|].
+  split; [zesu_hist_view HF29|].
   split; [by vm_compute|].
   split; [by vm_compute|].
   split; [by vm_compute|].
@@ -118,24 +118,32 @@ Global Instance zesu_hist_reveal_21 (args : TxAccessListArgs) (returnAddress : Z
   ZesuHistReveal (fp_machineAt018c_LoopClass0_Hist (args) (returnAddress) (call4_after) (call3_after) (call3_kept_x22) (call3_kept_x23) (call3_kept_x26) (call3_payload_offset) (call2_after) (call_after) (outer_x20) (outer_x21) (tx_entries) (tx_done) (tx_images) (tx_scratch)) ((arrayListWellFormed entriesElementBytes tx_entries)).
 Proof.
   rewrite /ZesuHistReveal => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt018c_LoopClass0_Hist in Hh.
-  destruct Hh as (call2_kept_x23 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28).
+  destruct Hh as (call2_kept_x23 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29).
   exact HF1.
 Qed.
 
 Global Instance zesu_hist_reveal_22 (args : TxAccessListArgs) (returnAddress : Z) (call4_after : DecodeItemOutcome) (call3_after : DecodeItemOutcome) (call3_kept_x22 : bv 64) (call3_kept_x23 : bv 64) (call3_kept_x26 : bv 64) (call3_payload_offset : Z) (call2_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (outer_x20 : bv 64) (outer_x21 : bv 64) (tx_entries : ArrayListState) (tx_done : list AccessListEntryValue) (tx_images : list TxAccessListEntryImage) (tx_scratch : list byte) :
-  ZesuHistReveal (fp_machineAt018c_LoopClass0_Hist (args) (returnAddress) (call4_after) (call3_after) (call3_kept_x22) (call3_kept_x23) (call3_kept_x26) (call3_payload_offset) (call2_after) (call_after) (outer_x20) (outer_x21) (tx_entries) (tx_done) (tx_images) (tx_scratch)) ((bv_unsigned (bv_and (bv_zero_extend 64 (List.nth 16 call2_after (BV 8 0))) (BV 64 1)) <> 0 -> (bv_unsigned (txInputPointer args) <= bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (@take (bv 8) (N.to_nat 8) (@drop (bv 8) 0 call2_after)))))%Z /\ (bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (@take (bv 8) (N.to_nat 8) (@drop (bv 8) 0 call2_after)))) + bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (@take (bv 8) (N.to_nat 8) (@drop (bv 8) 8 call2_after)))) <= bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)))%Z)).
+  ZesuHistReveal (fp_machineAt018c_LoopClass0_Hist (args) (returnAddress) (call4_after) (call3_after) (call3_kept_x22) (call3_kept_x23) (call3_kept_x26) (call3_payload_offset) (call2_after) (call_after) (outer_x20) (outer_x21) (tx_entries) (tx_done) (tx_images) (tx_scratch)) ((Forall2 (fun entry image => entryKeys entry <> [] -> txRamRange (imageKeysPointer image) (txAccessListKeySize * Z.of_nat (List.length (entryKeys entry)))) tx_done tx_images)).
 Proof.
   rewrite /ZesuHistReveal => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt018c_LoopClass0_Hist in Hh.
-  destruct Hh as (call2_kept_x23 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28).
-  exact HF10.
+  destruct Hh as (call2_kept_x23 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29).
+  exact HF5.
 Qed.
 
 Global Instance zesu_hist_reveal_23 (args : TxAccessListArgs) (returnAddress : Z) (call4_after : DecodeItemOutcome) (call3_after : DecodeItemOutcome) (call3_kept_x22 : bv 64) (call3_kept_x23 : bv 64) (call3_kept_x26 : bv 64) (call3_payload_offset : Z) (call2_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (outer_x20 : bv 64) (outer_x21 : bv 64) (tx_entries : ArrayListState) (tx_done : list AccessListEntryValue) (tx_images : list TxAccessListEntryImage) (tx_scratch : list byte) :
+  ZesuHistReveal (fp_machineAt018c_LoopClass0_Hist (args) (returnAddress) (call4_after) (call3_after) (call3_kept_x22) (call3_kept_x23) (call3_kept_x26) (call3_payload_offset) (call2_after) (call_after) (outer_x20) (outer_x21) (tx_entries) (tx_done) (tx_images) (tx_scratch)) ((bv_unsigned (bv_and (bv_zero_extend 64 (List.nth 16 call2_after (BV 8 0))) (BV 64 1)) <> 0 -> (bv_unsigned (txInputPointer args) <= bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (@take (bv 8) (N.to_nat 8) (@drop (bv 8) 0 call2_after)))))%Z /\ (bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (@take (bv 8) (N.to_nat 8) (@drop (bv 8) 0 call2_after)))) + bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (@take (bv 8) (N.to_nat 8) (@drop (bv 8) 8 call2_after)))) <= bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)))%Z)).
+Proof.
+  rewrite /ZesuHistReveal => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt018c_LoopClass0_Hist in Hh.
+  destruct Hh as (call2_kept_x23 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29).
+  exact HF11.
+Qed.
+
+Global Instance zesu_hist_reveal_24 (args : TxAccessListArgs) (returnAddress : Z) (call4_after : DecodeItemOutcome) (call3_after : DecodeItemOutcome) (call3_kept_x22 : bv 64) (call3_kept_x23 : bv 64) (call3_kept_x26 : bv 64) (call3_payload_offset : Z) (call2_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (outer_x20 : bv 64) (outer_x21 : bv 64) (tx_entries : ArrayListState) (tx_done : list AccessListEntryValue) (tx_images : list TxAccessListEntryImage) (tx_scratch : list byte) :
   ZesuHistReveal (fp_machineAt018c_LoopClass0_Hist (args) (returnAddress) (call4_after) (call3_after) (call3_kept_x22) (call3_kept_x23) (call3_kept_x26) (call3_payload_offset) (call2_after) (call_after) (outer_x20) (outer_x21) (tx_entries) (tx_done) (tx_images) (tx_scratch)) (((zesu_named_eq call3_kept_x26 (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 31%nat call2_after (BV 8%N 0%Z)) (List.nth 30%nat call2_after (BV 8%N 0%Z))) (List.nth 29%nat call2_after (BV 8%N 0%Z))) (List.nth 28%nat call2_after (BV 8%N 0%Z))) (List.nth 27%nat call2_after (BV 8%N 0%Z))) (List.nth 26%nat call2_after (BV 8%N 0%Z))) (List.nth 25%nat call2_after (BV 8%N 0%Z))) (List.nth 24%nat call2_after (BV 8%N 0%Z)))))).
 Proof.
   rewrite /ZesuHistReveal => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt018c_LoopClass0_Hist in Hh.
-  destruct Hh as (call2_kept_x23 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28).
-  exact HF13.
+  destruct Hh as (call2_kept_x23 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29).
+  exact HF14.
 Qed.
 
 End edges.

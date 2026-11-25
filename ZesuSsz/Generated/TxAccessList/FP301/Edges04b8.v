@@ -35,14 +35,14 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt04b8_slot0_ForwardA0N0 -> fp_machineReturn_slot0_ForwardA0N0 (return) *)
-Global Instance zesu_hist_edge_73 (args : TxAccessListArgs) (returnAddress : Z) (call_after : DecodeItemOutcome) (tx_rest_error : list byte) :
+Global Instance zesu_hist_edge_73 (args : TxAccessListArgs) (returnAddress : Z) (call_after : DecodeItemOutcome) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt04b8_slot0_ForwardA0N0_Hist (args) (returnAddress) (call_after) (tx_rest_error))
-    (fp_machineReturn_slot0_ForwardA0N0_Hist (args) (returnAddress) (call_after) (tx_rest_error))
+    (fp_machineAt04b8_slot0_ForwardA0N0_Hist (args) (returnAddress) (call_after))
+    (fp_machineReturn_slot0_ForwardA0N0_Hist (args) (returnAddress) (call_after))
     (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt04b8_slot0_ForwardA0N0_Hist in Hh.
-  destruct Hh as (fp_seed_mstatus_bits & forward_witness_d7543602bfbbe148 & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_72b7e22ed74cb83b & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9).
+  destruct Hh as (fp_seed_mstatus_bits & forward_witness_d7543602bfbbe148 & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_72b7e22ed74cb83b & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8).
   iIntros "HN".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineReturn_slot0_ForwardA0N0_Hist.
   exists fp_seed_mstatus_bits, forward_witness_d7543602bfbbe148, forward_witness_83d3e6d46c3de70e, forward_witness_1d218312837c2f84, forward_witness_dc636cab9ffb40ae, forward_witness_184f6fc7524c683f, forward_witness_72b7e22ed74cb83b, (BV 64%N 0%Z), (BV 64%N 0%Z).
@@ -55,7 +55,6 @@ Proof.
   split; [exact HF6|].
   split; [exact HF7|].
   split; [exact HF8|].
-  split; [exact HF9|].
   split; [by vm_compute|].
   by vm_compute.
 Qed.

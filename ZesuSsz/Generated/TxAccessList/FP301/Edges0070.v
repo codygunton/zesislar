@@ -70,20 +70,18 @@ Proof.
 Qed.
 
 (* fp_machineAt0070_ForwardA0N0 -> fp_machineAt04a8_ForwardA0N0 (join) *)
-Global Instance zesu_hist_edge_4 (args : TxAccessListArgs) (returnAddress : Z) (call_after : DecodeItemOutcome) (tx_rest_error : list byte) :
+Global Instance zesu_hist_edge_4 (args : TxAccessListArgs) (returnAddress : Z) (call_after : DecodeItemOutcome) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0070_ForwardA0N0_Hist (args) (returnAddress) (call_after))
-    (fp_machineAt04a8_ForwardA0N0_Hist (args) (returnAddress) (call_after) (tx_rest_error))
-    (⌜(∃ (consumed : Z), tx_rest_error = app (word64Bytes (bv_unsigned (txInputPointer args) + consumed)) (word64Bytes (bv_unsigned (txInputLength args) - consumed)))⌝ ∗ True)%I.
+    (fp_machineAt04a8_ForwardA0N0_Hist (args) (returnAddress) (call_after))
+    (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0070_ForwardA0N0_Hist in Hh.
   destruct Hh as (fp_seed_mstatus_bits & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_791c5acc1109e8e6 & forward_witness_f1505c797ad3010d & forward_witness_d7543602bfbbe148 & forward_witness_00470b017f14ddbf & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_88383840afa7af74 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14).
   iIntros "HN".
-  iDestruct "HN" as "(%HN0 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt04a8_ForwardA0N0_Hist.
   exists fp_seed_mstatus_bits, forward_witness_d7543602bfbbe148, forward_witness_83d3e6d46c3de70e, forward_witness_1d218312837c2f84, forward_witness_dc636cab9ffb40ae, forward_witness_184f6fc7524c683f.
   split; [exact HF0|].
-  split; [exact HN0|].
   split; [exact HF1|].
   split; [exact HF6|].
   split; [exact HF8|].
