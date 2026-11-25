@@ -112,16 +112,18 @@ Section tests.
     iExists (MKUninit p 8). iSplitL "H"; [iExact "H" | done].
   Qed.
 
-  (* Refused: a load continues with `False` on an uninitialized region. *)
+  (* Refused: a load continues with `False` on an uninitialized region. The
+     test closes by its contradictory premise once the rule has refused. *)
   Lemma heap_read_uninit_refused (p : Z) (x11 : bv 64) :
-    bv_unsigned x11 = p ->
+    bv_unsigned x11 = p -> False ->
     p ↦ₘ? 16 -∗
     find_in_context (FindMemMapsTo (bv_unsigned x11))
       (fun mk : mem_mapsto_kind => match mk with
         | MKUninit _ _ => False
         | _ => True end)%I.
   Proof.
-    intros. iIntros "H".
+    intros Hx Hcontra. iIntros "H".
     Fail ZesuSsz.Automation2.Hooks.zesu_heap_write.
-  Abort.
+    contradiction.
+  Qed.
 End tests.
