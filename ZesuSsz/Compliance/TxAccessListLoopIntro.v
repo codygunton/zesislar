@@ -11,6 +11,7 @@ Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.
 Require Import ZesuSsz.Contracts.TxAccessListContract.
 Require Import ZesuSsz.Contracts.TxAccessListBlockEntries.
 Require Import ZesuSsz.Automation2.VmClosed.
+Require Export ZesuSsz.Compliance.TxAccessListWordHints.
 Import ListNotations.
 Local Open Scope Z_scope.
 
