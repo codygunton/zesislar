@@ -48,7 +48,7 @@ Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt01a0_ForwardA0N0_Hist in Hh.
   destruct Hh as (call5_payload_offset & fp_seed_mstatus_bits & forward_witness_791c5acc1109e8e6 & forward_witness_f1505c797ad3010d & forward_witness_d7543602bfbbe148 & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & forward_witness_d0511cb7161d8dd4 & forward_witness_0c9a8614ab622b44 & forward_witness_1be931110d776902 & forward_witness_751588b52f8a71ff & forward_witness_cbcac9df79b9221c & forward_witness_72b7e22ed74cb83b & forward_witness_87e5cadc5c04d5d4 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53 & HF54 & HF55 & HF56 & HF57 & HF58 & HF59 & HF60 & HF61 & HF62).
   iIntros "HN".
-  iDestruct "HN" as "(%HN0 & %HV8 & %HV13 & %HV14 & _)".
+  iDestruct "HN" as "(%HN0 & %HV9 & %HV15 & %HV16 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt01a8_ForwardA0N0_Hist.
   exists call5_payload_offset, (BV 64%N 0%Z), forward_witness_791c5acc1109e8e6, forward_witness_f1505c797ad3010d, forward_witness_d7543602bfbbe148, forward_witness_83d3e6d46c3de70e, forward_witness_1d218312837c2f84, forward_witness_dc636cab9ffb40ae, forward_witness_184f6fc7524c683f, forward_witness_88383840afa7af74, forward_witness_1492ef7bd46b3b7a, forward_witness_d77b5950a2aea933, forward_witness_d0511cb7161d8dd4, forward_witness_0c9a8614ab622b44, forward_witness_1be931110d776902, forward_witness_751588b52f8a71ff, forward_witness_cbcac9df79b9221c, forward_witness_87e5cadc5c04d5d4.
   split; [exact HF0|].
@@ -60,12 +60,12 @@ Proof.
   split; [exact HF6|].
   split; [exact HF7|].
   split; [exact HF8|].
-  split; [exact HV8|].
+  split; [exact HV9|].
   split; [exact HF9|].
   split; [exact HF10|].
   split; [exact HF11|].
-  split; [exact HV13|].
-  split; [exact HV14|].
+  split; [exact HV15|].
+  split; [exact HV16|].
   split; [exact HF12|].
   split; [exact HF13|].
   split; [exact HF14|].
