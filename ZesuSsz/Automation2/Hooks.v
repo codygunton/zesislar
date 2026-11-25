@@ -3557,8 +3557,11 @@ Ltac liAAsm ::=
    whole context: on the final pure tail of decodeParentHeader 0300 (451
    facts) it grew past 8 GiB within two minutes. The whole-context run on a
    goal that does not divide reads no dividing fact (LinearFirstLia,
-   `zesu_lia_clear_dividing_facts`): on such facts it ran without end. *)
+   `zesu_lia_clear_dividing_facts`): on such facts it ran without end; and a
+   goal with more distinct divisions than the linear-first path accepts goes
+   to neither arm (`zesu_lia_goal_divisions_within`). *)
 Ltac zesu_lia_context_bounded closer :=
+  zesu_lia_goal_divisions_within;
   tryif zesu_switch_enabled constr:(ZesuStepFinisherOnce)
   then first [solve [zesu_context_prune_goal; zesu_lia_pruned_context_within_budget; closer]
              | (zesu_lia_context_within_budget; zesu_lia_clear_dividing_facts; closer)]
