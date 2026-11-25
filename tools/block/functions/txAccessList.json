@@ -35,7 +35,8 @@
     "^\\W*bv_unsigned \\(bv_and \\(bv_zero_extend 64 \\(List\\.nth 16 \\w+ \\(BV 8 0\\)\\)\\) \\(BV 64 1\\)\\) <> 0 ->",
     "^\\W*\\d+ <= \\(arrayListCapacity \\w+ - arrayListLength \\w+\\) \\* \\w+\\W*%Z\\W*$",
     "^\\W*arrayListLength \\w+ < arrayListCapacity \\w+\\W*%Z\\W*$",
-    "^\\W*bv_unsigned \\(machine_x\\d+\\) = (arrayListPointer \\w+|arrayListCapacity \\w+|\\d+ \\* arrayListLength \\w+)\\W*(%Z\\W*)?$"
+    "^\\W*bv_unsigned \\(machine_x\\d+\\) = (arrayListPointer \\w+|arrayListCapacity \\w+|\\d+ \\* arrayListLength \\w+)\\W*(%Z\\W*)?$",
+    "^\\W*Z\\.of_nat \\(List\\.length \\w+\\) = txAccessListScratchSize\\W*$"
   ],
   "args_type": "TxAccessListArgs",
   "symbol": "rlp_decode.txAccessList",
@@ -1458,6 +1459,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "d7783e7034b1fe25f8281816367b4a3c0a1bd9924bf97447043a48f3806e3039"
+    "sha256": "a867cb46cf39f74da403429457a263f8399468ee1a505f454e33fd2657a2a675"
   }
 }
