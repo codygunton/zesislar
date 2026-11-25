@@ -27,7 +27,10 @@
    "^\\W*bv_unsigned call_x10 = 0\\W*$",
    "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$",
    "^\\W*arrayListWellFormed \\w+ \\w+\\W*$",
-   "^\\W*bv_unsigned \\(bv_and \\(bv_zero_extend 64 \\(List\\.nth 16 \\w+ \\(BV 8 0\\)\\)\\) \\(BV 64 1\\)\\) <> 0 ->"
+   "^\\W*bv_unsigned \\(bv_and \\(bv_zero_extend 64 \\(List\\.nth 16 \\w+ \\(BV 8 0\\)\\)\\) \\(BV 64 1\\)\\) <> 0 ->",
+   "^\\W*\\d+ <= \\(arrayListCapacity \\w+ - arrayListLength \\w+\\) \\* \\w+\\W*%Z\\W*$",
+   "^\\W*arrayListLength \\w+ < arrayListCapacity \\w+\\W*%Z\\W*$",
+   "^\\W*bv_unsigned \\(machine_x\\d+\\) = (arrayListPointer \\w+|arrayListCapacity \\w+|\\d+ \\* arrayListLength \\w+)\\W*(%Z\\W*)?$"
   ],
   "args_type": "TxAccessListArgs",
   "symbol": "rlp_decode.txAccessList",
