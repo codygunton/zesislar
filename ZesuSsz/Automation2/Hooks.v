@@ -855,11 +855,15 @@ Ltac zesu_heap_write :=
       lazymatch address with context[Hlocal] => unfold Hlocal in *; clear Hlocal end
   end;
   lazymatch goal with
-  | |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+  | |- envs_entails _ (find_in_context (FindMemMapsTo ?address) ?continuation) =>
+      (* A load continues with `False` on an uninitialized region: such a
+         region is offered to stores only. *)
+      let on_uninit := eval cbv beta iota in (continuation (MKUninit 0 0)) in
       HeapAddress.zesu_heap_with_reading address ltac:(fun value c =>
       iMatchHyp ltac:(fun H body =>
         lazymatch body with
         | (?lower ↦ₘ? ?count)%I =>
+            lazymatch on_uninit with False%I => fail | _ => idtac end;
             HeapAddress.zesu_heap_region_offset address value c lower count ltac:(fun k =>
               zesu_heap_take H address value lower count k constr:(MKUninit lower count)
                 ltac:(fun R Hhigh =>
