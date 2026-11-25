@@ -31,6 +31,8 @@ goal (with --all also the closed ones, as a control) in Rocq, never by text:
    tools/oblig/exec/run.py snapshots at the goal's block offset, each data variable of a part takes its
    value through the region's binder map tools/oblig/exec/binders/<function>.json (entry values from
    STATE-0000 of the same input, block values from STATE-<block>; inputs of the map's run mode only;
+   the map's optional `imports` (module paths) are required after the goal's preamble, for the
+   Decision instances of the region's premise predicates;
    a record binder registered in tools/oblig/records.json is screened through its fields, named by
    projection path as falsify.py projects them); Rocq decides each premise and the conclusion
    (bool_decide, vm_compute). Verdicts: `false-on-real-state(<input>)` (kernel-checked refutation of
@@ -291,6 +293,16 @@ def screen_rows(binders, states, binder_map):
     return rows, sorted(missing)
 
 
+def screen_imports(binder_map):
+    """The `Require Import` lines of the binder map's `imports` (modules with the Decision instances of
+    the region's premises, loaded after the goal's own preamble by the screen only)."""
+    modules = binder_map.get("imports", [])
+    if not isinstance(modules, list) or not all(isinstance(m, str) and re.fullmatch(r"[A-Za-z_][\w.']*", m)
+                                                for m in modules):
+        raise NormaliseError("binder map `imports` is a list of module paths")
+    return "".join("Require Import %s.\n" % m for m in modules)
+
+
 def screen(goal, route, out, states, binder_map):
     """The snapshot verdict of the lemma in GOAL (a goal.v): dict(verdict, ...); writes OUT/SCREEN.json."""
     out = Path(out)
@@ -303,7 +315,7 @@ def screen(goal, route, out, states, binder_map):
         report.update(verdict="not-evaluable", reason="no snapshot of mode %s reaches the block" % binder_map.get("mode"))
         return finish_screen(out, report)
     goal_preamble, statement, _ = falsify.read_goal(goal)
-    pre = falsify.preamble(goal_preamble, statement, route.args, route.coqlib)
+    pre = falsify.preamble(goal_preamble, statement, route.args, route.coqlib) + screen_imports(binder_map)
     tag = "screen-" + sha(statement)[:12]
     (out / "probe.v").write_text(falsify.probe_text(pre, statement))
     result, text = route.compile(out / "probe.v", tag + "-probe")

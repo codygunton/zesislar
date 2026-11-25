@@ -123,6 +123,24 @@ class ScreenRowTests(unittest.TestCase):
         text = falsify.coq_value(dict(name="l", kind="bytes"), dict(hex="0102"))
         self.assertIn("(@Coq.Init.Datatypes.cons Coq.Numbers.BinNums.Z (1)%Z (@Coq.Init.Datatypes.cons", text)
 
+    def test_map_imports_follow_the_goal_preamble(self):
+        self.assertEqual(normalise.screen_imports(dict(MAP)), "")
+        self.assertEqual(normalise.screen_imports(dict(MAP, imports=["ZesuSsz.Region.Decide"])),
+                         "Require Import ZesuSsz.Region.Decide.\n")
+        with self.assertRaises(normalise.NormaliseError):
+            normalise.screen_imports(dict(MAP, imports=["Bad Module"]))
+
+        class Route:
+            args, coqlib = [], ""
+            def compile(self, path, tag):
+                return dict(returncode=1), ""
+        goal = self.tmp / "goal.v"
+        goal.write_text("Require Import ZesuSsz.Demo.\n\nLemma g :\n  forall x : Z, x = x.\nProof.\nAdmitted.\n")
+        states = normalise.snapshot_states(self.tmp, "0010", "remap-never")
+        normalise.screen(goal, Route(), self.tmp / "out", states, dict(MAP, imports=["ZesuSsz.Region.Decide"]))
+        probe = (self.tmp / "out" / "probe.v").read_text()
+        self.assertLess(probe.index("Require Import ZesuSsz.Demo."), probe.index("Require Import ZesuSsz.Region.Decide."))
+
     def test_seeded_maps_load(self):
         for function in ("keysToOwnedSlice", "entriesToOwnedSlice", "keysEnsureCapacity"):
             data = normalise.load_binder_map(function)
