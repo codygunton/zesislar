@@ -874,16 +874,22 @@ Proof.
     + exact Hprefix.
 Qed.
 
+(** The global state after fetching the instruction at [pc]: a fetch at a
+    charged address counts one more fetch. *)
+Definition seq_fetch_state (pc : bv 64) (sigma : seq_global_state) : seq_global_state :=
+  if decide (pc ∈ sigma.(seq_charged))
+  then sigma <| seq_fetches := S sigma.(seq_fetches) |> else sigma.
+
 Definition exec_finish (regs : reg_map) (sigma : seq_global_state) :
-    option (seq_local_state * list seq_label * list Prop) :=
+    option (seq_local_state * seq_global_state * list seq_label * list Prop) :=
   match regs !! "PC" with
   | Some (RVal_Bits address) =>
       let pc := Z_to_bv 64 (bvn_unsigned address) in
       let conditions := [regs !! "PC" = Some (RVal_Bits pc)] in
       match sigma.(seq_instrs) !! pc with
-      | Some next => Some (instruction_boundary next regs, [], conditions)
+      | Some next => Some (instruction_boundary next regs, seq_fetch_state pc sigma, [], conditions)
       | None =>
-          Some (instruction_boundary tnil regs <| seq_nb_state := true |>,
+          Some (instruction_boundary tnil regs <| seq_nb_state := true |>, sigma,
             [SInstrTrap pc (seq_state_snapshot (instruction_boundary tnil regs) sigma)],
             conditions)
       end
@@ -895,14 +901,14 @@ Definition exec_instr (trace : isla_trace) (regs : reg_map)
   result ← exec_trace (S (isla_trace_length trace)) trace regs sigma;
   let '(regs', sigma', labels, conditions) := result in
   result' ← exec_finish regs' sigma';
-  let '(_, last, conditions') := result' in
-  Some (regs', sigma', labels ++ last, conditions ++ conditions').
+  let '(_, sigma'', last, conditions') := result' in
+  Some (regs', sigma'', labels ++ last, conditions ++ conditions').
 
-Lemma exec_finish_sound regs sigma theta labels conditions :
-  exec_finish regs sigma = Some (theta, labels, conditions) ->
+Lemma exec_finish_sound regs sigma theta sigma' labels conditions :
+  exec_finish regs sigma = Some (theta, sigma', labels, conditions) ->
   ExecutorConditions conditions ->
   seq_regs theta = regs /\
-  seq_step (instruction_boundary tnil regs) sigma labels theta sigma [].
+  seq_step (instruction_boundary tnil regs) sigma labels theta sigma' [].
 Proof.
   unfold exec_finish.
   destruct (regs !! "PC") as [value|] eqn:Hpc; [|discriminate].
@@ -913,15 +919,15 @@ Proof.
   - eapply SeqStep with (κ := Some (LDone next)) (κ' := None).
     + reflexivity.
     + constructor.
-    + split; [reflexivity|]. exists (Z_to_bv 64 (bvn_unsigned bv5)).
+    + exists (Z_to_bv 64 (bvn_unsigned bv5)).
       split; [simpl; rewrite Hpc; assumption|].
       simpl. rewrite Hnext. repeat split; reflexivity.
   - eapply SeqStep with (κ := Some (LDone tnil))
       (κ' := Some (SInstrTrap (Z_to_bv 64 (bvn_unsigned bv5))
-        (seq_state_snapshot (instruction_boundary tnil regs) sigma))).
+        (seq_state_snapshot (instruction_boundary tnil regs) sigma'))).
     + reflexivity.
     + constructor.
-    + split; [reflexivity|]. exists (Z_to_bv 64 (bvn_unsigned bv5)).
+    + exists (Z_to_bv 64 (bvn_unsigned bv5)).
       split; [simpl; rewrite Hpc; assumption|].
       simpl. rewrite Hnext. repeat split; reflexivity.
 Qed.
@@ -938,14 +944,14 @@ Proof.
     as [[[[final_regs final_sigma] prefix] prefix_conditions]|] eqn:Htrace;
     simpl; [|discriminate].
   destruct (exec_finish final_regs final_sigma)
-    as [[[theta last] last_conditions]|] eqn:Hfinish;
+    as [[[[theta fetched_sigma] last] last_conditions]|] eqn:Hfinish;
     simpl; [|discriminate].
   intros Heq Hconditions. inversion Heq; subst; clear Heq.
   apply Forall_app in Hconditions. destruct Hconditions as [Hprefix_conditions Hlast_conditions].
   destruct (exec_trace_sound _ _ _ _ _ _ _ _ Htrace Hprefix_conditions) as [n Hprefix].
-  destruct (exec_finish_sound _ _ _ _ _ Hfinish Hlast_conditions) as [Hregs Hstep].
+  destruct (exec_finish_sound _ _ _ _ _ _ Hfinish Hlast_conditions) as [Hregs Hstep].
   exists theta. split; [exact Hregs|].
-  exists n, (instruction_boundary tnil regs'), sigma', prefix, last.
+  exists n, (instruction_boundary tnil regs'), final_sigma, prefix, last.
   repeat split; auto.
 Qed.
 

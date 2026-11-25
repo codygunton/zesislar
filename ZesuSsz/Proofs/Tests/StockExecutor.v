@@ -18,7 +18,9 @@ Definition stockEntryRegisters : reg_map :=
         (BV 64 0x40000008) (BV 64 0))).
 Definition stockEntryMemory : seq_global_state := {|
   seq_instrs := <[(BV 64 0x800d6964) := tnil]> ∅;
-  seq_mem := ∅
+  seq_mem := ∅;
+  seq_charged := ∅;
+  seq_fetches := 0
 |}.
 
 Definition stock_entry_result_ok : bool :=

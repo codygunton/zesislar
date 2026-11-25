@@ -82,7 +82,7 @@ Lemma zesu_adequacy Sigma `{!Arch} `{!islaPreG Sigma}
       WPasm tnil) ->
   nsteps n
     (initial_local_state <$> regs,
-      {| seq_instrs := instrs; seq_mem := mem |})
+      {| seq_instrs := instrs; seq_mem := mem; seq_charged := ∅; seq_fetches := 0 |})
     ks (t2, sigma2) ->
   (forall thread, thread ∈ t2 -> not_stuck thread sigma2) /\ Pks ks.
 Proof. exact (isla_adequacy Sigma instrs mem regs Pks t2 sigma2 ks n). Qed.
