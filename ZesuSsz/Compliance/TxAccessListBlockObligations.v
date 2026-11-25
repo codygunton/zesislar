@@ -73,6 +73,7 @@ Require ZesuSsz.Interfaces.EntriesToOwnedSlice.
 Require ZesuSsz.Contracts.AltFlAllocPremises.
 Require ZesuSsz.Contracts.ZiskMemcpyPremise.
 Require ZesuSsz.Proofs.TxAccessList.FP301.Caller0000.
+Require ZesuSsz.Proofs.TxAccessList.FP301.Caller007c.
 Require ZesuSsz.Proofs.TxAccessList.FP301.Caller02e0.
 Require ZesuSsz.Proofs.TxAccessList.FP301.Caller02ec.
 Require ZesuSsz.Proofs.TxAccessList.FP301.Caller0344.
@@ -86,7 +87,7 @@ Require ZesuSsz.Proofs.TxAccessList.FP301.Caller04b8_slot1.
 Import ListNotations.
 Local Open Scope Z_scope.
 
-(* The 43 open blocks: each field is the statement its block proof must close. *)
+(* The 42 open blocks: each field is the statement its block proof must close. *)
 Record TxAccessListOpenBlocks : Prop := {
   txAccessListOpen_80000068 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
@@ -102,13 +103,6 @@ Record TxAccessListOpenBlocks : Prop := {
       instr_pre 0x800004a8 (ZesuSsz.Generated.TxAccessList.FP301.Pilot04a8Entries.fp_machineAt04a8 (args) (returnAddress) (K))%I -∗
       txAccessListSelectedCode -∗
       instr_body 0x80000070 ((ZesuSsz.Generated.TxAccessList.FP301.Pilot0070Entries.fp_machineAt0070 (args) (returnAddress) K) ∗ True));
-  txAccessListOpen_8000007c :
-    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
-    txAccessListBlockAt 0x8000007c (@ZesuSsz.Generated.TxAccessList.FP301.Pilot007cEntries.fp_machineAt007c Sigma _ _) (forall (args : TxAccessListArgs) (returnAddress : Z) (K : iProp Sigma),
-    ⊢ instr_pre 0x800000ac (ZesuSsz.Generated.TxAccessList.FP301.Pilot00acEntries.fp_machineAt00ac (args) (returnAddress) (K))%I -∗
-      instr_pre 0x8000048c (ZesuSsz.Generated.TxAccessList.FP301.Pilot048cEntries.fp_machineAt048c (args) (returnAddress) (K))%I -∗
-      txAccessListSelectedCode -∗
-      instr_body 0x8000007c ((ZesuSsz.Generated.TxAccessList.FP301.Pilot007cEntries.fp_machineAt007c (args) (returnAddress) K) ∗ True));
   txAccessListOpen_800000ac :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     txAccessListBlockAt 0x800000ac (@ZesuSsz.Generated.TxAccessList.FP301.Pilot00acEntries.fp_machineAt00ac Sigma _ _) (forall (args : TxAccessListArgs) (returnAddress : Z) (K : iProp Sigma),
@@ -386,7 +380,7 @@ Record TxAccessListOpenBlocks : Prop := {
       instr_body 0x800004f4 ((ZesuSsz.Generated.TxAccessList.FP301.Pilot04f4Entries.fp_machineAt04f4 (args) (returnAddress) K) ∗ True))
 }.
 
-(* The 11 closed blocks, from their compiled callers. *)
+(* The 12 closed blocks, from their compiled callers. *)
 Record TxAccessListClosedBlocks : Prop := {
   txAccessListClosed_80000000 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
@@ -395,6 +389,13 @@ Record TxAccessListClosedBlocks : Prop := {
       instr_pre 0x800d6960 (ZesuSsz.Interfaces.DecodeItem.decodeItemCallSpec2)%I -∗
       txAccessListSelectedCode -∗
       instr_body 0x80000000 ((ZesuSsz.Generated.TxAccessList.FP301.Pilot0000Entries.fp_machineAt0000 (args) (returnAddress) K) ∗ True));
+  txAccessListClosed_8000007c :
+    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
+    txAccessListBlockAt 0x8000007c (@ZesuSsz.Generated.TxAccessList.FP301.Pilot007cEntries.fp_machineAt007c Sigma _ _) (forall (args : TxAccessListArgs) (returnAddress : Z) (K : iProp Sigma),
+    ⊢ instr_pre 0x800000ac (ZesuSsz.Generated.TxAccessList.FP301.Pilot00acEntries.fp_machineAt00ac (args) (returnAddress) (K))%I -∗
+      instr_pre 0x8000048c (ZesuSsz.Generated.TxAccessList.FP301.Pilot048cEntries.fp_machineAt048c (args) (returnAddress) (K))%I -∗
+      txAccessListSelectedCode -∗
+      instr_body 0x8000007c ((ZesuSsz.Generated.TxAccessList.FP301.Pilot007cEntries.fp_machineAt007c (args) (returnAddress) K) ∗ True));
   txAccessListClosed_800002e0 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     txAccessListBlockAt 0x800002e0 (@ZesuSsz.Generated.TxAccessList.FP301.Pilot02e0Entries.fp_machineAt02e0 Sigma _ _) (forall (args : TxAccessListArgs) (returnAddress : Z) (K : iProp Sigma),
@@ -460,6 +461,7 @@ Record TxAccessListClosedBlocks : Prop := {
 
 Definition txAccessListClosedBlocks : TxAccessListClosedBlocks := {|
   txAccessListClosed_80000000 := @ZesuSsz.Proofs.TxAccessList.FP301.Caller0000.DesignedBoundary_80000000;
+  txAccessListClosed_8000007c := @ZesuSsz.Proofs.TxAccessList.FP301.Caller007c.DesignedBoundary_8000007c;
   txAccessListClosed_800002e0 := @ZesuSsz.Proofs.TxAccessList.FP301.Caller02e0.DesignedBoundary_800002e0;
   txAccessListClosed_800002ec := @ZesuSsz.Proofs.TxAccessList.FP301.Caller02ec.DesignedBoundary_800002ec;
   txAccessListClosed_80000344 := @ZesuSsz.Proofs.TxAccessList.FP301.Caller0344.DesignedBoundary_80000344;
