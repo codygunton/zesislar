@@ -406,6 +406,35 @@ class OwnedJoinTests(unittest.TestCase):
                                   continuation=continuation,
                                   frame_writes=[MemoryWrite(address=bits(8192, 64), value=input_expr('x', 64), size=8)])
 
+    def test_a_frame_slot_the_root_array_already_holds_needs_no_store(self):
+        # txAccessList +0x4a8: the join root (after the prologue) lists the saved registers as its frame array.
+        seed, alternatives, vocabulary, continuation = self.fixture()
+        component = {'id': 'saved', 'kind': 'byte_array', 'source': 'frame ↦ₘ∗ saved',
+                     'address_z': 'frame', 'provenance': {'source': 'fixture'}, 'scope': [[]]}
+        seed.ownership['components'].insert(-1, component)
+        seed.ownership['tree']['body']['children'].insert(-1, {'kind': 'component', 'id': 'saved'})
+        seed.resources = [OwnedBytes('saved', bits(4096, 64), 'frame', input_expr('saved', None), 8, True,
+                                     'DfracOwn 1', component, {'source': 'fixture'}, 8)]
+        held = tuple(operation('extract', input_expr('savedX8 args', 64), width=8, value=8 * index)
+                     for index in range(8))
+        seed.state.memory = [MemoryRegion(bits(4096, 64), held, input_expr('saved', None), 8, ownership_id='saved')]
+        seed.facts = [{'fact_id': kind, 'kind': kind, 'status': 'supplied', 'origin': {'source': 'fixture'},
+                       'terms': {'resource_id': 'saved', 'fraction': 'DfracOwn 1'}}
+                      for kind in ('permission', 'nonwrap')]
+        for alternative in alternatives:
+            state = _state_from_result(alternative['state'])
+            state.memory = list(seed.state.memory)
+            alternative['state'] = state.to_dict()
+            alternative['resource_boundary'] = render_resource_boundary(
+                seed.ownership, apply_owned_writes(seed.resources, [], facts=seed.facts), state, vocabulary=vocabulary)
+        same = MemoryWrite(address=bits(4096, 64), value=input_expr('savedX8 args', 64), size=8)
+        generalize_owned_join(alternatives, original_seed=seed, entry_pc=32, vocabulary=vocabulary,
+                              continuation=continuation, frame_writes=[same])
+        other = MemoryWrite(address=bits(4096, 64), value=input_expr('savedX9 args', 64), size=8)
+        with self.assertRaisesRegex(ValueError, 'lands in no single uninitialized span'):
+            generalize_owned_join(alternatives, original_seed=seed, entry_pc=32, vocabulary=vocabulary,
+                                  continuation=continuation, frame_writes=[other])
+
     def test_pullback_uses_the_complete_owned_image_and_keeps_outer_k(self):
         seed, alternatives, vocabulary, continuation = self.fixture()
         component = {'id': 'output', 'kind': 'byte_array', 'source': 'base ↦ₘ∗ bytes',

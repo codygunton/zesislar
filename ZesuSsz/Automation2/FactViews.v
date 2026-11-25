@@ -87,3 +87,34 @@ Ltac zesu_pose_fact_views :=
         zesu_fact_view_new fact;
         notypeclasses refine (tac_zesu_fact_view_pose _ H _ resource fact _ _ view _);
         [pm_reflexivity | intros ?]))).
+
+(* Guarded pure facts as plain facts.
+
+   A context fact may be guarded, `A -> B`, when it holds only on one
+   outcome of a call (a window of a returned payload, say, that holds when
+   the outcome's success test passed). Once the guard `A` is itself a
+   hypothesis (the block's path took that branch), `B` is posed, and the
+   components of a conjunction `B` as well, so a step that looks for one of
+   them by its shape finds it. The guard is matched against the hypotheses
+   syntactically: no search and no solver. A chain `A1 -> A2 -> B` is
+   specialised one premise per round. Idempotent: a conclusion already a
+   hypothesis is not posed again. *)
+Ltac zesu_guarded_fact_components H :=
+  lazymatch type of H with
+  | ?P /\ ?Q =>
+      let H1 := fresh "HguardedFact" in
+      let H2 := fresh "HguardedFact" in
+      pose proof (proj1 H) as H1; pose proof (proj2 H) as H2;
+      zesu_guarded_fact_components H1; zesu_guarded_fact_components H2
+  | _ => idtac
+  end.
+
+Ltac zesu_specialise_guarded_facts :=
+  repeat match goal with
+  | H : ?A -> ?B, Ha : ?A |- _ =>
+      lazymatch type of B with Prop => idtac end;
+      zesu_fact_view_new B;
+      let Hb := fresh "HguardedFact" in
+      pose proof (H Ha) as Hb;
+      zesu_guarded_fact_components Hb
+  end.
