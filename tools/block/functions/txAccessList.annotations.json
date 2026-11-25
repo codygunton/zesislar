@@ -1101,7 +1101,7 @@
    ],
    "replaces": [{"id": "resource_37_call_after"}, {"id": "resource_35"},
                 {"id": "loop_owned_80000448_0"}, {"id": "loop_owned_80000448_1"}, {"id": "loop_owned_80000448_2"},
-                {"id": "loop_owned_80000448_4"}, {"id": "resource_31"}],
+                {"id": "loop_owned_80000448_4"}, {"id": "resource_31"}, {"id": "loop_owned_7"}],
    "facts": [
     {"coq": "arrayListWellFormed entriesElementBytes tx_final", "role": "owned"},
     {"coq": "arrayListLength tx_final = Z.of_nat (List.length tx_final_done)", "role": "owned"},
@@ -1121,7 +1121,7 @@
    "binders": [{"name": "tx_scratch_error", "type": "list byte"}, {"name": "tx_rest_error", "type": "list byte"}],
    "resources": [{"coq": "ziskExtraParamsAddress ↦ₘ∗ tx_scratch_error", "length": "8"},
                  {"coq": "bv_unsigned (txRestPointer args) ↦ₘ∗ tx_rest_error", "length": "16"}],
-   "replaces": [{"id": "resource_35"}, {"id": "resource_31"}],
+   "replaces": [{"id": "resource_35"}, {"id": "resource_31"}, {"id": "loop_owned_7"}],
    "forget_unplaced": true,
    "facts": [{"coq": "Z.of_nat (List.length tx_scratch_error) = txAccessListScratchSize", "role": "owned"},
              {"coq": "∃ (consumed : Z), tx_rest_error = app (word64Bytes (bv_unsigned (txInputPointer args) + consumed)) (word64Bytes (bv_unsigned (txInputLength args) - consumed)) /\\ (txAccessListOutcomeAllowed (txInputBytes args) txAccessListInvalidInput consumed \\/ txAccessListOutcomeAllowed (txInputBytes args) txAccessListAllocationFailure consumed)", "role": "owned"}],
@@ -1228,6 +1228,11 @@
      "name": "tx_scratch",
      "type": "list byte",
      "exec": "{bytes:zisk-scratch}"
+    },
+    {
+     "name": "tx_outer_rest",
+     "type": "list byte",
+     "exec": "snapshotRead {memory} (bv_unsigned (txRestPointer args)) 16"
     }
    ],
    "resources": [
@@ -1246,6 +1251,10 @@
     {
      "coq": "ziskExtraParamsAddress ↦ₘ∗ tx_scratch",
      "length": "8"
+    },
+    {
+     "coq": "bv_unsigned (txRestPointer args) ↦ₘ∗ tx_outer_rest",
+     "length": "16"
     }
    ],
    "facts": [
@@ -1309,18 +1318,26 @@
      "coq": "headerFits (take (Z.to_nat (bv_unsigned outer_x21)) (drop (Z.to_nat (bv_unsigned outer_x20 - bv_unsigned (txInputPointer args))) (txInputBytes args)))",
      "role": "owned",
      "need": "decodeItem at +0x108 on the entry's payload: the window lies in the input (TxAccessListCallSlice.txAccessListListPayloadInInput); every reached call of the walk fits its header (accessListHeadersFit)"
+    },
+    {
+     "coq": "∃ (header_length payload_length : Z), candidateDecodeItem (txInputBytes args) = candidateSuccess true header_length payload_length /\\ (0 < payload_length)%Z /\\ tx_outer_rest = app (word64Bytes (bv_unsigned (txInputPointer args) + (header_length + payload_length))) (word64Bytes (bv_unsigned (txInputLength args) - (header_length + payload_length)))",
+     "role": "owned",
+     "need": "the rest slice +0x94/+0x98 stored once before the loop (outer item consumed): every error exit to +0x4a8 and the +0x48c exit state it; a call-return root after +0xc4 rendered the entry's txBlockRestBytes instead"
     }
    ],
    "author": {
     "tier": "opus-medium"
    },
-   "why": "while (al.len > 0) over the access-list payload: cursor s4 (x20) advances and s5 (x21) shrinks by each entry's consumed length; i = payload bytes walked. Owned state: entries list header at s0-0x1c0 and its buffer, one keys slice per finished entry, the memcpy scratch word; tx_done = the candidate's entries of the walked prefix; replaces the loop-entry frame span s0-0x1c0..s0-0x68 (resource_37_call_after: the header {8,0,0} and unwritten bytes) and the scratch word (resource_35)",
+   "why": "while (al.len > 0) over the access-list payload: cursor s4 (x20) advances and s5 (x21) shrinks by each entry's consumed length; i = payload bytes walked. Owned state: entries list header at s0-0x1c0 and its buffer, one keys slice per finished entry, the memcpy scratch word, the rest slice (x22 = a2, stored at +0x94/+0x98 with the outer item's end and never written again); tx_done = the candidate's entries of the walked prefix; replaces the loop-entry frame span s0-0x1c0..s0-0x68 (resource_37_call_after: the header {8,0,0} and unwritten bytes), the scratch word (resource_35) and the rest slice (resource_31)",
    "replaces": [
     {
      "id": "resource_37_call_after"
     },
     {
      "id": "resource_35"
+    },
+    {
+     "id": "resource_31"
     }
    ]
   },

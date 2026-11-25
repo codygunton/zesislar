@@ -271,6 +271,11 @@
           "kind": "owned",
           "need": "decodeItem at +0x108 on the entry's payload: the window lies in the input (TxAccessListCallSlice.txAccessListListPayloadInInput); every reached call of the walk fits its header (accessListHeadersFit)",
           "coq": "headerFits (take (Z.to_nat (bv_unsigned outer_x21)) (drop (Z.to_nat (bv_unsigned outer_x20 - bv_unsigned (txInputPointer args))) (txInputBytes args)))"
+        },
+        {
+          "kind": "owned",
+          "need": "the rest slice +0x94/+0x98 stored once before the loop (outer item consumed): every error exit to +0x4a8 and the +0x48c exit state it; a call-return root after +0xc4 rendered the entry's txBlockRestBytes instead",
+          "coq": "\u2203 (header_length payload_length : Z), candidateDecodeItem (txInputBytes args) = candidateSuccess true header_length payload_length /\\ (0 < payload_length)%Z /\\ tx_outer_rest = app (word64Bytes (bv_unsigned (txInputPointer args) + (header_length + payload_length))) (word64Bytes (bv_unsigned (txInputLength args) - (header_length + payload_length)))"
         }
       ],
       "owned": {
@@ -290,6 +295,10 @@
           {
             "name": "tx_scratch",
             "type": "list byte"
+          },
+          {
+            "name": "tx_outer_rest",
+            "type": "list byte"
           }
         ],
         "resources": [
@@ -308,6 +317,10 @@
           {
             "coq": "ziskExtraParamsAddress \u21a6\u2098\u2217 tx_scratch",
             "length": "8"
+          },
+          {
+            "coq": "bv_unsigned (txRestPointer args) \u21a6\u2098\u2217 tx_outer_rest",
+            "length": "16"
           }
         ],
         "replaces": [
@@ -316,6 +329,9 @@
           },
           {
             "id": "resource_35"
+          },
+          {
+            "id": "resource_31"
           }
         ]
       }
@@ -1422,6 +1438,9 @@
         },
         {
           "id": "resource_31"
+        },
+        {
+          "id": "loop_owned_7"
         }
       ],
       "facts": [
@@ -1479,6 +1498,9 @@
         },
         {
           "id": "resource_31"
+        },
+        {
+          "id": "loop_owned_7"
         }
       ],
       "facts": [
@@ -1500,6 +1522,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "83b0d4cfd6fb36bc8fabafc01eefa85695bce9a90eff1359ae40b80daf0d081c"
+    "sha256": "eb3a65e2b8962ba7db04902e7bc9e02dfedb557f3358541e36f9ad34733db082"
   }
 }
