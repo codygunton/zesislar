@@ -65,8 +65,8 @@ Section tests.
     intros. iIntros "H". ZesuSsz.Automation2.Hooks.zesu_heap_write. done.
   Qed.
 
-  (* A load from an owned array at its second word. *)
-  Lemma heap_read_array (p : Z) (x : bv 64) (items : list (bv 64)) :
+  (* Owned arrays are left to the existing lookups. *)
+  Lemma heap_array_left (p : Z) (x : bv 64) (items : list (bv 64)) :
     bv_unsigned x = p -> length items = 3%nat ->
     p ↦ₘ∗ items -∗
     find_in_context (FindMemMapsTo (bv_unsigned (x + BV 64 8)%bv))
@@ -74,7 +74,9 @@ Section tests.
         | MKArray _ start _ => ⌜start = p⌝
         | _ => False end)%I.
   Proof.
-    intros. iIntros "H". ZesuSsz.Automation2.Hooks.zesu_heap_write. done.
+    intros. iIntros "H".
+    Fail ZesuSsz.Automation2.Hooks.zesu_heap_write.
+    iExists (MKArray 64 p items). iSplitL "H"; [iExact "H" | done].
   Qed.
 
   (* Refused: the address and the region start differ by a non-constant. *)

@@ -815,12 +815,12 @@ Ltac zesu_stack_write_if_enabled :=
       end
   end.
 
-(* The heap twin of the stack write: an access whose address equals a place
-   of an owned uninitialized region or array only through the context's
-   register equations (HeapAddress.v). The address is read once; a region is
-   selected by a syntactic test on that reading; the address is rewritten to
+(* The heap twin of the stack write: a store whose address equals a place of
+   an owned uninitialized region only through the context's register
+   equations (HeapAddress.v). The address is read once; a region is selected
+   by a syntactic test on that reading; the address is rewritten to
    `start + k` (or `start`) and the region is offered as the found resource,
-   so the store or load rule continues on syntactically related terms. *)
+   so the store rule continues on syntactically related terms. *)
 Ltac zesu_heap_take H address value lower count k kind range :=
   iRename H into "HheapWrite";
   let Hhigh := fresh "HheapHigh" in
@@ -863,29 +863,17 @@ Ltac zesu_heap_write :=
   lazymatch goal with
   | |- envs_entails _ (find_in_context (FindMemMapsTo ?address) ?continuation) =>
       HeapAddress.zesu_heap_with_reading address ltac:(fun value c =>
-      (* A load continues with `False` on an uninitialized region: such a
-         region is offered to stores only. *)
+      (* Stores only: a load continues with `False` on an uninitialized
+         region. Owned arrays are left to the existing lookups. *)
       let on_uninit := eval cbv beta iota in (continuation (MKUninit 0 0)) in
+      lazymatch on_uninit with False%I => fail | _ => idtac end;
       iMatchHyp ltac:(fun H body =>
         lazymatch body with
         | (?lower ↦ₘ? ?count)%I =>
-            lazymatch on_uninit with False%I => fail | _ => idtac end;
             HeapAddress.zesu_heap_region_offset address value c lower count ltac:(fun k =>
               zesu_heap_take H address value lower count k constr:(MKUninit lower count)
                 ltac:(fun R Hhigh =>
                   iDestruct (mem_mapsto_uninit_in_range with R) as %[_ [_ Hhigh]]))
-        | (?lower ↦ₘ∗ ?values)%I =>
-            lazymatch type of values with list (bv ?width) =>
-              let count := constr:((Z.of_nat (length values) * Z.of_N (width `div` 8))%Z) in
-              HeapAddress.zesu_heap_region_offset address value c lower count ltac:(fun k =>
-                zesu_heap_take H address value lower count k constr:(MKArray width lower values)
-                  ltac:(fun R Hhigh =>
-                    let Harray := fresh "HheapArray" in
-                    iDestruct (mem_mapsto_array_in_range with R) as %[_ Harray];
-                    assert (Hhigh : (lower + Z.of_nat (length values) * Z.of_N (width `div` 8)
-                      <= 2 ^ 64)%Z) by (rewrite Z.mul_comm; exact Harray);
-                    clear Harray))
-            end
         end))
   end.
 
