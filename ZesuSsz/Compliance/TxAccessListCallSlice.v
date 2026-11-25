@@ -13,6 +13,7 @@ Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.
 Require Import ZesuSsz.Contracts.TxAccessListMeaning.
 Require Import ZesuSsz.Contracts.TxAccessListContract.
 Require Import ZesuSsz.Contracts.TxAccessListLoopFacts.
+Require Import ZesuSsz.Contracts.AbiBytes.
 Require Import ZesuSsz.Interfaces.DecodeItem.
 Require Export ZesuSsz.Contracts.DecodeItemCallSlice.
 Import ListNotations.
@@ -288,4 +289,130 @@ Proof.
       with 0 by lia.
     cbn [Z.to_nat skipn app].
     destruct (snd _); reflexivity.
+Qed.
+
+Lemma txAccessListByteOfShift (x : Z) (k : nat) :
+  Z_to_bv 8 (Z.land (Nat.iter k (fun y => Z.shiftr y 8) x) (Z.ones 8)) =
+  Z_to_bv 8 (Z.shiftr x (8 * Z.of_nat k)).
+Proof.
+  apply bv_eq. rewrite !Z_to_bv_unsigned. unfold bv_wrap, bv_modulus.
+  change (2 ^ Z.of_N 8) with (2 ^ 8).
+  rewrite Z.land_ones by lia. rewrite Z.mod_mod by lia. f_equal.
+  induction k as [|k IH]; [cbn; rewrite Z.shiftr_0_r; reflexivity|].
+  rewrite Nat.iter_succ, IH, Z.shiftr_shiftr by lia. f_equal. lia.
+Qed.
+
+(* The outer cut's entry from +0x7c: the first call on the whole input
+   returned a list (byte 16 set) with an empty payload (word 8 is 0), so the
+   walk is done at the end of the item, and the rest slot holds the input
+   window after the item: pointer + consumed and length - consumed, with
+   consumed the call's word 24. *)
+Lemma txAccessListOuterEmptyPayload (args : TxAccessListArgs) (argv0 : bv 64)
+    (rest : list (bv 64)) (sp : bv 64) (inputEnd : Z) (before after : list byte) :
+  decodeItemCallMeaning
+    (decodeItemCallDataArgs (argv0 :: txInputPointer args :: rest) sp inputEnd
+      (txInputBytes args) before) after ->
+  bv_unsigned (bv_and (bv_zero_extend 64 (List.nth 16 after (BV 8 0))) (BV 64 1)) <> 0 ->
+  Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop 8 after))) = 0%bv ->
+  Z.of_nat (length (txInputBytes args)) = bv_unsigned (txInputLength args) ->
+  bv_unsigned (txInputPointer args) + bv_unsigned (txInputLength args) < 2 ^ 64 ->
+  let consumed := Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop 24 after))) in
+  let start := bv_unsigned (txInputPointer args + consumed) in
+  let left := bv_unsigned (txInputLength args - consumed) in
+  exists headerLength payloadLength,
+    candidateDecodeItem (txInputBytes args) = candidateSuccess true headerLength payloadLength /\
+    txAccessListOuterWalked (txInputBytes args) (headerLength + payloadLength) [] /\
+    [Z_to_bv 8 (Z.land start (Z.ones 8));
+     Z_to_bv 8 (Z.land (Z.shiftr start 8) (Z.ones 8));
+     Z_to_bv 8 (Z.land (Z.shiftr (Z.shiftr start 8) 8) (Z.ones 8));
+     Z_to_bv 8 (Z.land (Z.shiftr (Z.shiftr (Z.shiftr start 8) 8) 8) (Z.ones 8));
+     Z_to_bv 8 (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr start 8) 8) 8) 8) (Z.ones 8));
+     Z_to_bv 8 (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr start 8) 8) 8) 8) 8)
+       (Z.ones 8));
+     Z_to_bv 8 (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr start 8) 8)
+       8) 8) 8) 8) (Z.ones 8));
+     Z_to_bv 8 (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr
+       (Z.shiftr start 8) 8) 8) 8) 8) 8) 8) (Z.ones 8));
+     Z_to_bv 8 (Z.land left (Z.ones 8));
+     Z_to_bv 8 (Z.land (Z.shiftr left 8) (Z.ones 8));
+     Z_to_bv 8 (Z.land (Z.shiftr (Z.shiftr left 8) 8) (Z.ones 8));
+     Z_to_bv 8 (Z.land (Z.shiftr (Z.shiftr (Z.shiftr left 8) 8) 8) (Z.ones 8));
+     Z_to_bv 8 (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr left 8) 8) 8) 8) (Z.ones 8));
+     Z_to_bv 8 (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr left 8) 8) 8) 8) 8)
+       (Z.ones 8));
+     Z_to_bv 8 (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr left 8) 8)
+       8) 8) 8) 8) (Z.ones 8));
+     Z_to_bv 8 (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr
+       (Z.shiftr left 8) 8) 8) 8) 8) 8) 8) (Z.ones 8))] =
+    Z_to_bv 8 (Z.shiftr (bv_unsigned (txInputPointer args) + (headerLength + payloadLength))
+      (8 * Z.of_nat 0)) ::
+    Z_to_bv 8 (Z.shiftr (bv_unsigned (txInputPointer args) + (headerLength + payloadLength))
+      (8 * Z.of_nat 1)) ::
+    Z_to_bv 8 (Z.shiftr (bv_unsigned (txInputPointer args) + (headerLength + payloadLength))
+      (8 * Z.of_nat 2)) ::
+    Z_to_bv 8 (Z.shiftr (bv_unsigned (txInputPointer args) + (headerLength + payloadLength))
+      (8 * Z.of_nat 3)) ::
+    Z_to_bv 8 (Z.shiftr (bv_unsigned (txInputPointer args) + (headerLength + payloadLength))
+      (8 * Z.of_nat 4)) ::
+    Z_to_bv 8 (Z.shiftr (bv_unsigned (txInputPointer args) + (headerLength + payloadLength))
+      (8 * Z.of_nat 5)) ::
+    Z_to_bv 8 (Z.shiftr (bv_unsigned (txInputPointer args) + (headerLength + payloadLength))
+      (8 * Z.of_nat 6)) ::
+    Z_to_bv 8 (Z.shiftr (bv_unsigned (txInputPointer args) + (headerLength + payloadLength))
+      (8 * Z.of_nat 7)) ::
+    word64Bytes (bv_unsigned (txInputLength args) - (headerLength + payloadLength)).
+Proof.
+  intros Hm Hlist Hzero Hlen Hfit consumed start left.
+  change (N.to_nat 8) with 8%nat in *.
+  pose proof (decodeItemMeaningC1B _ _ (decodeItemCallMeaningLink _ _ Hm)) as Hc1b.
+  cbn [decodeItemCallDataArgs decodeItemInputPointer decodeItemInputBytes
+       decodeItemBeforeStorage] in Hc1b.
+  unfold C1BResult, candidateResult40 in Hc1b. destruct Hc1b as (_ & Hres & _).
+  assert (Hbit : forall b : byte, bv_unsigned b = 0 ->
+            bv_unsigned (bv_and (bv_zero_extend 64 b) (BV 64 1)) = 0).
+  { intros b Hb. rewrite bv_and_unsigned, bv_zero_extend_unsigned. { rewrite Hb. reflexivity. } done. }
+  destruct (candidateDecodeItem (txInputBytes args)) as [|isList h p] eqn:Hc.
+  { exfalso. apply Hlist, Hbit. destruct Hres as [_ Hb].
+    exact (byteAtNth _ _ _ (Hb 16%nat ltac:(lia))). }
+  destruct Hres as (_ & Hafter & _ & [_ H8] & H16 & [_ H24] & _).
+  destruct isList; cycle 1.
+  { exfalso. apply Hlist, Hbit. exact (byteAtNth _ _ _ H16). }
+  destruct (candidateDecodeItemSuccessBounds _ _ _ _ Hc) as (Hh & Hfits & _).
+  (* the payload length is word 8, which is 0 *)
+  assert (Hp : p = 0).
+  { rewrite <- H8. rewrite <- littleEndianBv.
+    pose proof (littleEndianRange (firstn 8 (skipn 8 after))) as Hr.
+    rewrite <- littleEndianBv in Hr.
+    apply (f_equal bv_unsigned) in Hzero.
+    cbn [N.to_nat Pos.to_nat] in Hzero. rewrite Z_to_bv_small in Hzero.
+    - exact Hzero.
+    - unfold bv_modulus. cbn [Z.of_N].
+      rewrite firstn_length_le in Hr; [|rewrite skipn_length, Hafter; lia].
+      change (2 ^ (8 * Z.of_nat 8)) with (2 ^ 64) in Hr. lia. }
+  clear H8. subst p. replace (h + 0) with h in * by lia.
+  rewrite Z.mod_small in Hfits, H24 by (unfold word64Modulus in *; lia).
+  assert (Hconsumed : bv_unsigned consumed = h).
+  { unfold consumed. cbn [N.to_nat Pos.to_nat]. rewrite littleEndianBv, H24.
+    apply Z_to_bv_small. unfold bv_modulus. lia. }
+  assert (Hhl : h <= bv_unsigned (txInputLength args)) by (rewrite <- Hlen; exact Hfits).
+  pose proof (bv_unsigned_in_range _ (txInputPointer args)) as Hpr.
+  pose proof (bv_unsigned_in_range _ (txInputLength args)) as Hlr.
+  unfold bv_modulus in Hpr, Hlr.
+  assert (Hstart : start = bv_unsigned (txInputPointer args) + h).
+  { unfold start. rewrite bv_add_unsigned, Hconsumed. apply bv_wrap_small.
+    unfold bv_modulus. split; [lia|]. eapply Z.le_lt_trans; [|exact Hfit]. lia. }
+  assert (Hleft : left = bv_unsigned (txInputLength args) - h).
+  { unfold left. rewrite bv_sub_unsigned, Hconsumed. apply bv_wrap_small.
+    unfold bv_modulus. split; [lia|]. eapply Z.le_lt_trans; [|exact Hfit]. lia. }
+  exists h, 0. rewrite Z.add_0_r. split; [first [exact Hc | reflexivity]|]. split.
+  - exists h, 0. split; [first [exact Hc | reflexivity]|]. split; [lia|]. cbn zeta.
+    replace (h - h) with 0 by lia. cbn [Z.to_nat skipn].
+    destruct (snd _); reflexivity.
+  - rewrite Hstart, Hleft. unfold word64Bytes. cbn [List.map List.seq].
+    repeat (apply (f_equal2 cons); [first
+      [ exact (txAccessListByteOfShift _ 0)
+      | exact (txAccessListByteOfShift _ 1) | exact (txAccessListByteOfShift _ 2)
+      | exact (txAccessListByteOfShift _ 3) | exact (txAccessListByteOfShift _ 4)
+      | exact (txAccessListByteOfShift _ 5) | exact (txAccessListByteOfShift _ 6)
+      | exact (txAccessListByteOfShift _ 7) ] |]); reflexivity.
 Qed.
