@@ -45,6 +45,21 @@ Ltac zesu_goal_domain_open :=
      end
     |progress (autounfold with zesu_goal_domain)].
 
+(* The goal is a sealed callee domain: it has a registered introduction.
+   Such a goal is opaque to every solver; `lia` or `bv_solve` on it only
+   search the context for a contradiction, which on a large context does not
+   end (Finish.v runs the introduction instead). *)
+Ltac zesu_goal_domain_sealed :=
+  lazymatch goal with
+  | |- ?goal =>
+      assert_succeeds (
+        let premise := fresh "premise" in
+        evar (premise : Prop);
+        let intro := fresh "intro" in
+        assert (intro : ZesuGoalDomainIntro goal premise)
+          by (unfold premise; typeclasses eauto))
+  end.
+
 (* lia and bv_solve never close an existential, nor a witness that `split`
    leaves as a goal of a type such as `bv 64`: on a large context they only
    search the whole context for a contradiction (a call's precondition
@@ -55,27 +70,3 @@ Ltac zesu_final_solver_goal :=
   | |- ex _ => fail 0
   | |- ?target => lazymatch type of target with Prop => idtac end
   end.
-
-Ltac zesu_goal_domain_part :=
-  zesu_final_solver_goal;
-  first
-    [zesu_lia
-    |bv_solve
-    |match goal with
-     | |- context [bv_unsigned ?word] =>
-         pose proof (bv_unsigned_in_range _ word);
-         unfold bv_modulus in *; cbn [Z.of_N] in *; zesu_lia
-     end].
-
-(* An existential goal is refused before anything is unfolded: every part
-   of it would be a witness or an existential. *)
-Ltac zesu_finish_goal_domain :=
-  let _ := constr:(_ : ZesuStepGoalDomain) in
-  zesu_final_solver_goal;
-  solve [
-    zesu_goal_domain_open; cbn;
-    zesu_witness_facts;
-    autounfold with zesu_contract_constants zesu_goal_domain in *;
-    rewrite ?bv_add_unsigned;
-    unfold bv_wrap, bv_modulus in *; cbn [Z.of_N] in *;
-    repeat split; zesu_goal_domain_part].

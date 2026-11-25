@@ -48,6 +48,7 @@ Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.BoundedArithmetic.
 Require Import ZesuSsz.Automation2.GoalDomain.
+Require Import ZesuSsz.Automation2.GoalDomainParts.
 Require Import ZesuSsz.Automation2.LiaHook.
 (* Names `zesu_rule_set_v2_steps` for `zesu_run_pass_v2` below. The
    module declares one tactic and installs no instance and no hint,
@@ -527,11 +528,16 @@ Ltac zesu_finish_v1 :=
   | _ =>
       try (zesu_talt f_saturate_alignment (idtac; zesu_saturate_alignment));
       zesu_diag_stage "finish_v1.solvers";
+      (* a sealed callee domain goes to its introduction only: the solvers
+         would only search the context for a contradiction *)
+      tryif zesu_goal_domain_sealed
+      then try (zesu_talt f_goal_domain (idtac; zesu_finish_goal_domain))
+      else (
       try (zesu_talt f_finish_lia (idtac; zesu_finish_lia));
       try (zesu_talt f_goal_domain (idtac; zesu_finish_goal_domain));
       try (zesu_talt f_v1_tail_bv_solve (idtac; zesu_bv_solver_goal;
         ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
-        ("finish.v1_tail"%string) ltac:(bv_solve)))
+        ("finish.v1_tail"%string) ltac:(bv_solve))))
   end;
   try (zesu_talt f_little_endian (idtac; zesu_finish_little_endian_if_closed));
   try (zesu_talt f_symbolic_byte_codec (idtac; solve [SymbolicByteCodec.zesu_symbolic_byte_codec])).
