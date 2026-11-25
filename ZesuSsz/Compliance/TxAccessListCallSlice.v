@@ -483,3 +483,58 @@ Proof.
       | exact (txAccessListByteOfShift _ 5) | exact (txAccessListByteOfShift _ 6)
       | exact (txAccessListByteOfShift _ 7) ] |]); reflexivity.
 Qed.
+
+(* The error exits after the outer header (join 0x4a8) store the rest pointer
+   and length advanced by `h + p`; the outcome's allowed advance is
+   `itemConsumed h p = (h + p) mod 2^64`. The stored bytes are the same: a
+   byte below bit 64 of a sum depends on the sum modulo 2^64 only. *)
+Lemma txAccessListByteModWord (x y : Z) (k : nat) :
+  x mod 2 ^ 64 = y mod 2 ^ 64 -> (k < 8)%nat ->
+  Z_to_bv 8 (Z.shiftr x (8 * Z.of_nat k)) = Z_to_bv 8 (Z.shiftr y (8 * Z.of_nat k)).
+Proof.
+  intros Hxy Hk. apply bv_eq. rewrite !Z_to_bv_unsigned. unfold bv_wrap, bv_modulus.
+  change (2 ^ Z.of_N 8) with (2 ^ 8).
+  rewrite <- !Z.land_ones by lia. apply Z.bits_inj'. intros i Hi.
+  rewrite !Z.land_spec, !Z.shiftr_spec by lia.
+  destruct (Z.ltb_spec i 8) as [Hlt|Hge].
+  - rewrite <- (Z.mod_pow2_bits_low x 64 (i + 8 * Z.of_nat k)) by lia.
+    rewrite <- (Z.mod_pow2_bits_low y 64 (i + 8 * Z.of_nat k)) by lia.
+    rewrite Hxy. reflexivity.
+  - rewrite Z.ones_spec_high by lia. rewrite !andb_false_r. reflexivity.
+Qed.
+
+Lemma txAccessListByteConsumed (P h p : Z) (k : nat) :
+  (k < 8)%nat ->
+  Z_to_bv 8 (Z.shiftr (P + (h + p)) (8 * Z.of_nat k)) =
+  Z_to_bv 8 (Z.shiftr (P + itemConsumed h p) (8 * Z.of_nat k)).
+Proof.
+  intros Hk. apply txAccessListByteModWord; [|exact Hk].
+  unfold itemConsumed. rewrite Z.add_mod_idemp_r by lia. reflexivity.
+Qed.
+
+Lemma txAccessListRestWordConsumed (L h p : Z) :
+  AbiBytes.word64Bytes (L - (h + p)) = AbiBytes.word64Bytes (L - itemConsumed h p).
+Proof.
+  unfold AbiBytes.word64Bytes. cbn [List.seq List.map].
+  assert (Hm : (L - (h + p)) mod 2 ^ 64 = (L - itemConsumed h p) mod 2 ^ 64).
+  { unfold itemConsumed. rewrite Zminus_mod_idemp_r. reflexivity. }
+  repeat (apply (f_equal2 cons); [apply txAccessListByteModWord; [exact Hm | lia] |]).
+  reflexivity.
+Qed.
+
+Lemma txAccessListAllocationFailureItem (input : list byte) (h p : Z) :
+  candidateDecodeItem input = candidateSuccess true h p -> 0 < p ->
+  txAccessListOutcomeAllowed input txAccessListAllocationFailure (itemConsumed h p).
+Proof. intros Hc Hp. exists h, p. auto. Qed.
+
+(* The error-exit rest existential of the join-4a8 entry: witness the
+   allowed advance, its stored bytes equal those of `h + p`. *)
+Ltac txAccessListErrorExitRest :=
+  lazymatch goal with
+  | Hc : candidateDecodeItem _ = candidateSuccess true ?h ?p |- ex _ =>
+      exists (itemConsumed h p); split;
+      [ rewrite txAccessListRestWordConsumed;
+        repeat (apply (f_equal2 cons); [apply txAccessListByteConsumed; lia |]);
+        reflexivity
+      | right; apply txAccessListAllocationFailureItem; [exact Hc | lia] ]
+  end.
