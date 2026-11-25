@@ -38,7 +38,9 @@
     "^\\W*bv_unsigned \\(machine_x\\d+\\) = (arrayListPointer \\w+|arrayListCapacity \\w+|\\d+ \\* arrayListLength \\w+)\\W*(%Z\\W*)?$",
     "^\\W*Z\\.of_nat \\(List\\.length \\w+\\) = txAccessListScratchSize\\W*$",
     "^\\W*\u2203 \\(consumed : Z\\), tx_rest_error = ",
-    "^\\W*Forall2 \\(fun entry image => entryKeys entry <> \\[\\] -> txRamRange "
+    "^\\W*Forall2 \\(fun entry image => entryKeys entry <> \\[\\] -> txRamRange ",
+    "^\\W*bv_unsigned \\(bv_concat 16 \\(List\\.nth 33 \\w+ \\(BV 8 0\\)\\) \\(List\\.nth 32 \\w+ \\(BV 8 0\\)\\)\\) = 0 ->",
+    "^\\W*Z\\.of_nat \\(List\\.length tx_entry_address\\) = 20\\W*$"
   ],
   "args_type": "TxAccessListArgs",
   "symbol": "rlp_decode.txAccessList",
@@ -497,7 +499,13 @@
       "result_minimums": {
         "payload_offset": 1
       },
-      "call_site_pc": "+0x108"
+      "call_site_pc": "+0x108",
+      "return_facts": [
+        {
+          "kind": "fact",
+          "coq": "bv_unsigned (bv_concat 16 (List.nth 33 call3_after (BV 8 0)) (List.nth 32 call3_after (BV 8 0))) = 0 -> (bv_unsigned (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24 (bv_concat 16 (List.nth 7 call3_after (BV 8 0)) (List.nth 6 call3_after (BV 8 0))) (List.nth 5 call3_after (BV 8 0))) (List.nth 4 call3_after (BV 8 0))) (List.nth 3 call3_after (BV 8 0))) (List.nth 2 call3_after (BV 8 0))) (List.nth 1 call3_after (BV 8 0))) (List.nth 0 call3_after (BV 8 0))) + bv_unsigned (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24 (bv_concat 16 (List.nth 15 call3_after (BV 8 0)) (List.nth 14 call3_after (BV 8 0))) (List.nth 13 call3_after (BV 8 0))) (List.nth 12 call3_after (BV 8 0))) (List.nth 11 call3_after (BV 8 0))) (List.nth 10 call3_after (BV 8 0))) (List.nth 9 call3_after (BV 8 0))) (List.nth 8 call3_after (BV 8 0))) <= bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)))%Z"
+        }
+      ]
     },
     {
       "function": "rlp_decode.txAccessList",
@@ -553,7 +561,13 @@
       "result_minimums": {
         "payload_offset": 1
       },
-      "call_site_pc": "+0x19c"
+      "call_site_pc": "+0x19c",
+      "return_facts": [
+        {
+          "kind": "fact",
+          "coq": "bv_unsigned (bv_concat 16 (List.nth 33 call5_after (BV 8 0)) (List.nth 32 call5_after (BV 8 0))) = 0 -> (bv_unsigned (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24 (bv_concat 16 (List.nth 7 call5_after (BV 8 0)) (List.nth 6 call5_after (BV 8 0))) (List.nth 5 call5_after (BV 8 0))) (List.nth 4 call5_after (BV 8 0))) (List.nth 3 call5_after (BV 8 0))) (List.nth 2 call5_after (BV 8 0))) (List.nth 1 call5_after (BV 8 0))) (List.nth 0 call5_after (BV 8 0))) + bv_unsigned (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24 (bv_concat 16 (List.nth 15 call5_after (BV 8 0)) (List.nth 14 call5_after (BV 8 0))) (List.nth 13 call5_after (BV 8 0))) (List.nth 12 call5_after (BV 8 0))) (List.nth 11 call5_after (BV 8 0))) (List.nth 10 call5_after (BV 8 0))) (List.nth 9 call5_after (BV 8 0))) (List.nth 8 call5_after (BV 8 0))) <= bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)))%Z"
+        }
+      ]
     },
     {
       "function": "rlp_decode.txAccessList",
@@ -1337,6 +1351,9 @@
         },
         {
           "coq": "tx_entry_address = take 20 (drop (Z.to_nat call3_payload_offset) (txInputBytes args))"
+        },
+        {
+          "coq": "Z.of_nat (List.length tx_entry_address) = 20"
         }
       ],
       "predecessors": [
@@ -1483,6 +1500,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "ad144854e3d155ef7841cb6ef5cd305e653414ab255f55802e616345ef209cc9"
+    "sha256": "83b0d4cfd6fb36bc8fabafc01eefa85695bce9a90eff1359ae40b80daf0d081c"
   }
 }

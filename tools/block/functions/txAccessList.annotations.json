@@ -33,7 +33,9 @@
    "^\\W*bv_unsigned \\(machine_x\\d+\\) = (arrayListPointer \\w+|arrayListCapacity \\w+|\\d+ \\* arrayListLength \\w+)\\W*(%Z\\W*)?$",
    "^\\W*Z\\.of_nat \\(List\\.length \\w+\\) = txAccessListScratchSize\\W*$",
    "^\\W*∃ \\(consumed : Z\\), tx_rest_error = ",
-   "^\\W*Forall2 \\(fun entry image => entryKeys entry <> \\[\\] -> txRamRange "
+   "^\\W*Forall2 \\(fun entry image => entryKeys entry <> \\[\\] -> txRamRange ",
+   "^\\W*bv_unsigned \\(bv_concat 16 \\(List\\.nth 33 \\w+ \\(BV 8 0\\)\\) \\(List\\.nth 32 \\w+ \\(BV 8 0\\)\\)\\) = 0 ->",
+   "^\\W*Z\\.of_nat \\(List\\.length tx_entry_address\\) = 20\\W*$"
   ],
   "args_type": "TxAccessListArgs",
   "symbol": "rlp_decode.txAccessList",
@@ -386,6 +388,30 @@
    ],
    "author": {"tier": "opus-medium"},
    "why": "the window of the entry's payload (call2's outcome words 0 and 1) on the isList path, guarded by the isList bit (byte 16; an error outcome has it 0); the +0x108 and +0x154 decodeItem calls read it once the Automation2 guarded-fact rule (aa/rules8) specialises it. Spelling from B5Bridges2 (r40 00ec hypothesis H11). Proof at 00c4: txAccessListListPayloadInInput (TxAccessListCallSlice) with the loop-c4 headerFits fact."
+  },
+  {
+   "id": "return-10c",
+   "request": null,
+   "at": {"pc": "+0x10c", "boundary": "call_return"},
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {"coq": "bv_unsigned (bv_concat 16 (List.nth 33 call3_after (BV 8 0)) (List.nth 32 call3_after (BV 8 0))) = 0 -> (bv_unsigned (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24 (bv_concat 16 (List.nth 7 call3_after (BV 8 0)) (List.nth 6 call3_after (BV 8 0))) (List.nth 5 call3_after (BV 8 0))) (List.nth 4 call3_after (BV 8 0))) (List.nth 3 call3_after (BV 8 0))) (List.nth 2 call3_after (BV 8 0))) (List.nth 1 call3_after (BV 8 0))) (List.nth 0 call3_after (BV 8 0))) + bv_unsigned (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24 (bv_concat 16 (List.nth 15 call3_after (BV 8 0)) (List.nth 14 call3_after (BV 8 0))) (List.nth 13 call3_after (BV 8 0))) (List.nth 12 call3_after (BV 8 0))) (List.nth 11 call3_after (BV 8 0))) (List.nth 10 call3_after (BV 8 0))) (List.nth 9 call3_after (BV 8 0))) (List.nth 8 call3_after (BV 8 0))) <= bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)))%Z", "role": "fact"}
+   ],
+   "author": {"tier": "opus-medium"},
+   "why": "the address payload's end inside the input on success (error code, outcome bytes 32..33, = 0; +0x10c/+0x110): with the length-20 branch (+0x124) it bounds the +0x130..+0x138 loads through word 0 (B5Bridges5: the 0128 load-fault goals need addr + 8 <= RAM end). Proof at 010c: the success outcome's payload lies in the call's input window."
+  },
+  {
+   "id": "return-1a0",
+   "request": null,
+   "at": {"pc": "+0x1a0", "boundary": "call_return"},
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {"coq": "bv_unsigned (bv_concat 16 (List.nth 33 call5_after (BV 8 0)) (List.nth 32 call5_after (BV 8 0))) = 0 -> (bv_unsigned (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24 (bv_concat 16 (List.nth 7 call5_after (BV 8 0)) (List.nth 6 call5_after (BV 8 0))) (List.nth 5 call5_after (BV 8 0))) (List.nth 4 call5_after (BV 8 0))) (List.nth 3 call5_after (BV 8 0))) (List.nth 2 call5_after (BV 8 0))) (List.nth 1 call5_after (BV 8 0))) (List.nth 0 call5_after (BV 8 0))) + bv_unsigned (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24 (bv_concat 16 (List.nth 15 call5_after (BV 8 0)) (List.nth 14 call5_after (BV 8 0))) (List.nth 13 call5_after (BV 8 0))) (List.nth 12 call5_after (BV 8 0))) (List.nth 11 call5_after (BV 8 0))) (List.nth 10 call5_after (BV 8 0))) (List.nth 9 call5_after (BV 8 0))) (List.nth 8 call5_after (BV 8 0))) <= bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)))%Z", "role": "fact"}
+   ],
+   "author": {"tier": "opus-medium"},
+   "why": "the key payload's end inside the input on success (outcome bytes 32..33 = 0, +0x1a0/+0x1a4): with the length-32 branch (+0x1b8) it bounds the +0x1c4..+0x1d0 key loads (B5Bridges5, 01bc load-fault goals)."
   },
   {
    "id": "call-108",
@@ -1033,7 +1059,8 @@
     {"coq": "(bv_unsigned {x12} = 8 * arrayListLength tx_appendable)%Z", "role": "owned"},
     {"coq": "(bv_unsigned {x16} = 32 * arrayListLength tx_appendable)%Z", "role": "owned"},
     {"coq": "Z.of_nat (List.length tx_scratch_append) = txAccessListScratchSize", "role": "owned"},
-    {"coq": "tx_entry_address = take 20 (drop (Z.to_nat call3_payload_offset) (txInputBytes args))", "role": "owned"}
+    {"coq": "tx_entry_address = take 20 (drop (Z.to_nat call3_payload_offset) (txInputBytes args))", "role": "owned"},
+    {"coq": "Z.of_nat (List.length tx_entry_address) = 20", "role": "owned"}
    ],
    "author": {"tier": "opus-medium"},
    "why": "entries.appendAssumeCapacity: the list has a spare slot, unchanged (+0x29c len < cap, +0x264) or grown (+0x43c: pointer s8 and capacity s9 stored into the header at s0-0x1c0, s0-0x1b0). a1 is the list pointer, a2 = 8 len, a6 = 32 len (reloaded from s0-0x1f8/s0-0x200 on the grown path). Owned: header and buffer pieces of tx_appendable, items and length those of tx_entries; the entry's 20 address bytes, copied at +0x284..+0x28c to s0-0xa0..s0-0x8c (call3's payload: the address item) and reloaded at +0x468/+0x470/+0x478 for the entry stores (B5Bridges4 diag: +0x468 loaded an uninitialized slot)."
