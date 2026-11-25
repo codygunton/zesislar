@@ -32,7 +32,12 @@ goal (with --all also the closed ones, as a control) in Rocq, never by text:
    value through the region's binder map tools/oblig/exec/binders/<function>.json (entry values from
    STATE-0000 of the same input, block values from STATE-<block>; inputs of the map's run mode only;
    the map's optional `imports` (module paths) are required after the goal's preamble, for the
-   Decision instances of the region's premise predicates;
+   Decision instances of the region's premise predicates; the map's optional `assume` names sealed
+   interface predicates (a callee's call domain, meaning, allows; checked opaque, a transparent name is
+   refused) that a premise, or `zesu_hist` of one, may be taken as holding on a real snapshot (the
+   callee's theorem gives them there): such a verdict reads `true-on-<N>-states (callee facts assumed)`
+   or `false-on-real-state(<input>) (callee facts assumed)`, the latter no kernel refutation (it goes to
+   the region owner, never to a prover);
    a record binder registered in tools/oblig/records.json is screened through its fields, named by
    projection path as falsify.py projects them); Rocq decides each premise and the conclusion
    (bool_decide, vm_compute). Verdicts: `false-on-real-state(<input>)` (kernel-checked refutation of
@@ -303,6 +308,28 @@ def screen_imports(binder_map):
     return "".join("Require Import %s.\n" % m for m in modules)
 
 
+ASSUMED = " (callee facts assumed)"
+
+
+def screen_assume(binder_map):
+    """(Ltac text, names) of the binder map's `assume`: fully qualified names of sealed interface
+    predicates (a callee's call domain, meaning, allows) that a real-state snapshot satisfies by the
+    callee's theorem. The screen takes a premise with such a head, or `zesu_hist` of one, as holding;
+    each name is checked opaque (`unfold` fails) in the probe, and a transparent one is refused."""
+    names = binder_map.get("assume", [])
+    if not isinstance(names, list) or not all(isinstance(n, str) and re.fullmatch(r"[A-Za-z_][\w']*(\.[A-Za-z_][\w']*)+", n)
+                                              for n in names):
+        raise NormaliseError("binder map `assume` is a list of fully qualified predicate names")
+    if not names:
+        return "", []
+    heads = " | ".join("constr_eq h (@%s)" % n for n in names)
+    checks = "".join('Goal True. tryif (let _ := eval unfold %s in (@%s) in idtac) then idtac "@@ZF transparent %s" '
+                     'else idtac "@@ZF opaque %s". exact I. Qed.\n' % (n, n, n, n) for n in names)
+    return ("Ltac zf_assumable P ::= lazymatch P with\n"
+            "  | ZesuSsz.Automation2.Hist.zesu_hist ?Q => zf_assumable Q\n"
+            "  | _ => let h := zf_head P in first [ %s ] end.\n%s" % (heads, checks)), names
+
+
 def screen(goal, route, out, states, binder_map):
     """The snapshot verdict of the lemma in GOAL (a goal.v): dict(verdict, ...); writes OUT/SCREEN.json."""
     out = Path(out)
@@ -315,13 +342,20 @@ def screen(goal, route, out, states, binder_map):
         report.update(verdict="not-evaluable", reason="no snapshot of mode %s reaches the block" % binder_map.get("mode"))
         return finish_screen(out, report)
     goal_preamble, statement, _ = falsify.read_goal(goal)
-    pre = falsify.preamble(goal_preamble, statement, route.args, route.coqlib) + screen_imports(binder_map)
+    assume_text, assumable = screen_assume(binder_map)
+    pre = falsify.preamble(goal_preamble, statement, route.args, route.coqlib) + screen_imports(binder_map) \
+        + assume_text
     tag = "screen-" + sha(statement)[:12]
     (out / "probe.v").write_text(falsify.probe_text(pre, statement))
     result, text = route.compile(out / "probe.v", tag + "-probe")
     binders, ended = falsify.parse_binders(falsify.records(text))
     if result["returncode"] != 0 or not ended:
         report.update(verdict="not-evaluable", reason="probe failed: " + falsify.first_error(text))
+        return finish_screen(out, report)
+    transparent = [n for n in assumable if "@@ZF transparent %s" % n in text]
+    if transparent:
+        report.update(verdict="not-evaluable", reason="binder map `assume` names a transparent definition: "
+                      + ", ".join(transparent))
         return finish_screen(out, report)
     binders, unscreened = falsify.project_records(binders)
     if unscreened:
@@ -343,6 +377,14 @@ def screen(goal, route, out, states, binder_map):
         return finish_screen(out, report)
     report["rows"] = [dict(origin=row["origin"], **outcomes[k]) for k, row in enumerate(rows)]
     hits = [k for k, o in sorted(outcomes.items()) if o["hit"]]
+    exact_hits = [k for k in hits if not outcomes[k]["assumed"]]
+    if hits and not exact_hits:
+        # A refutation that took a callee's sealed facts as holding is no kernel refutation: it goes to the
+        # region owner (an entry or generator defect), never to a prover.
+        row = rows[hits[0]]
+        report.update(verdict="false-on-real-state(%s)%s" % (row["origin"].split("#")[0], ASSUMED), hit=row)
+        return finish_screen(out, report)
+    hits = exact_hits
     if hits:
         row = rows[hits[0]]
         (out / "refute.v").write_text(falsify.refute_text(pre, statement, binders, row["values"]))
@@ -355,7 +397,8 @@ def screen(goal, route, out, states, binder_map):
     decided = [o for o in outcomes.values() if not (o["nodec"] or o["stuck"])]
     tested = sum(1 for o in decided if o["concl"])
     if tested:
-        report.update(verdict="true-on-%d-states" % tested)
+        assumed = any(o["assumed"] for o in decided if o["concl"])
+        report.update(verdict="true-on-%d-states%s" % (tested, ASSUMED if assumed else ""))
     elif decided:
         report.update(verdict="premises-never-hold")
     else:

@@ -27,7 +27,8 @@ that needs no model:
   `closed` tier `normalise`, else `failed` compose_error. Its parts are its dependencies for `unblock`.
 - screen gate: a block goal gets a model (prover) attempt only when its snapshot screen
   (tools/oblig/normalise.py: the goal dir's screen/SCREEN.json, else RUN.../normalise/<goal>/NORMALISE.json
-  `screen`) is `true-on-<N>-states` with N >= 1, or the run dir's UNSCREENED.json
+  `screen`) is `true-on-<N>-states` with N >= 1 (also `... (callee facts assumed)`: the screen took a
+  callee's sealed call facts as holding on the snapshot, binder map `assume`), or the run dir's UNSCREENED.json
   ({"schema": "oblig-unscreened/1", "goals": [{"id": <MANIFEST id>, "reason": <text>}]}, every entry
   with a reason) lists it and it is not false on a real state; every other goal is held (no task, no
   event; its mechanical attempt still runs). Meaning obligations are not screened.
@@ -1154,7 +1155,7 @@ UNSCREENED = "UNSCREENED.json"
 UNSCREENED_SCHEMA = "oblig-unscreened/1"
 NO_SCREEN = "no-screen"
 HELD = "held"
-TRUE_ON_STATES = re.compile(r"true-on-[1-9]\d*-states")
+TRUE_ON_STATES = re.compile(r"true-on-[1-9]\d*-states( \(callee facts assumed\))?")
 HELD_REASONS = {"premises-never-hold": "the premises hold on no snapshot state",
                 "false-on-real-state": "refuted on a real machine state: a finding against the entry"}
 

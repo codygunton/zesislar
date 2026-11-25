@@ -709,6 +709,14 @@ class ScreenGateTests(unittest.TestCase):
         self.assertEqual(drive.held_counts(left), {"false-on-real-state": 1, "not-evaluable": 1,
                                                    "premises-never-hold": 1})
 
+    def test_assumed_callee_facts_pass_true_and_hold_false(self):
+        write_screen(self.d / "goals" / "00d8-3", "true-on-2-states (callee facts assumed)")
+        write_screen(self.d / "goals" / "00d8-4", "false-on-real-state(in1.full) (callee facts assumed)")
+        self.unscreened([dict(id="00d8-4", reason="listed by mistake")])
+        left = drive.step(F, self.run, kernel=self.kernel)[1]
+        self.assertEqual(sorted(self.gid(i) for i, _, _ in drive.model_items(self.run, F)), ["00d8-1", "00d8-3"])
+        self.assertEqual(drive.held_counts(left)["false-on-real-state"], 1)
+
     def test_an_unscreened_entry_without_a_reason_is_an_error(self):
         drive.step(F, self.run, kernel=self.kernel)
         self.unscreened([dict(id="00d8-2", reason=" ")])

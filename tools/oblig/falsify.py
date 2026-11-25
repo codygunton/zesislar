@@ -115,10 +115,18 @@ Ltac zf_decide P :=
   | |- false = true => fail
   | _ => idtac "@@ZF stuck"; fail
   end.
+(* The head constant of a fact. *)
+Ltac zf_head P := lazymatch P with
+  | ?f _ _ _ _ _ _ _ _ => f | ?f _ _ _ _ _ _ _ => f | ?f _ _ _ _ _ _ => f | ?f _ _ _ _ _ => f
+  | ?f _ _ _ _ => f | ?f _ _ _ => f | ?f _ _ => f | ?f _ => f | ?f => f end.
+(* Facts a real-state screen may take as holding (tools/oblig/normalise.py, binder map `assume`):
+   none unless the screen redefines this tactic. *)
+Ltac zf_assumable P := fail.
 (* A fact without a Decision instance is tried once more at its head normal form
    (a marker definition around a decidable fact). *)
 Ltac zf_holds :=
   lazymatch goal with |- ?P =>
+    tryif zf_assumable P then (idtac "@@ZF assumed"; admit) else
     tryif (let _ := constr:(stdpp.decidable.bool_decide P) in idtac) then zf_decide P
     else (let Q := eval hnf in P in
           tryif (let _ := constr:(stdpp.decidable.bool_decide Q) in idtac)
@@ -623,18 +631,19 @@ def leaves(binders):
 
 
 def search_outcomes(lines):
-    """Per assignment index: hit, concl (premises held), nodec, stuck."""
+    """Per assignment index: hit, concl (premises held), nodec, stuck, assumed (a premise was taken as
+    holding through the screen's `zf_assumable`)."""
     out, current = {}, None
     for line in lines:
         head, _, rest = line.partition(" ")
         if head == "try":
             current = int(rest)
-            out[current] = dict(hit=False, concl=False, nodec=False, stuck=False)
+            out[current] = dict(hit=False, concl=False, nodec=False, stuck=False, assumed=False)
         elif current is None:
             continue
         elif head == "hit":
             out[int(rest)]["hit"] = True
-        elif head in ("concl", "nodec", "stuck"):
+        elif head in ("concl", "nodec", "stuck", "assumed"):
             out[current][head] = True
     return out
 
