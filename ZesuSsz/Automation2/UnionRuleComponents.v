@@ -1953,12 +1953,10 @@ Ltac zesu_region_fault_arithmetic_full :=
    definitions (8 to 16 s and about 130 MB each). The whole context stays
    the second attempt.
 
-   Folded facts are split before the selection: a range stated inside a
-   predicate over the bound's root (a function's argument ranges) has no
-   atom of the bound until it is split. On txAccessList 01bc 8 of 26 saved
-   stack bounds failed the selection for that reason and were proved only
-   by the whole context (4.6-5.3 s each after a 4.5-6.5 s selected failure);
-   with the split they close in the selected attempt (0.9-1.8 s). *)
+   Folded facts are not split before the selection: on nextUint64 0064 that
+   split made the selected attempts keep more facts (+7.7% instructions);
+   the ranges of a registered domain already enter the context as split
+   facts (`DomainRanges.v`), which the selection finds. *)
 Ltac zesu_region_unfold_bound_definitions :=
   repeat match goal with
   | alias := _ |- _ => lazymatch goal with |- context[alias] => unfold alias end
@@ -1973,7 +1971,6 @@ Ltac2 zesu_region_clear_unused_definitions () :=
 
 Ltac zesu_region_fault_arithmetic_selected :=
   zesu_region_unfold_bound_definitions;
-  zesu_split_folded_all;
   ZesuSsz.Automation2.ContextCollection.zesu_select_goal_facts;
   ltac2:(zesu_region_clear_unused_definitions ());
   zesu_region_fault_arithmetic_full.

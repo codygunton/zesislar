@@ -4,8 +4,7 @@ Require Import ZesuSsz.Automation2.All.
 Open Scope Z_scope.
 
 (* Region-fault arithmetic over folded facts: the one-pass split, the
-   selection after it, the removal of equal copies, and the single attempt
-   per assertion. *)
+   removal of equal copies, and the single attempt per assertion. *)
 Record region_args := { region_pointer : Z; region_length : Z }.
 
 Definition region_ranges (args : region_args) : Prop :=
@@ -30,16 +29,6 @@ Proof.
   match goal with _ : region_pointer args + region_length args <= 100 |- _ => idtac end.
   match goal with _ : 0 <= region_length args |- _ => idtac end.
   lia.
-Qed.
-
-(* Fires: the bound's range sits folded in a predicate over the record, which
-   has no atom of the bound; split first, the selection keeps it and the
-   selected attempt closes the bound. *)
-Lemma region_selected_folded_range (args : region_args)
-    (Hranges : region_ranges args) (Hlength : 8 <= region_length args) :
-  region_pointer args + 8 <= 100.
-Proof.
-  solve [ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_arithmetic_selected].
 Qed.
 
 (* Three equal copies of one disjunction split into two cases, not eight. *)
