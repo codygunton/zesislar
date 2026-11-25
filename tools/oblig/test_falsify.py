@@ -96,6 +96,48 @@ class AssignmentTests(unittest.TestCase):
             self.assertEqual(falsify.read_goal(path), (None, "(@Coq.ZArith.BinInt.Z.le (40)%Z (0)%Z)", "Goal01"))
 
 
+class RecordTests(unittest.TestCase):
+    """Record binders: the registry's records are projected to fields named by projection path."""
+
+    def test_a_record_line_keeps_its_type(self):
+        binders, _ = falsify.parse_binders(["B args record TxAccessListArgs", "B q record M.Q", "E"])
+        self.assertEqual(binders, [dict(name="args", kind="record", type="TxAccessListArgs"),
+                                   dict(name="q", kind="record", type="M.Q")])
+
+    def test_registered_records_project_to_fields(self):
+        registry = falsify.load_records()
+        binders, reason = falsify.project_records(
+            [dict(name="args", kind="record", type="TxAccessListArgs"), dict(name="H0", kind="prop")], registry)
+        self.assertIsNone(reason)
+        leaves = falsify.leaves(binders)
+        self.assertEqual(len(leaves), 24)
+        self.assertEqual(leaves[4], dict(name="txInputPointer", kind="bv", width=64))
+        self.assertEqual(leaves[6], dict(name="txInputBytes", kind="bytes"))
+        self.assertEqual(binders[0]["ctor"], "@ZesuSsz.Contracts.TxAccessListContract.Build_TxAccessListArgs")
+        nested, _ = falsify.project_records([dict(name="a", kind="record", type="KeysToOwnedSliceBlockArgs")],
+                                            registry)
+        names = [leaf["name"] for leaf in falsify.leaves(nested)]
+        self.assertIn("keysBase_toOwnedList_arrayListLength", names)
+
+    def test_other_records_are_unscreened(self):
+        registry = dict(Pt=dict(ctor="Build_Pt", fields=[("px", "Z"), ("pk", "Kind")]),
+                        Two=dict(ctor="Build_Two", fields=[("x", "Z")]))
+        self.assertEqual(falsify.project_records([dict(name="q", kind="record", type="M.Q")], registry)[1],
+                         "unscreened: record binder q : M.Q")
+        self.assertEqual(falsify.project_records([dict(name="p", kind="record", type="Pt")], registry)[1],
+                         "unscreened: record binder p : Pt (field pk : Kind)")
+        self.assertEqual(falsify.project_records([dict(name="t", kind="record", type="Two"),
+                                                  dict(name="x", kind="Z")], registry)[1],
+                         "unscreened: record fields collide with other binders: x")
+
+    def test_a_projected_record_is_built_by_its_constructor(self):
+        registry = dict(Pt=dict(ctor="Build_Pt", fields=[("px", "Z"), ("pw", "bv 8")]))
+        binders, _ = falsify.project_records([dict(name="p", kind="record", type="Pt")], registry)
+        self.assertEqual(falsify.steps(binders, dict(px=3, pw=300)),
+                         "zf_step zf_H (Build_Pt (3)%Z (stdpp.bitvector.definitions.Z_to_bv (8)%N (44)%Z)); "
+                         "zf_finish zf_H")
+
+
 @unittest.skipUnless(find_coqc(), "no coqc (set ZESU_COQC or keep a bank in _build/banks)")
 class RocqTests(unittest.TestCase):
     """Real compiles: plain coqc arguments, direct route (the guard refuses its live ledger to tests)."""
@@ -153,6 +195,28 @@ class RocqTests(unittest.TestCase):
                                        exec_dir=Path(root) / "exec", offset="0040", limit=5)
         self.assertEqual(report["verdict"], "false", report.get("reason"))
         self.assertEqual(report["hit"]["origin"], "snapshot:input7")
+
+    RECORD_HEADER = STDPP_HEADER + ("Record Pt := { px : Z; pw : bv 8 }.\nRecord Q := { qx : Z }.\n"
+                                    "Inductive Kind := KA | KB.\nDefinition Bytes := list (bv 8).\n")
+    REGISTRY = dict(Pt=dict(ctor="Build_Pt", fields=[("px", "Z"), ("pw", "bv 8")]))
+
+    def run_record(self, statement, name):
+        d = Path(self.tmp.name) / name
+        d.mkdir()
+        return falsify.check(goal_file(d, statement, header=self.RECORD_HEADER), self.route, registry=self.REGISTRY)
+
+    def test_a_registered_record_binder_is_searched_through_its_fields(self):
+        report = self.run_record("forall (p : Pt) (b : Bytes), px p < 77", "record")
+        self.assertEqual(report["verdict"], "false", report.get("reason"))
+        self.assertEqual(report["hit"]["assignment"]["px"], 77)
+        self.assertEqual([b["kind"] for b in report["binders"]], ["record", "bytes"])
+
+    def test_an_unregistered_record_binder_is_unscreened(self):
+        report = self.run_record("forall (q : Q) (k : Kind), qx q = qx q", "unregistered")
+        self.assertEqual(report["verdict"], "unchecked")
+        self.assertEqual(report["reason"], "unscreened: record binder q : Q")
+        report = self.run_record("forall (k : Kind), k = k", "enum")
+        self.assertEqual(report["reason"], "binder type outside Z, nat, N, bv n, list byte, bool: k")
 
 
 @unittest.skipUnless(os.environ.get("ZESU_FALSIFY_BANK"), "set ZESU_FALSIFY_BANK (and ZESU_FALSIFY_OCAMLPATH)")
