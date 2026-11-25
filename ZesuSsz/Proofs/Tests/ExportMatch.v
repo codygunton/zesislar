@@ -1,7 +1,7 @@
-Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Automation2.ResidualExport.
 From Coq Require Import ZArith.ZArith.
 From Ltac2 Require Import Ltac2.
+Require Import ZesuSsz.Automation2.All.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 
@@ -76,19 +76,20 @@ Ltac2 Eval expect_source
 (* The round-trip entry point on a statement read back from printed source:
    it prints that source again (a wildcard argument is printed with the name
    elaboration gave its binder). *)
-Goal (forall (t : (@ZesuSsz.Proofs.Tests.ExportMatch.export_match_three)), (forall (o : (@Coq.Init.Datatypes.option (@Coq.Numbers.BinNums.Z))), (match t as t_1 return Prop with | @ZesuSsz.Proofs.Tests.ExportMatch.export_match_none => (@Coq.Init.Logic.True) | @ZesuSsz.Proofs.Tests.ExportMatch.export_match_one z => (@Coq.Init.Logic.eq (@Coq.Init.Datatypes.option (@Coq.Numbers.BinNums.Z)) (@Coq.Init.Datatypes.Some (@Coq.Numbers.BinNums.Z) z) o) | @ZesuSsz.Proofs.Tests.ExportMatch.export_match_two z b => (@Coq.Init.Logic.eq (@Coq.Numbers.BinNums.Z) z (0)%Z) end))).
+Lemma export_match_roundtrip : (forall (t : (@ZesuSsz.Proofs.Tests.ExportMatch.export_match_three)), (match t as t_1 return Prop with | @ZesuSsz.Proofs.Tests.ExportMatch.export_match_none => (@Coq.Init.Logic.True) | @ZesuSsz.Proofs.Tests.ExportMatch.export_match_one z => (@Coq.Init.Logic.eq (@Coq.Numbers.BinNums.Z) z z) | @ZesuSsz.Proofs.Tests.ExportMatch.export_match_two z b => (@Coq.Init.Logic.eq (@Coq.Numbers.BinNums.Z) z z) end)).
 Proof.
   ltac2:(
-    let original := constr:(forall (t : export_match_three) (o : option Z),
+    let original := constr:(forall t : export_match_three,
       match t with
       | export_match_none => True
-      | export_match_one z => Some z = o
-      | export_match_two z _ => z = 0
+      | export_match_one z => z = z
+      | export_match_two z _ => z = z
       end) in
     let text := export_text original in
     if String.equal (export_text (Control.goal ())) text then () else Control.throw (Tactic_failure None);
     zesu_export_roundtrip ()).
-Abort.
+  intros t; destruct t; [exact I | reflexivity | reflexivity].
+Qed.
 
 (* A pattern variable that would read as a constructor gets a fresh name. *)
 Ltac2 Eval
