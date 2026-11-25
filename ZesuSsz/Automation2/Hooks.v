@@ -49,6 +49,7 @@ Require Import ZesuSsz.Automation2.FailureMemo.
 Require ZesuSsz.Automation2.RewriteBoundGuards.
 Require ZesuSsz.Automation2.DomainRanges.
 Require ZesuSsz.Automation2.FactViews.
+Require ZesuSsz.Automation2.HeapAddress.
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
 From iris.proofmode Require Import environments.
@@ -812,6 +813,66 @@ Ltac zesu_stack_write_if_enabled :=
                 iSplitL "HstackWriteFrame"; [iExact "HstackWriteFrame" |]
             end)
       end
+  end.
+
+(* The heap twin of the stack write: an access whose address equals a place
+   of an owned uninitialized region or array only through the context's
+   register equations (HeapAddress.v). The region is selected by a
+   syntactic reading; the address is rewritten to `start + k` (or `start`)
+   and the region is offered as the found resource, so the store or load
+   rule continues on syntactically related terms. *)
+Ltac zesu_heap_take H address lower count k kind range :=
+  iRename H into "HheapWrite";
+  let Hlow := fresh "HheapLow" in
+  let Hhigh := fresh "HheapHigh" in
+  range "HheapWrite" Hlow Hhigh;
+  let Hinside := fresh "HheapInside" in
+  assert (Hinside : (k < count)%Z) by
+    (ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+      ("heap_write.inside"%string) ltac:(zesu_lia));
+  let Heq := fresh "HheapAddress" in
+  lazymatch k with
+  | 0%Z =>
+      assert (Heq : address = lower) by
+        (transitivity (lower + 0)%Z;
+         [HeapAddress.zesu_heap_address_equation address lower k count Hlow Hhigh Hinside |
+          apply Z.add_0_r])
+  | _ =>
+      assert (Heq : address = (lower + k)%Z) by
+        (HeapAddress.zesu_heap_address_equation address lower k count Hlow Hhigh Hinside)
+  end;
+  rewrite Heq; clear Heq Hinside Hlow Hhigh;
+  iExists kind;
+  iSplitL "HheapWrite"; [iExact "HheapWrite" |].
+
+Ltac zesu_heap_write :=
+  zesu_expose_environment_alias;
+  repeat match goal with
+  | Hlocal := _ |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+      lazymatch address with context[Hlocal] => unfold Hlocal in *; clear Hlocal end
+  end;
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+      iMatchHyp ltac:(fun H body =>
+        lazymatch body with
+        | (?lower ↦ₘ? ?count)%I =>
+            HeapAddress.zesu_heap_region_offset address lower count ltac:(fun k =>
+              zesu_heap_take H address lower count k constr:(MKUninit lower count)
+                ltac:(fun R Hlow Hhigh =>
+                  iDestruct (mem_mapsto_uninit_in_range with R) as %[Hlow [_ Hhigh]]))
+        | (?lower ↦ₘ∗ ?values)%I =>
+            lazymatch type of values with list (bv ?width) =>
+              let count := constr:((Z.of_nat (length values) * Z.of_N (width `div` 8))%Z) in
+              HeapAddress.zesu_heap_region_offset address lower count ltac:(fun k =>
+                zesu_heap_take H address lower count k constr:(MKArray width lower values)
+                  ltac:(fun R Hlow Hhigh =>
+                    let Harray := fresh "HheapArray" in
+                    iDestruct (mem_mapsto_array_in_range with R) as %[Hlow Harray];
+                    assert (Hhigh : (lower + Z.of_nat (length values) * Z.of_N (width `div` 8)
+                      <= 2 ^ 64)%Z) by (rewrite Z.mul_comm; exact Harray);
+                    clear Harray))
+            end
+        end)
   end.
 
 
@@ -2776,6 +2837,8 @@ Ltac zesu_liAStep :=
   | (lazymatch goal_class with ZGfind_mem => idtac end;
      zesu_talt l_split_memory_cell_chain (idtac; zesu_split_memory_cell_chain))
   | zesu_talt l_normalize_find_mem_address (idtac; zesu_normalize_find_mem_address)
+  | (lazymatch goal_class with ZGfind_mem => idtac end;
+     zesu_talt l_heap_write (idtac; zesu_heap_write))
   | zesu_talt l_select_generic_write (idtac; ZesuSsz.Automation2.UnionRuleComponents.block2_f6_select_generic_write)
   | zesu_talt l_liAWriteMem (idtac; zesu_liAWriteMem)
   | zesu_talt l_read_span (idtac; ltac2:(Ltac1.run (Ltac1.ref
