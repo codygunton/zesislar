@@ -1865,10 +1865,33 @@ Ltac zesu_region_fault_cast_hypotheses_if_enabled :=
       progress (rewrite (Z_to_bv_unsigned width value) in Hcast)
   end).
 
+(* Of several hypotheses with one statement, keep the first. The split of
+   a context can give one fact several times: on txAccessList 01bc the
+   argument ranges, the well-formed arguments and the block domain each
+   carry the input pointer's ROM-or-RAM disjunction, and the three equal
+   copies split into 8 equal cases; each solver ran 8 times on a bound it
+   proves (5-7 s, 1-1.5 s with one copy). *)
+Ltac2 zesu_region_dedup_facts () :=
+  let rec go hyps seen :=
+    match hyps with
+    | [] => ()
+    | (name, body, statement) :: rest =>
+        match body with
+        | Some _ => go rest seen
+        | None =>
+            if Constr.equal (Constr.type statement) constr:(Prop) then
+              if List.exist (fun known => Constr.equal known statement) seen
+              then (let _ := Control.case (fun () => Std.clear [name]) in (); go rest seen)
+              else go rest (statement :: seen)
+            else go rest seen
+        end
+    end in
+  go (Control.hyps ()) [].
+
 Ltac zesu_region_fault_prepare :=
   lazymatch goal with |- ~ _ => intro | _ => idtac end;
-  repeat first [progress zesu_split_folded_pure |
-    match goal with H : _ /\ _ |- _ => destruct H end];
+  zesu_split_folded_all;
+  ltac2:(Control.enter zesu_region_dedup_facts);
   repeat match goal with
   | H : ?statement |- _ =>
       lazymatch type of statement with Prop => idtac end;
@@ -1928,7 +1951,12 @@ Ltac zesu_region_fault_arithmetic_full :=
    `change … in *`): on the decodeParentHeader return slots each of the 58
    deferred fault branches did so over about 410 hypotheses and 120 local
    definitions (8 to 16 s and about 130 MB each). The whole context stays
-   the second attempt. *)
+   the second attempt.
+
+   Folded facts are not split before the selection: on nextUint64 0064 that
+   split made the selected attempts keep more facts (+7.7% instructions);
+   the ranges of a registered domain already enter the context as split
+   facts (`DomainRanges.v`), which the selection finds. *)
 Ltac zesu_region_unfold_bound_definitions :=
   repeat match goal with
   | alias := _ |- _ => lazymatch goal with |- context[alias] => unfold alias end
@@ -2095,26 +2123,19 @@ Ltac zesu_region_fault_readable_array_context :=
       end]
   end.
 
+(* An assertion under `∧ True` is left to liStep, which splits it; the
+   assertion alone is then decided here once. Deciding it in both forms ran
+   each undecided bound twice: on txAccessList 01bc the 26 saved
+   region-fault bounds were 13 bounds, each attempted with the `∧ True`
+   form and again after the split, with the same hypotheses. *)
 Ltac zesu_region_fault_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepRegionFault);
   first [
     lazymatch goal with
   | |- iris.proofmode.environments.envs_entails _
       (WPasm (Smt (Assert (Unop Not _ _)) _ :t: _)) => idtac
-  | |- iris.proofmode.environments.envs_entails _
-      ((WPasm (Smt (Assert (Unop Not _ _)) _ :t: _)) ∧ True)%I => idtac
   end;
     solve [zesu_region_fault_assert] |
-    lazymatch goal with
-  | |- iris.proofmode.environments.envs_entails _
-      (WPasm (Smt (Assert (Unop Not _ _)) _ :t: _)) => idtac
-  | |- iris.proofmode.environments.envs_entails _
-      ((WPasm (Smt (Assert (Unop Not _ _)) _ :t: _)) ∧ True)%I => idtac
-  end;
-    solve [lazymatch goal with
-      | |- envs_entails _ ((WPasm _) ∧ True)%I =>
-          iSplit; [zesu_region_fault_assert | done]
-      end] |
     lazymatch goal with
     | |- False => idtac
     | |- envs_entails _ (find_in_context (FindRegMapsTo "medeleg") _) => idtac
