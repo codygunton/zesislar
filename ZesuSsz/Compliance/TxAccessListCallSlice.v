@@ -246,6 +246,73 @@ Proof.
   pose proof (bv_unsigned_in_range _ l). lia.
 Qed.
 
+(* A successful call's payload ends inside the call's input: the error code
+   (bytes 32 and 33) is zero only for a success (an error writes 4 at byte
+   32); the payload pointer is the input pointer plus the header length, or 1
+   with no payload for the empty string 0x80, and the header fits, so header
+   and payload do not wrap 2^64. Stated over the byte concatenations the
+   generator renders for the loads of words 0 and 8. *)
+Lemma txAccessListSuccessPayloadWindow (argv0 q : bv 64) (rest : list (bv 64)) (sp : bv 64)
+    (inputEnd : Z) (input before after : list byte) :
+  decodeItemCallMeaning (decodeItemCallDataArgs (argv0 :: q :: rest) sp inputEnd input before) after ->
+  bv_unsigned (bv_concat 16 (List.nth 33 after (BV 8 0)) (List.nth 32 after (BV 8 0))) = 0 ->
+  headerFits input ->
+  1 <= bv_unsigned q ->
+  bv_unsigned (listWord64At0 after) + bv_unsigned (listWord64At8 after) <=
+    bv_unsigned q + Z.of_nat (length input).
+Proof.
+  intros Hm Hcode Hfits Hq.
+  rewrite concatByteUnsigned in Hcode by reflexivity.
+  pose proof (bv_unsigned_in_range _ (List.nth 33 after (BV 8 0))) as H33.
+  pose proof (bv_unsigned_in_range _ (List.nth 32 after (BV 8 0))) as H32.
+  unfold bv_modulus in H33, H32.
+  pose proof (decodeItemMeaningC1B _ _ (decodeItemCallMeaningLink _ _ Hm)) as Hc1b.
+  cbn [decodeItemCallDataArgs decodeItemInputPointer decodeItemInputBytes
+       decodeItemBeforeStorage] in Hc1b.
+  change ((argv0 :: q :: rest) !!! 1%nat) with q in Hc1b.
+  unfold C1BResult, candidateResult40 in Hc1b. destruct Hc1b as (_ & Hres & _).
+  destruct (candidateDecodeItem input) as [|isList h p] eqn:Hc.
+  - exfalso. destruct Hres as [_ Hb].
+    pose proof (byteAtNth _ _ _ (Hb 32%nat ltac:(lia))) as H4. cbn in H4. lia.
+  - destruct Hres as (_ & _ & H0 & H8 & _).
+    pose proof (candidateDecodeItemFitsNoWrap _ _ _ _ Hfits Hc) as Hnw.
+    destruct (candidateDecodeItemSuccessBounds _ _ _ _ Hc) as (Hh & Hin & H128).
+    rewrite (listWord64At8Value _ _ H8), (listWord64At0Value _ _ H0).
+    assert (Hp : 0 <= p) by (destruct H8 as [_ <-]; apply littleEndianRange).
+    unfold word64Modulus in *. change (2 ^ 64) with 18446744073709551616 in *.
+    rewrite Z.mod_small in Hin by lia.
+    destruct input as [|prefix tail]; [discriminate|].
+    destruct (Z.eqb_spec (bv_unsigned prefix) 128) as [E|E].
+    + rewrite (H128 prefix tail eq_refl E). lia.
+    + lia.
+Qed.
+
+(* The same over the caller's whole input, for a call on the window
+   [p, p + l) of it (the item calls of the entry loop, +0x10c and +0x1a0). *)
+Lemma txAccessListSuccessPayloadInInput (args : TxAccessListArgs) (argv0 p l : bv 64)
+    (rest : list (bv 64)) (sp : bv 64) (inputEnd : Z) (before after : list byte) :
+  let window := take (Z.to_nat (bv_unsigned l))
+    (drop (Z.to_nat (bv_unsigned p - bv_unsigned (txInputPointer args))) (txInputBytes args)) in
+  decodeItemCallMeaning (decodeItemCallDataArgs (argv0 :: p :: l :: rest) sp inputEnd window before) after ->
+  headerFits window ->
+  txAccessListArgsRanges args ->
+  bv_unsigned (txInputPointer args) <= bv_unsigned p ->
+  bv_unsigned p + bv_unsigned l <=
+    bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)) ->
+  bv_unsigned (bv_concat 16 (List.nth 33 after (BV 8 0)) (List.nth 32 after (BV 8 0))) = 0 ->
+  bv_unsigned (listWord64At0 after) + bv_unsigned (listWord64At8 after) <=
+    bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)).
+Proof.
+  intros window Hm Hfits Hranges Hlo Hhi Hcode.
+  pose proof (txAccessListArgsRangesPlain args Hranges) as Hplain.
+  assert (Hq : 1 <= bv_unsigned p) by lia.
+  pose proof (txAccessListSuccessPayloadWindow _ _ _ _ _ _ _ _ Hm Hcode Hfits Hq) as H.
+  subst window. rewrite length_take, length_drop in H.
+  set (w0 := bv_unsigned (listWord64At0 after)) in *.
+  set (w8 := bv_unsigned (listWord64At8 after)) in *.
+  pose proof (bv_unsigned_in_range _ l). lia.
+Qed.
+
 (* The outer cut's walk fact on its entry from +0xac: the first call on the
    whole input returned a list (byte 16 set, so a success, prefix at least
    0xc0), its payload pointer is the input pointer plus the header length, so
