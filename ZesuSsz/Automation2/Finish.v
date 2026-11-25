@@ -48,6 +48,7 @@ Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.BoundedArithmetic.
 Require Import ZesuSsz.Automation2.GoalDomain.
+Require Import ZesuSsz.Automation2.GoalDomainParts.
 Require Import ZesuSsz.Automation2.LiaHook.
 (* Names `zesu_rule_set_v2_steps` for `zesu_run_pass_v2` below. The
    module declares one tactic and installs no instance and no hint,

@@ -68,12 +68,12 @@ Lemma goal_domain_part_frame_slot (sp : bv 64) (a b c d e f : Z) :
   bv_unsigned sp mod 16 = 0 ->
   0 <= a * b <= c * d -> c * d <= e * f -> a * c <= b * d ->
   (8 | (bv_unsigned sp + bv_unsigned (BV 64 18446744073709551040)) mod 2 ^ 64).
-Proof. intros. ZesuSsz.Automation2.GoalDomain.zesu_goal_domain_part. Qed.
+Proof. intros. ZesuSsz.Automation2.GoalDomainParts.zesu_goal_domain_part. Qed.
 
 Goal forall (sp : bv 64) (a b c d e f : Z),
   0 <= a * b <= c * d -> c * d <= e * f -> a * c <= b * d ->
   (8 | (bv_unsigned sp + 8) mod 2 ^ 64) \/ True.
 Proof.
-  intros. Fail (left; ZesuSsz.Automation2.GoalDomain.zesu_goal_domain_part).
+  intros. Fail (left; ZesuSsz.Automation2.GoalDomainParts.zesu_goal_domain_part).
   right. exact I.
 Qed.
