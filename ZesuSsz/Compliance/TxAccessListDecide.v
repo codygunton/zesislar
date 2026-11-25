@@ -13,6 +13,7 @@ Require Import ZesuSsz.Automation2.Hooks.
 Require Import ZesuSsz.Automation2.RegisterArrayCursor.
 Require Import ZesuSsz.Contracts.NamedEquation.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
+Require Import ZesuSsz.Contracts.ArrayListContract.
 Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.
 Require Import ZesuSsz.Contracts.TxAccessListContract.
 Require Import ZesuSsz.Contracts.TxAccessListMeaning.
@@ -21,11 +22,11 @@ Require Import ZesuSsz.Contracts.TxAccessListLoopFacts.
 Local Open Scope Z_scope.
 
 (* Markers of the automation: inhabited by their single constructor. *)
-Global Instance zesu_context_finish_attempted_dec {A : Type} (t : A) :
+#[global] Polymorphic Instance zesu_context_finish_attempted_dec {A : Type} (t : A) :
   Decision (zesu_context_finish_attempted t) := left (zesu_context_finish_token t).
-Global Instance zesu_canonical_fact_views_attempted_dec {A : Type} (t : A) :
+#[global] Polymorphic Instance zesu_canonical_fact_views_attempted_dec {A : Type} (t : A) :
   Decision (zesu_canonical_fact_views_attempted t) := left (zesu_canonical_fact_views_token t).
-Global Instance zesu_register_cursor_attempted_dec {A : Type} (t : A) :
+#[global] Polymorphic Instance zesu_register_cursor_attempted_dec {A : Type} (t : A) :
   Decision (zesu_register_cursor_attempted t) := left (zesu_register_cursor_token t).
 
 (* A history fact and a named equation decide as the fact they wrap. *)
@@ -64,6 +65,16 @@ Proof. unfold txAccessListBlockDomainAt. apply _. Defined.
 Global Instance txAccessListKeysWalked_dec (keysPayload : list byte) (offset : Z)
     (doneKeys : list (list byte)) : Decision (txAccessListKeysWalked keysPayload offset doneKeys).
 Proof. unfold txAccessListKeysWalked. apply _. Defined.
+
+Global Instance ArrayListOutcomeKind_eq_dec : EqDecision ArrayListOutcomeKind.
+Proof. solve_decision. Defined.
+
+Global Instance ArrayListState_eq_dec : EqDecision ArrayListState.
+Proof.
+  intros [p l c i] [p' l' c' i'].
+  destruct (decide (p = p')), (decide (l = l')), (decide (c = c')), (decide (i = i'));
+    subst; first [left; reflexivity | right; congruence].
+Defined.
 
 Global Instance AccessListEntryValue_eq_dec : EqDecision AccessListEntryValue.
 Proof.
