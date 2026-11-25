@@ -354,6 +354,50 @@ Ltac zesu_lia_context_within_budget :=
 Ltac zesu_lia_pruned_context_within_budget :=
   ltac2:(zesu_linear_context_within (zesu_linear_pruned_context_node_budget ())).
 
+(* Whether a term divides: `Z.div`, `Z.modulo`, `Z.quot`, `Z.rem` or `Z.divide`
+   anywhere in it. *)
+Ltac2 rec zesu_linear_divides (term : constr) : bool :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App head arguments =>
+      if List.exist (Constr.equal head)
+           [constr:(Z.div); constr:(Z.modulo); constr:(Z.quot); constr:(Z.rem);
+            constr:(Z.divide)]
+      then true
+      else if zesu_linear_divides head then true
+      else Array.exist zesu_linear_divides arguments
+  | Constr.Unsafe.Prod binder body =>
+      if zesu_linear_divides (Constr.Binder.type binder) then true
+      else zesu_linear_divides body
+  | Constr.Unsafe.Cast value _ _ => zesu_linear_divides value
+  | _ => false
+  end.
+
+(* On a goal that does not divide, clear the facts that do. Zify turns each
+   division, remainder and divisibility into fresh integer variables with
+   bounds, and on an unprovable goal the solver's branch and bound over them
+   did not end: txAccessList 0248 and 048c (bench r53) each spent the rest
+   of the 3600 s cap in one whole-context call on `2684354560 <=
+   arrayListPointer l` (92 and 103 facts; 2 to 5 of them divide). Without the
+   dividing facts the same calls fail in 0.3 s; on every whole-context call
+   of those blocks and of 0264 that succeeded, the call without them
+   succeeded too (diag P/Q runs, rules11 handoff). *)
+Ltac2 zesu_linear_clear_dividing_facts () :=
+  if zesu_linear_divides (Control.goal ()) then () else
+  List.iter (fun (name, body, typ) =>
+    match body with
+    | Some _ => ()
+    | None =>
+        if zesu_linear_is_prop typ then
+          if zesu_linear_divides typ then
+            match Control.case (fun () => Std.clear [name]) with
+            | Val _ => () | Err _ => ()
+            end
+          else ()
+        else ()
+    end) (Control.hyps ()).
+
+Ltac zesu_lia_clear_dividing_facts := ltac2:(zesu_linear_clear_dividing_facts ()).
+
 (* A lower bound of `zesu_linear_remaining` on a term after a tactic that turns
    every application of a `collapsed` head into one node (a projection into a
    `match` when unfolded, a closed operation into a literal when reduced) and
