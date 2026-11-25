@@ -136,6 +136,11 @@ check-support-freshness: stock-native-indexes
 	  --stem EntriesToOwnedSlice \
 	  --closed-dir ZesuSsz/Proofs/EntriesToOwnedSlice/FP301 \
 	  --output ZesuSsz/Compliance/EntriesToOwnedSliceBlockObligations.v --check
+	$(PYTHON) tools/block/render_open_blocks.py --function txAccessList \
+	  --callers tools/block/generated/txaccesslist_fp301_callers/CALLERS.json \
+	  --stem TxAccessList \
+	  --closed-dir ZesuSsz/Proofs/TxAccessList/FP301 \
+	  --output ZesuSsz/Compliance/TxAccessListBlockObligations.v --check
 
 check-evidence-tools: check-support-freshness check-tool-tests
 

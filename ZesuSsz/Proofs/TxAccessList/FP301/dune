@@ -1,0 +1,14 @@
+; The closed txAccessList block proofs, compiled in place. The caller renderer writes each caller under
+; tools/block/generated/txaccesslist_fp301_callers; this directory only copies the closed ones into the ZesuSsz
+; theory, so the compliance theorem can consume them. Edit the callers through their renderers.
+(rule (targets Caller0000.v) (deps ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller0000.v) (action (copy ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller0000.v Caller0000.v)))
+(rule (targets Caller02e0.v) (deps ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller02e0.v) (action (copy ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller02e0.v Caller02e0.v)))
+(rule (targets Caller02ec.v) (deps ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller02ec.v) (action (copy ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller02ec.v Caller02ec.v)))
+(rule (targets Caller0344.v) (deps ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller0344.v) (action (copy ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller0344.v Caller0344.v)))
+(rule (targets Caller0364.v) (deps ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller0364.v) (action (copy ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller0364.v Caller0364.v)))
+(rule (targets Caller03d4.v) (deps ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller03d4.v) (action (copy ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller03d4.v Caller03d4.v)))
+(rule (targets Caller03e0.v) (deps ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller03e0.v) (action (copy ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller03e0.v Caller03e0.v)))
+(rule (targets Caller042c.v) (deps ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller042c.v) (action (copy ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller042c.v Caller042c.v)))
+(rule (targets Caller04a8.v) (deps ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller04a8.v) (action (copy ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller04a8.v Caller04a8.v)))
+(rule (targets Caller04b8_slot0.v) (deps ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller04b8_slot0.v) (action (copy ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller04b8_slot0.v Caller04b8_slot0.v)))
+(rule (targets Caller04b8_slot1.v) (deps ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller04b8_slot1.v) (action (copy ../../../../tools/block/generated/txaccesslist_fp301_callers/Caller04b8_slot1.v Caller04b8_slot1.v)))
