@@ -74,8 +74,10 @@ Require ZesuSsz.Contracts.AltFlAllocPremises.
 Require ZesuSsz.Contracts.ZiskMemcpyPremise.
 Require ZesuSsz.Proofs.TxAccessList.FP301.Caller0000.
 Require ZesuSsz.Proofs.TxAccessList.FP301.Caller007c.
+Require ZesuSsz.Proofs.TxAccessList.FP301.Caller00c4.
 Require ZesuSsz.Proofs.TxAccessList.FP301.Caller02e0.
 Require ZesuSsz.Proofs.TxAccessList.FP301.Caller02ec.
+Require ZesuSsz.Proofs.TxAccessList.FP301.Caller0340.
 Require ZesuSsz.Proofs.TxAccessList.FP301.Caller0344.
 Require ZesuSsz.Proofs.TxAccessList.FP301.Caller0364.
 Require ZesuSsz.Proofs.TxAccessList.FP301.Caller03d4.
@@ -87,7 +89,7 @@ Require ZesuSsz.Proofs.TxAccessList.FP301.Caller04b8_slot1.
 Import ListNotations.
 Local Open Scope Z_scope.
 
-(* The 42 open blocks: each field is the statement its block proof must close. *)
+(* The 40 open blocks: each field is the statement its block proof must close. *)
 Record TxAccessListOpenBlocks : Prop := {
   txAccessListOpen_80000068 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
@@ -109,13 +111,6 @@ Record TxAccessListOpenBlocks : Prop := {
     ⊢ instr_pre 0x800000c4 (ZesuSsz.Generated.TxAccessList.FP301.Pilot00c4Entries.fp_machineAt00c4 (args) (returnAddress) (K))%I -∗
       txAccessListSelectedCode -∗
       instr_body 0x800000ac ((ZesuSsz.Generated.TxAccessList.FP301.Pilot00acEntries.fp_machineAt00ac (args) (returnAddress) K) ∗ True));
-  txAccessListOpen_800000c4 :
-    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
-    txAccessListBlockAt 0x800000c4 (@ZesuSsz.Generated.TxAccessList.FP301.Pilot00c4Entries.fp_machineAt00c4 Sigma _ _) (forall (args : TxAccessListArgs) (returnAddress : Z) (K : iProp Sigma),
-    ⊢ instr_pre 0x800000d8 (ZesuSsz.Generated.TxAccessList.FP301.Pilot00d8Entries.fp_machineAt00d8 (args) (returnAddress) (K))%I -∗
-      instr_pre 0x800d6960 (ZesuSsz.Interfaces.DecodeItem.decodeItemCallSpec2)%I -∗
-      txAccessListSelectedCode -∗
-      instr_body 0x800000c4 ((ZesuSsz.Generated.TxAccessList.FP301.Pilot00c4Entries.fp_machineAt00c4 (args) (returnAddress) K) ∗ True));
   txAccessListOpen_800000d8 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     txAccessListBlockAt 0x800000d8 (@ZesuSsz.Generated.TxAccessList.FP301.Pilot00d8Entries.fp_machineAt00d8 Sigma _ _) (forall (args : TxAccessListArgs) (returnAddress : Z) (K : iProp Sigma),
@@ -283,13 +278,6 @@ Record TxAccessListOpenBlocks : Prop := {
       instr_pre 0x8004218c (ZesuSsz.Contracts.AltFlAllocPremises.altFlRemapCallSpec)%I -∗
       txAccessListSelectedCode -∗
       instr_body 0x800002f4 ((ZesuSsz.Generated.TxAccessList.FP301.Pilot02f4Entries.fp_machineAt02f4 (args) (returnAddress) K) ∗ True));
-  txAccessListOpen_80000340 :
-    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
-    txAccessListBlockAt 0x80000340 (@ZesuSsz.Generated.TxAccessList.FP301.Pilot0340Entries.fp_machineAt0340 Sigma _ _) (forall (args : TxAccessListArgs) (returnAddress : Z) (K : iProp Sigma),
-    ⊢ instr_pre 0x80000344 (ZesuSsz.Generated.TxAccessList.FP301.Pilot0344Entries.fp_machineAt0344 (args) (returnAddress) (K))%I -∗
-      instr_pre 0x80000364 (ZesuSsz.Generated.TxAccessList.FP301.Pilot0364Entries.fp_machineAt0364 (args) (returnAddress) (K))%I -∗
-      txAccessListSelectedCode -∗
-      instr_body 0x80000340 ((ZesuSsz.Generated.TxAccessList.FP301.Pilot0340Entries.fp_machineAt0340 (args) (returnAddress) K) ∗ True));
   txAccessListOpen_80000368 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     txAccessListBlockAt 0x80000368 (@ZesuSsz.Generated.TxAccessList.FP301.Pilot0368Entries.fp_machineAt0368 Sigma _ _) (forall (args : TxAccessListArgs) (returnAddress : Z) (K : iProp Sigma),
@@ -380,7 +368,7 @@ Record TxAccessListOpenBlocks : Prop := {
       instr_body 0x800004f4 ((ZesuSsz.Generated.TxAccessList.FP301.Pilot04f4Entries.fp_machineAt04f4 (args) (returnAddress) K) ∗ True))
 }.
 
-(* The 12 closed blocks, from their compiled callers. *)
+(* The 14 closed blocks, from their compiled callers. *)
 Record TxAccessListClosedBlocks : Prop := {
   txAccessListClosed_80000000 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
@@ -396,6 +384,13 @@ Record TxAccessListClosedBlocks : Prop := {
       instr_pre 0x8000048c (ZesuSsz.Generated.TxAccessList.FP301.Pilot048cEntries.fp_machineAt048c (args) (returnAddress) (K))%I -∗
       txAccessListSelectedCode -∗
       instr_body 0x8000007c ((ZesuSsz.Generated.TxAccessList.FP301.Pilot007cEntries.fp_machineAt007c (args) (returnAddress) K) ∗ True));
+  txAccessListClosed_800000c4 :
+    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
+    txAccessListBlockAt 0x800000c4 (@ZesuSsz.Generated.TxAccessList.FP301.Pilot00c4Entries.fp_machineAt00c4 Sigma _ _) (forall (args : TxAccessListArgs) (returnAddress : Z) (K : iProp Sigma),
+    ⊢ instr_pre 0x800000d8 (ZesuSsz.Generated.TxAccessList.FP301.Pilot00d8Entries.fp_machineAt00d8 (args) (returnAddress) (K))%I -∗
+      instr_pre 0x800d6960 (ZesuSsz.Interfaces.DecodeItem.decodeItemCallSpec2)%I -∗
+      txAccessListSelectedCode -∗
+      instr_body 0x800000c4 ((ZesuSsz.Generated.TxAccessList.FP301.Pilot00c4Entries.fp_machineAt00c4 (args) (returnAddress) K) ∗ True));
   txAccessListClosed_800002e0 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     txAccessListBlockAt 0x800002e0 (@ZesuSsz.Generated.TxAccessList.FP301.Pilot02e0Entries.fp_machineAt02e0 Sigma _ _) (forall (args : TxAccessListArgs) (returnAddress : Z) (K : iProp Sigma),
@@ -408,6 +403,13 @@ Record TxAccessListClosedBlocks : Prop := {
     ⊢ instr_pre 0x8000043c (ZesuSsz.Generated.TxAccessList.FP301.Pilot043cEntries.fp_machineAt043c (args) (returnAddress) (K))%I -∗
       txAccessListSelectedCode -∗
       instr_body 0x800002ec ((ZesuSsz.Generated.TxAccessList.FP301.Pilot02ecEntries.fp_machineAt02ec (args) (returnAddress) K) ∗ True));
+  txAccessListClosed_80000340 :
+    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
+    txAccessListBlockAt 0x80000340 (@ZesuSsz.Generated.TxAccessList.FP301.Pilot0340Entries.fp_machineAt0340 Sigma _ _) (forall (args : TxAccessListArgs) (returnAddress : Z) (K : iProp Sigma),
+    ⊢ instr_pre 0x80000344 (ZesuSsz.Generated.TxAccessList.FP301.Pilot0344Entries.fp_machineAt0344 (args) (returnAddress) (K))%I -∗
+      instr_pre 0x80000364 (ZesuSsz.Generated.TxAccessList.FP301.Pilot0364Entries.fp_machineAt0364 (args) (returnAddress) (K))%I -∗
+      txAccessListSelectedCode -∗
+      instr_body 0x80000340 ((ZesuSsz.Generated.TxAccessList.FP301.Pilot0340Entries.fp_machineAt0340 (args) (returnAddress) K) ∗ True));
   txAccessListClosed_80000344 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     txAccessListBlockAt 0x80000344 (@ZesuSsz.Generated.TxAccessList.FP301.Pilot0344Entries.fp_machineAt0344 Sigma _ _) (forall (args : TxAccessListArgs) (returnAddress : Z) (K : iProp Sigma),
@@ -462,8 +464,10 @@ Record TxAccessListClosedBlocks : Prop := {
 Definition txAccessListClosedBlocks : TxAccessListClosedBlocks := {|
   txAccessListClosed_80000000 := @ZesuSsz.Proofs.TxAccessList.FP301.Caller0000.DesignedBoundary_80000000;
   txAccessListClosed_8000007c := @ZesuSsz.Proofs.TxAccessList.FP301.Caller007c.DesignedBoundary_8000007c;
+  txAccessListClosed_800000c4 := @ZesuSsz.Proofs.TxAccessList.FP301.Caller00c4.DesignedBoundary_800000c4;
   txAccessListClosed_800002e0 := @ZesuSsz.Proofs.TxAccessList.FP301.Caller02e0.DesignedBoundary_800002e0;
   txAccessListClosed_800002ec := @ZesuSsz.Proofs.TxAccessList.FP301.Caller02ec.DesignedBoundary_800002ec;
+  txAccessListClosed_80000340 := @ZesuSsz.Proofs.TxAccessList.FP301.Caller0340.DesignedBoundary_80000340;
   txAccessListClosed_80000344 := @ZesuSsz.Proofs.TxAccessList.FP301.Caller0344.DesignedBoundary_80000344;
   txAccessListClosed_80000364 := @ZesuSsz.Proofs.TxAccessList.FP301.Caller0364.DesignedBoundary_80000364;
   txAccessListClosed_800003d4 := @ZesuSsz.Proofs.TxAccessList.FP301.Caller03d4.DesignedBoundary_800003d4;
