@@ -102,7 +102,16 @@ Ltac2 rec zesu_heap_read_casts (facts : (constr * constr * ident) list)
           (if List.exist (fun (y, _) => Constr.equal y term) (Ref.get used) then ()
            else Ref.set used ((term, name) :: Ref.get used));
           t
-      | None => constr:(@bv_unsigned 64 $term)
+      | None =>
+          (* A local definition (a trace `LET`) reads as its body. *)
+          match Constr.Unsafe.kind term with
+          | Constr.Unsafe.Var name =>
+              match List.find_opt (fun (local, _, _) => Ident.equal local name) (Control.hyps ()) with
+              | Some (_, Some body, _) => read body
+              | _ => constr:(@bv_unsigned 64 $term)
+              end
+          | _ => constr:(@bv_unsigned 64 $term)
+          end
       end
   end.
 
