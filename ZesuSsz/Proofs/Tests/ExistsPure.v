@@ -8,6 +8,9 @@ Local Open Scope Z_scope.
    by one, and a proof of it closes the goal. Refused when the spatial rest
    mentions the witness or is not held. *)
 
+(* An opaque record fact over the witnesses, held as a hypothesis. *)
+Definition exists_pure_record (x : Z) (l : list Z) : Prop := x = 3 /\ l = [].
+
 Section exists_pure.
 Context `{!islaG Sigma} `{!threadG}.
 
@@ -45,5 +48,16 @@ Proof.
   iIntros "HK".
   Fail ZesuSsz.Automation2.ExistsPure.zesu_exists_pure_parts ltac:(fun _ => idtac).
   iExists a. iFrame. done.
+Qed.
+
+(* The pure statement restates a hypothesis over the witnesses: the context
+   closer unifies the witnesses with the hypothesis's arguments. *)
+Lemma exists_pure_from_hypotheses (K : iProp Sigma) (b : Z) (l : list Z) :
+  exists_pure_record (b + 1) l ->
+  K -∗ ∃ x : Z *ₗ list Z *ₗ unit, ⌜exists_pure_record (x.1ₗ + 1) x.2ₗ⌝ ∗ K.
+Proof.
+  intros Hrecord. iIntros "HK".
+  ZesuSsz.Automation2.ExistsPure.zesu_exists_pure_close ltac:(
+    solve [ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses]).
 Qed.
 End exists_pure.

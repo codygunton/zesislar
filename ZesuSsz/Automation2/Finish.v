@@ -1587,7 +1587,14 @@ Ltac zesu_block2 :=
     (zesu_finish_package_deferring; try zesu_finish_split_conjunct; zesu_clear_split_baseline)
   | solve [zesu_finish_source_tail]];
   try (zesu_diag_stage "residual_lemma"; ResidualLemmas.zesu_residual_lemma);
-  try solve [ExistsPure.zesu_exists_pure_close ResidualLemmas.zesu_residual_lemma];
+  (* The pure statement of a leftover existential is first matched against
+     the context: an entry that restates a call record (decodeItem's domain
+     and meaning over the record's binders) has those facts as hypotheses,
+     and the export drops facts above its node limit, so the residual lemma
+     would lack its only premises. *)
+  try solve [ExistsPure.zesu_exists_pure_close ltac:(first [
+    solve [ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses] |
+    ResidualLemmas.zesu_residual_lemma])];
   try zesu_block_tail_one;
   zesu_diag_refusal "final".
 
