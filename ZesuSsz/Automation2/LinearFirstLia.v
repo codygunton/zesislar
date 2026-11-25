@@ -311,11 +311,17 @@ Ltac zesu_no_symbolic_divisor :=
   end).
 
 (* The library solver on the facts linked to the goal, refused when a linked
-   fact or the goal divides by a term that is not a numeral. *)
+   fact or the goal divides by a term that is not a numeral, or when they
+   hold more distinct divisions and remainders than the linear-first path
+   accepts (`zesu_divmod_guard`). txAccessList 0264 (bench r53) spent the rest
+   of the 3600 s cap here on a 4,922-node goal with 37 distinct remainders
+   (the unfolded bit-vector wraps of one address); on that block's other 37
+   calls the goal and facts held at most 5, and each ended within 0.04 s. *)
 Ltac zesu_lia_linked_facts :=
   let run_zify := ltac2:(tac |- zesu_telemetry_ltac1 "zify" "zesu_lia_linked_facts" tac) in
   let run_xlia := ltac2:(tac |- zesu_telemetry_ltac1 "xlia" "zesu_lia_linked_facts" tac) in
   once ltac2:(zesu_linear_clear_unrelated ()); zesu_no_symbolic_divisor;
+  zesu_divmod_guard;
   run_zify ltac:(Zify.zify);
   run_xlia ltac:(xlia Lia.zchecker).
 
