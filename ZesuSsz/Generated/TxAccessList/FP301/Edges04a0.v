@@ -37,20 +37,18 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt04a0_ForwardA0N0 -> fp_machineAt04a8_ForwardA0N0 (join) *)
-Global Instance zesu_hist_edge_70 (args : TxAccessListArgs) (returnAddress : Z) (call2_outcome : ToOwnedSliceOutcome) (machine_x21 : bv 64) (call_after : DecodeItemOutcome) (tx_final : ArrayListState) (tx_final_done : list AccessListEntryValue) (tx_final_images : list TxAccessListEntryImage) (tx_final_rest : list byte) (tx_rest_error : list byte) :
+Global Instance zesu_hist_edge_70 (args : TxAccessListArgs) (returnAddress : Z) (call2_outcome : ToOwnedSliceOutcome) (machine_x21 : bv 64) (call_after : DecodeItemOutcome) (tx_final : ArrayListState) (tx_final_done : list AccessListEntryValue) (tx_final_images : list TxAccessListEntryImage) (tx_final_rest : list byte) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt04a0_ForwardA0N0_Hist (args) (returnAddress) (call2_outcome) (machine_x21) (call_after) (tx_final) (tx_final_done) (tx_final_images) (tx_final_rest))
-    (fp_machineAt04a8_ForwardA0N0_Hist (args) (returnAddress) (call_after) (tx_rest_error))
-    (⌜(∃ (consumed : Z), tx_rest_error = app (word64Bytes (bv_unsigned (txInputPointer args) + consumed)) (word64Bytes (bv_unsigned (txInputLength args) - consumed)))⌝ ∗ True)%I.
+    (fp_machineAt04a8_ForwardA0N0_Hist (args) (returnAddress) (call_after))
+    (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt04a0_ForwardA0N0_Hist in Hh.
   destruct Hh as (fp_seed_mstatus_bits & forward_witness_d7543602bfbbe148 & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_791c5acc1109e8e6 & forward_witness_88383840afa7af74 & forward_witness_d77b5950a2aea933 & forward_witness_72b7e22ed74cb83b & forward_witness_87e5cadc5c04d5d4 & forward_witness_1492ef7bd46b3b7a & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23).
   iIntros "HN".
-  iDestruct "HN" as "(%HN0 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt04a8_ForwardA0N0_Hist.
   exists fp_seed_mstatus_bits, forward_witness_d7543602bfbbe148, forward_witness_83d3e6d46c3de70e, forward_witness_1d218312837c2f84, forward_witness_dc636cab9ffb40ae, forward_witness_184f6fc7524c683f.
   split; [exact HF0|].
-  split; [exact HN0|].
   split; [exact HF23|].
   split; [exact HF7|].
   split; [exact HF8|].

@@ -46,14 +46,14 @@ Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt00c4_LoopClass0_Hist in Hh.
   destruct Hh as (HF0 & HF1 & HF2).
   iIntros "HN".
-  iDestruct "HN" as "(%HN0 & %HV3 & %HV11 & %HV12 & %HV13 & %HV14 & _)".
+  iDestruct "HN" as "(%HN0 & %HV3 & %HV11 & %HV12 & %HV13 & %HV15 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt00d8_ForwardA0N0_Hist.
   exists (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z).
   split; [exact HV3|].
   split; [exact HV11|].
   split; [exact HV12|].
   split; [exact HV13|].
-  split; [exact HV14|].
+  split; [exact HV15|].
   split; [exact HN0|].
   split; [by vm_compute|].
   split; [by vm_compute|].

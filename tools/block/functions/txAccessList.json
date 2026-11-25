@@ -36,7 +36,9 @@
     "^\\W*\\d+ <= \\(arrayListCapacity \\w+ - arrayListLength \\w+\\) \\* \\w+\\W*%Z\\W*$",
     "^\\W*arrayListLength \\w+ < arrayListCapacity \\w+\\W*%Z\\W*$",
     "^\\W*bv_unsigned \\(machine_x\\d+\\) = (arrayListPointer \\w+|arrayListCapacity \\w+|\\d+ \\* arrayListLength \\w+)\\W*(%Z\\W*)?$",
-    "^\\W*Z\\.of_nat \\(List\\.length \\w+\\) = txAccessListScratchSize\\W*$"
+    "^\\W*Z\\.of_nat \\(List\\.length \\w+\\) = txAccessListScratchSize\\W*$",
+    "^\\W*\u2203 \\(consumed : Z\\), tx_rest_error = ",
+    "^\\W*Forall2 \\(fun entry image => entryKeys entry <> \\[\\] -> txRamRange "
   ],
   "args_type": "TxAccessListArgs",
   "symbol": "rlp_decode.txAccessList",
@@ -250,6 +252,10 @@
         {
           "kind": "owned",
           "coq": "Forall (fun image => Z.of_nat (length (imagePadding image)) = txAccessListPaddingSize) tx_images"
+        },
+        {
+          "kind": "owned",
+          "coq": "Forall2 (fun entry image => entryKeys entry <> [] -> txRamRange (imageKeysPointer image) (txAccessListKeySize * Z.of_nat (List.length (entryKeys entry)))) tx_done tx_images"
         },
         {
           "kind": "owned",
@@ -1400,6 +1406,9 @@
           "coq": "Forall (fun image => Z.of_nat (List.length (imagePadding image)) = txAccessListPaddingSize) tx_final_images"
         },
         {
+          "coq": "Forall2 (fun entry image => entryKeys entry <> [] -> txRamRange (imageKeysPointer image) (txAccessListKeySize * Z.of_nat (List.length (entryKeys entry)))) tx_final_done tx_final_images"
+        },
+        {
           "coq": "Z.of_nat (List.length tx_final_scratch) = txAccessListScratchSize"
         },
         {
@@ -1445,7 +1454,7 @@
           "coq": "Z.of_nat (List.length tx_scratch_error) = txAccessListScratchSize"
         },
         {
-          "coq": "\u2203 (consumed : Z), tx_rest_error = app (word64Bytes (bv_unsigned (txInputPointer args) + consumed)) (word64Bytes (bv_unsigned (txInputLength args) - consumed))"
+          "coq": "\u2203 (consumed : Z), tx_rest_error = app (word64Bytes (bv_unsigned (txInputPointer args) + consumed)) (word64Bytes (bv_unsigned (txInputLength args) - consumed)) /\\ (txAccessListOutcomeAllowed (txInputBytes args) txAccessListInvalidInput consumed \\/ txAccessListOutcomeAllowed (txInputBytes args) txAccessListAllocationFailure consumed)"
         }
       ],
       "predecessors": [
@@ -1459,6 +1468,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "a867cb46cf39f74da403429457a263f8399468ee1a505f454e33fd2657a2a675"
+    "sha256": "01c0b3ffd62b176fa6091e1f41491a9081e64fd94fc669ed892bbdda3ebd5f90"
   }
 }
