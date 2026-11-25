@@ -1,6 +1,6 @@
 From Coq Require Import ZArith.ZArith.
-Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Automation2.LinearFirstLia.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 (* The whole-context arm of the project lia reads no dividing fact on a goal
@@ -28,7 +28,8 @@ Qed.
 (* The linked-facts solver refuses a goal with more than 24 distinct
    remainders, even one it would prove (the goal closes by reflexivity once
    the solver has refused); with few it runs (the unrelated fact is cleared
-   first). *)
+   first). The bounded whole-context solver checks the same count first
+   (`zesu_lia_goal_divisions_within`). *)
 Lemma linked_facts_many_remainders (x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14
     x15 x16 x17 x18 x19 x20 x21 x22 x23 x24 z : Z) :
   z = 1 ->
@@ -43,11 +44,12 @@ Lemma linked_facts_many_remainders (x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x1
 Proof.
   intros Hz.
   Fail zesu_lia_linked_facts.
+  Fail zesu_lia_goal_divisions_within.
   reflexivity.
 Qed.
 
 Lemma linked_facts_few_remainders (x y z : Z) :
   z = 1 -> x mod 3 + y mod 5 = y mod 5 + x mod 3.
 Proof.
-  intros Hz. zesu_lia_linked_facts.
+  intros Hz. zesu_lia_goal_divisions_within. zesu_lia_linked_facts.
 Qed.
