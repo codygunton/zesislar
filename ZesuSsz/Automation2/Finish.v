@@ -48,6 +48,7 @@ Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.BoundedArithmetic.
 Require Import ZesuSsz.Automation2.GoalDomain.
+Require Import ZesuSsz.Automation2.GoalDomainParts.
 Require Import ZesuSsz.Automation2.LiaHook.
 (* Names `zesu_rule_set_v2_steps` for `zesu_run_pass_v2` below. The
    module declares one tactic and installs no instance and no hint,
@@ -527,11 +528,16 @@ Ltac zesu_finish_v1 :=
   | _ =>
       try (zesu_talt f_saturate_alignment (idtac; zesu_saturate_alignment));
       zesu_diag_stage "finish_v1.solvers";
+      (* a sealed callee domain goes to its introduction only: the solvers
+         would only search the context for a contradiction *)
+      tryif zesu_goal_domain_sealed
+      then try (zesu_talt f_goal_domain (idtac; zesu_finish_goal_domain))
+      else (
       try (zesu_talt f_finish_lia (idtac; zesu_finish_lia));
       try (zesu_talt f_goal_domain (idtac; zesu_finish_goal_domain));
       try (zesu_talt f_v1_tail_bv_solve (idtac; zesu_bv_solver_goal;
         ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
-        ("finish.v1_tail"%string) ltac:(bv_solve)))
+        ("finish.v1_tail"%string) ltac:(bv_solve))))
   end;
   try (zesu_talt f_little_endian (idtac; zesu_finish_little_endian_if_closed));
   try (zesu_talt f_symbolic_byte_codec (idtac; solve [SymbolicByteCodec.zesu_symbolic_byte_codec])).
@@ -1574,6 +1580,37 @@ Ltac zesu_finish_split_conjunct :=
    is touched. *)
 Ltac zesu_block_tail_one := fail.
 
+(* A pure existential whose witnesses a hypothesis fixes: conjuncts are
+   matched in order against hypotheses with the same head (txAccessList 0170:
+   decodeItem's domain and meaning over call4's record fix all eight
+   witnesses); every conjunct then left has no evar and goes to the pure
+   finisher (0170: the record's list bit and nonzero length, stated as
+   `negb (bool_decide _) = true` and `_ <> 0`). *)
+Ltac zesu_exists_pure_from_context :=
+  lazymatch goal with |- ex _ => idtac end;
+  repeat lazymatch goal with |- ex _ => eexists end;
+  repeat lazymatch goal with |- _ /\ _ => split end;
+  try (match goal with
+       | |- ?conjunct =>
+           lazymatch type of conjunct with Prop => idtac end;
+           let head := get_head conjunct in
+           match goal with
+           | Hfact : ?fact |- _ =>
+               let fact_head := get_head fact in
+               constr_eq head fact_head; exact Hfact
+           end
+       end);
+  lazymatch goal with |- ?conjunct => assert_fails (has_evar conjunct) end;
+  first [assumption | reflexivity |
+    lazymatch goal with
+    | |- ZesuSsz.Automation2.Hist.zesu_hist _ =>
+        match goal with
+        | Hpre : ZesuSsz.Automation2.Hist.zesu_hist _, S : gFunctors |- _ =>
+            exact (ZesuSsz.Automation2.Hist.zesu_hist_edge_pure (Σ := S) _ _ Hpre _)
+        end
+    end |
+    zesu_finish_pure_goal].
+
 (* Residual lemmas close the pure goals that every other tier leaves open. *)
 Ltac zesu_block2 :=
   zesu_block_base; try zesu_finish_residual_cascade;
@@ -1581,7 +1618,14 @@ Ltac zesu_block2 :=
     (zesu_finish_package_deferring; try zesu_finish_split_conjunct; zesu_clear_split_baseline)
   | solve [zesu_finish_source_tail]];
   try (zesu_diag_stage "residual_lemma"; ResidualLemmas.zesu_residual_lemma);
-  try solve [ExistsPure.zesu_exists_pure_close ResidualLemmas.zesu_residual_lemma];
+  (* The pure statement of a leftover existential is first matched against
+     the context: an entry that restates a call record (decodeItem's domain
+     and meaning over the record's binders) has those facts as hypotheses,
+     and the export drops facts above its node limit, so the residual lemma
+     would lack its only premises. *)
+  try solve [ExistsPure.zesu_exists_pure_close ltac:(first [
+    solve [zesu_exists_pure_from_context] |
+    ResidualLemmas.zesu_residual_lemma])];
   try zesu_block_tail_one;
   zesu_diag_refusal "final".
 

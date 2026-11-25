@@ -44,6 +44,15 @@ Global Instance zesu_hist_edge_refl {PROP : bi} (P : Prop) :
   ZesuHistEdge (PROP := PROP) P P True | 0.
 Proof. rewrite /ZesuHistEdge => Hh. iIntros "_". by iPureIntro. Qed.
 
+(* An edge without new facts read in a pure goal: a successor history that a
+   leftover existential restates follows from the block entry's history. *)
+Lemma zesu_hist_edge_pure {Σ : gFunctors} (pre succ : Prop) :
+  zesu_hist pre → ZesuHistEdge (PROP := iPropI Σ) pre succ True → zesu_hist succ.
+Proof.
+  intros Hpre Hedge. apply (uPred.pure_soundness (M := iResUR Σ)).
+  iApply (Hedge Hpre). done.
+Qed.
+
 Lemma tac_zesu_hist_edge {PROP : bi} Δ (pre succ : Prop) (N Q : PROP) :
   ZesuHistEdge pre succ N → zesu_hist pre →
   envs_entails Δ (N ∧ Q) → envs_entails Δ (⌜zesu_hist succ⌝ ∗ Q).

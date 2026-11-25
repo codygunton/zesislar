@@ -49,6 +49,7 @@ Require Import ZesuSsz.Automation2.FailureMemo.
 Require ZesuSsz.Automation2.RewriteBoundGuards.
 Require ZesuSsz.Automation2.DomainRanges.
 Require ZesuSsz.Automation2.FactViews.
+Require ZesuSsz.Automation2.HeapAddress.
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
 From iris.proofmode Require Import environments.
@@ -812,6 +813,68 @@ Ltac zesu_stack_write_if_enabled :=
                 iSplitL "HstackWriteFrame"; [iExact "HstackWriteFrame" |]
             end)
       end
+  end.
+
+(* The heap twin of the stack write: a store whose address equals a place of
+   an owned uninitialized region only through the context's register
+   equations (HeapAddress.v). The address is read once; a region is selected
+   by a syntactic test on that reading; the address is rewritten to
+   `start + k` (or `start`) and the region is offered as the found resource,
+   so the store rule continues on syntactically related terms. *)
+Ltac zesu_heap_take H address value lower count k kind range :=
+  iRename H into "HheapWrite";
+  let Hhigh := fresh "HheapHigh" in
+  range "HheapWrite" Hhigh;
+  let Hinside := fresh "HheapInside" in
+  assert (Hinside : (k < count)%Z) by
+    (ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+      ("heap_write.inside"%string) ltac:(zesu_lia));
+  let Heq := fresh "HheapAddress" in
+  lazymatch k with
+  | 0%Z =>
+      assert (Heq : address = lower) by
+        (transitivity (lower + 0)%Z;
+         [HeapAddress.zesu_heap_address_equation address value lower k count Hhigh Hinside
+            ltac:(ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+              ("heap_write.nonneg"%string) ltac:(zesu_lia)) |
+          apply Z.add_0_r])
+  | _ =>
+      assert (Heq : address = (lower + k)%Z) by
+        (HeapAddress.zesu_heap_address_equation address value lower k count Hhigh Hinside
+          ltac:(ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+            ("heap_write.nonneg"%string) ltac:(zesu_lia)))
+  end;
+  rewrite Heq; clear Heq Hinside Hhigh;
+  iExists kind;
+  iSplitL "HheapWrite"; [iExact "HheapWrite" |].
+
+Ltac zesu_heap_write :=
+  (* The reading follows local definitions: an address it refuses costs no
+     change to the goal. *)
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+      HeapAddress.zesu_heap_with_reading address ltac:(fun _ _ => idtac)
+  end;
+  zesu_expose_environment_alias;
+  repeat match goal with
+  | Hlocal := _ |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+      lazymatch address with context[Hlocal] => unfold Hlocal in *; clear Hlocal end
+  end;
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindMemMapsTo ?address) ?continuation) =>
+      HeapAddress.zesu_heap_with_reading address ltac:(fun value c =>
+      (* Stores only: a load continues with `False` on an uninitialized
+         region. Owned arrays are left to the existing lookups. *)
+      let on_uninit := eval cbv beta iota in (continuation (MKUninit 0 0)) in
+      lazymatch on_uninit with False%I => fail | _ => idtac end;
+      iMatchHyp ltac:(fun H body =>
+        lazymatch body with
+        | (?lower ↦ₘ? ?count)%I =>
+            HeapAddress.zesu_heap_region_offset address value c lower count ltac:(fun k =>
+              zesu_heap_take H address value lower count k constr:(MKUninit lower count)
+                ltac:(fun R Hhigh =>
+                  iDestruct (mem_mapsto_uninit_in_range with R) as %[_ [_ Hhigh]]))
+        end))
   end.
 
 
@@ -2805,6 +2868,9 @@ Ltac zesu_liAStep :=
      (GoalShape.zesu_call_slice_goal_unheld): the call-site step lends it. *)
   | (tryif zesu_call_slice_goal_unheld then fail else idtac;
      zesu_talt l_liStep (idtac; liStep))
+  (* After liStep: only a store that Lithium's lookup does not place. *)
+  | (lazymatch goal_class with ZGfind_mem => idtac end;
+     zesu_talt l_heap_write (idtac; zesu_heap_write))
   | zesu_talt l_opaque_atom_arguments (idtac; zesu_opaque_atom_arguments)
   | zesu_talt l_liLetBindHint (idtac; liLetBindHint)
   | zesu_talt l_liUnfoldLate (idtac; liUnfoldLate)

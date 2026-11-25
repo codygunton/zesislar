@@ -114,5 +114,8 @@ Ltac zesu_exists_pure_close close :=
           repeat match type of H with _ /\ _ =>
             let H1 := fresh "HexistsPure" in destruct H as [H1 H] end;
           iFrame;
-          try (iPureIntro; repeat split; first [assumption | exact I])))
+          (* Split conjunctions syntactically: `split` unfolds a definition
+             whose body is a conjunction, and its parts are no hypothesis. *)
+          try (iPureIntro; repeat match goal with |- _ /\ _ => split end;
+            first [assumption | exact I])))
   end.
