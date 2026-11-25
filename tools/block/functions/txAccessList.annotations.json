@@ -1369,6 +1369,30 @@
     }
    ]
   },
+ {"id": "word-binders-368", "request": null, "at": {"pc": "+0x368", "boundary": "word_binders"},
+  "slots": [
+   {"region": "bv_unsigned (txStackPointer args) - 576", "offset": 0, "size": 8, "name": "tx368_cap0"},
+   {"region": "bv_unsigned (txStackPointer args) - 576", "offset": 8, "size": 8, "name": "tx368_cap8"},
+   {"region": "bv_unsigned (txStackPointer args) - 576", "offset": 16, "size": 8, "name": "tx368_cap16"},
+   {"region": "bv_unsigned (txStackPointer args) - 576", "offset": 48, "size": 8, "name": "tx368_res48"},
+   {"region": "bv_unsigned (txStackPointer args) - 576", "offset": 56, "size": 8, "name": "tx368_res56"}],
+  "author": {"tier": "opus-medium"},
+  "why": "0368 ran out of memory (B5Bridges5, rules13 M0368): the capacity-growth words and the toOwnedResultAfter words stored in the frame are stated as 8 byte extracts each; one binder per word with its zesu_named_eq definition."},
+ {"id": "word-binders-404", "request": null, "at": {"pc": "+0x404", "boundary": "word_binders"},
+  "slots": [
+   {"region": "bv_unsigned (txStackPointer args) - 576", "offset": 48, "size": 8, "name": "tx404_res48"},
+   {"region": "bv_unsigned (txStackPointer args) - 576", "offset": 56, "size": 8, "name": "tx404_res56"}],
+  "author": {"tier": "opus-medium"},
+  "why": "0404: the toOwnedResultAfter words at sp-576+48/+56 (B5Bridges5 M0404)."},
+ {"id": "word-binders-addresses", "request": null, "at": {"pc": "+0x368", "boundary": "word_binders"},
+  "sites": ["+0x368", "+0x404", "+0x1bc"],
+  "slots": [
+   {"region": "bv_unsigned (txStackPointer args) - 256", "offset": 96, "size": 8, "name": "tx_addr_ret0"},
+   {"region": "bv_unsigned (txStackPointer args) - 256", "offset": 104, "size": 8, "name": "tx_addr_ret8"},
+   {"region": "bv_unsigned (txStackPointer args) - 424", "offset": 80, "size": 8, "name": "tx_addr_key0"},
+   {"region": "bv_unsigned (txStackPointer args) - 424", "offset": 88, "size": 8, "name": "tx_addr_key8"}],
+  "author": {"tier": "opus-medium"},
+  "why": "the two 20-byte address copies (sp-256+96, sp-424+80) state words 0 and 8 through nested nth/bv_concat terms of the input (41k and 30k nodes at 0368/0404); word binders keep one copy each in a named equation."},
   {
    "id": "loop-18c",
    "request": "txAccessList/decision/loop_assertion-018c",

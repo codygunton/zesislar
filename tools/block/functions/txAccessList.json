@@ -1555,8 +1555,130 @@
       "forget_unplaced": true
     }
   },
+  "word_binders": {
+    "+0x368": [
+      {
+        "region": "bv_unsigned (txStackPointer args) - 576",
+        "offset": 0,
+        "size": 8,
+        "name": "tx368_cap0"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 576",
+        "offset": 8,
+        "size": 8,
+        "name": "tx368_cap8"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 576",
+        "offset": 16,
+        "size": 8,
+        "name": "tx368_cap16"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 576",
+        "offset": 48,
+        "size": 8,
+        "name": "tx368_res48"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 576",
+        "offset": 56,
+        "size": 8,
+        "name": "tx368_res56"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 256",
+        "offset": 96,
+        "size": 8,
+        "name": "tx_addr_ret0"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 256",
+        "offset": 104,
+        "size": 8,
+        "name": "tx_addr_ret8"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 424",
+        "offset": 80,
+        "size": 8,
+        "name": "tx_addr_key0"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 424",
+        "offset": 88,
+        "size": 8,
+        "name": "tx_addr_key8"
+      }
+    ],
+    "+0x404": [
+      {
+        "region": "bv_unsigned (txStackPointer args) - 576",
+        "offset": 48,
+        "size": 8,
+        "name": "tx404_res48"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 576",
+        "offset": 56,
+        "size": 8,
+        "name": "tx404_res56"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 256",
+        "offset": 96,
+        "size": 8,
+        "name": "tx_addr_ret0"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 256",
+        "offset": 104,
+        "size": 8,
+        "name": "tx_addr_ret8"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 424",
+        "offset": 80,
+        "size": 8,
+        "name": "tx_addr_key0"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 424",
+        "offset": 88,
+        "size": 8,
+        "name": "tx_addr_key8"
+      }
+    ],
+    "+0x1bc": [
+      {
+        "region": "bv_unsigned (txStackPointer args) - 256",
+        "offset": 96,
+        "size": 8,
+        "name": "tx_addr_ret0"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 256",
+        "offset": 104,
+        "size": 8,
+        "name": "tx_addr_ret8"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 424",
+        "offset": 80,
+        "size": 8,
+        "name": "tx_addr_key0"
+      },
+      {
+        "region": "bv_unsigned (txStackPointer args) - 424",
+        "offset": 88,
+        "size": 8,
+        "name": "tx_addr_key8"
+      }
+    ]
+  },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "cc35648269c023ad0f804ff9ad68df31de8ff1d138bc75c10d6fa7e96e3ade17"
+    "sha256": "3435dcd274aa49595cc1555c8cbc8af03827dc1858425255c115e292704870f0"
   }
 }
