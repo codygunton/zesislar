@@ -29,7 +29,7 @@
   ],
   "hist_visible": [
     "^\\(?frame_old_m\\d+'* = ",
-    "^\\W*bv_unsigned call_x10 = 0\\W*$",
+    "^\\W*bv_unsigned call\\d*_x10 = 0\\W*$",
     "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$",
     "^\\W*arrayListWellFormed \\w+ \\w+\\W*$",
     "^\\W*bv_unsigned \\(bv_and \\(bv_zero_extend 64 \\(List\\.nth 16 \\w+ \\(BV 8 0\\)\\)\\) \\(BV 64 1\\)\\) <> 0 ->",
@@ -38,7 +38,10 @@
     "^\\W*bv_unsigned \\(machine_x\\d+\\) = (arrayListPointer \\w+|arrayListCapacity \\w+|\\d+ \\* arrayListLength \\w+)\\W*(%Z\\W*)?$",
     "^\\W*Z\\.of_nat \\(List\\.length \\w+\\) = txAccessListScratchSize\\W*$",
     "^\\W*\u2203 \\(consumed : Z\\), tx_rest_error = ",
-    "^\\W*Forall2 \\(fun entry image => entryKeys entry <> \\[\\] -> txRamRange "
+    "^\\W*\u2203 \\(header_length payload_length : Z\\), candidateDecodeItem \\(txInputBytes args\\) = candidateSuccess true header_length payload_length ",
+    "^\\W*Forall2 \\(fun entry image => entryKeys entry <> \\[\\] -> txRamRange ",
+    "^\\W*bv_unsigned \\(bv_concat 16 \\(List\\.nth 33 \\w+ \\(BV 8 0\\)\\) \\(List\\.nth 32 \\w+ \\(BV 8 0\\)\\)\\) = 0 ->",
+    "^\\W*Z\\.of_nat \\(List\\.length tx_entry_address\\) = 20\\W*$"
   ],
   "args_type": "TxAccessListArgs",
   "symbol": "rlp_decode.txAccessList",
@@ -269,6 +272,11 @@
           "kind": "owned",
           "need": "decodeItem at +0x108 on the entry's payload: the window lies in the input (TxAccessListCallSlice.txAccessListListPayloadInInput); every reached call of the walk fits its header (accessListHeadersFit)",
           "coq": "headerFits (take (Z.to_nat (bv_unsigned outer_x21)) (drop (Z.to_nat (bv_unsigned outer_x20 - bv_unsigned (txInputPointer args))) (txInputBytes args)))"
+        },
+        {
+          "kind": "owned",
+          "need": "the rest slice +0x94/+0x98 stored once before the loop (outer item consumed): every error exit to +0x4a8 and the +0x48c exit state it; a call-return root after +0xc4 rendered the entry's txBlockRestBytes instead",
+          "coq": "\u2203 (header_length payload_length : Z), candidateDecodeItem (txInputBytes args) = candidateSuccess true header_length payload_length /\\ (0 < payload_length)%Z /\\ tx_outer_rest = app (word64Bytes (bv_unsigned (txInputPointer args) + (header_length + payload_length))) (word64Bytes (bv_unsigned (txInputLength args) - (header_length + payload_length)))"
         }
       ],
       "owned": {
@@ -288,6 +296,10 @@
           {
             "name": "tx_scratch",
             "type": "list byte"
+          },
+          {
+            "name": "tx_outer_rest",
+            "type": "list byte"
           }
         ],
         "resources": [
@@ -306,6 +318,10 @@
           {
             "coq": "ziskExtraParamsAddress \u21a6\u2098\u2217 tx_scratch",
             "length": "8"
+          },
+          {
+            "coq": "bv_unsigned (txRestPointer args) \u21a6\u2098\u2217 tx_outer_rest",
+            "length": "16"
           }
         ],
         "replaces": [
@@ -314,6 +330,9 @@
           },
           {
             "id": "resource_35"
+          },
+          {
+            "id": "resource_31"
           }
         ]
       }
@@ -497,7 +516,13 @@
       "result_minimums": {
         "payload_offset": 1
       },
-      "call_site_pc": "+0x108"
+      "call_site_pc": "+0x108",
+      "return_facts": [
+        {
+          "kind": "fact",
+          "coq": "bv_unsigned (bv_concat 16 (List.nth 33 call3_after (BV 8 0)) (List.nth 32 call3_after (BV 8 0))) = 0 -> (bv_unsigned (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24 (bv_concat 16 (List.nth 7 call3_after (BV 8 0)) (List.nth 6 call3_after (BV 8 0))) (List.nth 5 call3_after (BV 8 0))) (List.nth 4 call3_after (BV 8 0))) (List.nth 3 call3_after (BV 8 0))) (List.nth 2 call3_after (BV 8 0))) (List.nth 1 call3_after (BV 8 0))) (List.nth 0 call3_after (BV 8 0))) + bv_unsigned (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24 (bv_concat 16 (List.nth 15 call3_after (BV 8 0)) (List.nth 14 call3_after (BV 8 0))) (List.nth 13 call3_after (BV 8 0))) (List.nth 12 call3_after (BV 8 0))) (List.nth 11 call3_after (BV 8 0))) (List.nth 10 call3_after (BV 8 0))) (List.nth 9 call3_after (BV 8 0))) (List.nth 8 call3_after (BV 8 0))) <= bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)))%Z"
+        }
+      ]
     },
     {
       "function": "rlp_decode.txAccessList",
@@ -553,7 +578,13 @@
       "result_minimums": {
         "payload_offset": 1
       },
-      "call_site_pc": "+0x19c"
+      "call_site_pc": "+0x19c",
+      "return_facts": [
+        {
+          "kind": "fact",
+          "coq": "bv_unsigned (bv_concat 16 (List.nth 33 call5_after (BV 8 0)) (List.nth 32 call5_after (BV 8 0))) = 0 -> (bv_unsigned (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24 (bv_concat 16 (List.nth 7 call5_after (BV 8 0)) (List.nth 6 call5_after (BV 8 0))) (List.nth 5 call5_after (BV 8 0))) (List.nth 4 call5_after (BV 8 0))) (List.nth 3 call5_after (BV 8 0))) (List.nth 2 call5_after (BV 8 0))) (List.nth 1 call5_after (BV 8 0))) (List.nth 0 call5_after (BV 8 0))) + bv_unsigned (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24 (bv_concat 16 (List.nth 15 call5_after (BV 8 0)) (List.nth 14 call5_after (BV 8 0))) (List.nth 13 call5_after (BV 8 0))) (List.nth 12 call5_after (BV 8 0))) (List.nth 11 call5_after (BV 8 0))) (List.nth 10 call5_after (BV 8 0))) (List.nth 9 call5_after (BV 8 0))) (List.nth 8 call5_after (BV 8 0))) <= bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)))%Z"
+        }
+      ]
     },
     {
       "function": "rlp_decode.txAccessList",
@@ -1337,6 +1368,9 @@
         },
         {
           "coq": "tx_entry_address = take 20 (drop (Z.to_nat call3_payload_offset) (txInputBytes args))"
+        },
+        {
+          "coq": "Z.of_nat (List.length tx_entry_address) = 20"
         }
       ],
       "predecessors": [
@@ -1405,6 +1439,9 @@
         },
         {
           "id": "resource_31"
+        },
+        {
+          "id": "loop_owned_7"
         }
       ],
       "facts": [
@@ -1462,6 +1499,9 @@
         },
         {
           "id": "resource_31"
+        },
+        {
+          "id": "loop_owned_7"
         }
       ],
       "facts": [
@@ -1483,6 +1523,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "ad144854e3d155ef7841cb6ef5cd305e653414ab255f55802e616345ef209cc9"
+    "sha256": "5c69598bb882752a6799115c50cb5cca87dadc4699459af068b92f1adf7e92ee"
   }
 }
