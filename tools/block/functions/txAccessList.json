@@ -32,7 +32,11 @@
     "^\\W*bv_unsigned call_x10 = 0\\W*$",
     "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$",
     "^\\W*arrayListWellFormed \\w+ \\w+\\W*$",
-    "^\\W*bv_unsigned \\(bv_and \\(bv_zero_extend 64 \\(List\\.nth 16 \\w+ \\(BV 8 0\\)\\)\\) \\(BV 64 1\\)\\) <> 0 ->"
+    "^\\W*bv_unsigned \\(bv_and \\(bv_zero_extend 64 \\(List\\.nth 16 \\w+ \\(BV 8 0\\)\\)\\) \\(BV 64 1\\)\\) <> 0 ->",
+    "^\\W*\\d+ <= \\(arrayListCapacity \\w+ - arrayListLength \\w+\\) \\* \\w+\\W*%Z\\W*$",
+    "^\\W*arrayListLength \\w+ < arrayListCapacity \\w+\\W*%Z\\W*$",
+    "^\\W*bv_unsigned \\(machine_x\\d+\\) = (arrayListPointer \\w+|arrayListCapacity \\w+|\\d+ \\* arrayListLength \\w+)\\W*(%Z\\W*)?$",
+    "^\\W*Z\\.of_nat \\(List\\.length \\w+\\) = txAccessListScratchSize\\W*$"
   ],
   "args_type": "TxAccessListArgs",
   "symbol": "rlp_decode.txAccessList",
@@ -1336,6 +1340,10 @@
         {
           "name": "tx_final_scratch",
           "type": "list byte"
+        },
+        {
+          "name": "tx_final_rest",
+          "type": "list byte"
         }
       ],
       "resources": [
@@ -1349,6 +1357,10 @@
         {
           "coq": "ziskExtraParamsAddress \u21a6\u2098\u2217 tx_final_scratch",
           "length": "8"
+        },
+        {
+          "coq": "bv_unsigned (txRestPointer args) \u21a6\u2098\u2217 tx_final_rest",
+          "length": "16"
         }
       ],
       "replaces": [
@@ -1369,6 +1381,9 @@
         },
         {
           "id": "loop_owned_80000448_4"
+        },
+        {
+          "id": "resource_31"
         }
       ],
       "facts": [
@@ -1388,7 +1403,7 @@
           "coq": "Z.of_nat (List.length tx_final_scratch) = txAccessListScratchSize"
         },
         {
-          "coq": "\u2203 (header_length payload_length : Z), candidateDecodeItem (txInputBytes args) = candidateSuccess true header_length payload_length /\\ txAccessListOuterWalked (txInputBytes args) (header_length + payload_length) tx_final_done"
+          "coq": "\u2203 (header_length payload_length : Z), candidateDecodeItem (txInputBytes args) = candidateSuccess true header_length payload_length /\\ txAccessListOuterWalked (txInputBytes args) (header_length + payload_length) tx_final_done /\\ tx_final_rest = app (word64Bytes (bv_unsigned (txInputPointer args) + (header_length + payload_length))) (word64Bytes (bv_unsigned (txInputLength args) - (header_length + payload_length)))"
         }
       ],
       "predecessors": [
@@ -1401,22 +1416,36 @@
         {
           "name": "tx_scratch_error",
           "type": "list byte"
+        },
+        {
+          "name": "tx_rest_error",
+          "type": "list byte"
         }
       ],
       "resources": [
         {
           "coq": "ziskExtraParamsAddress \u21a6\u2098\u2217 tx_scratch_error",
           "length": "8"
+        },
+        {
+          "coq": "bv_unsigned (txRestPointer args) \u21a6\u2098\u2217 tx_rest_error",
+          "length": "16"
         }
       ],
       "replaces": [
         {
           "id": "resource_35"
+        },
+        {
+          "id": "resource_31"
         }
       ],
       "facts": [
         {
           "coq": "Z.of_nat (List.length tx_scratch_error) = txAccessListScratchSize"
+        },
+        {
+          "coq": "\u2203 (consumed : Z), tx_rest_error = app (word64Bytes (bv_unsigned (txInputPointer args) + consumed)) (word64Bytes (bv_unsigned (txInputLength args) - consumed))"
         }
       ],
       "predecessors": [
@@ -1430,6 +1459,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "6d929104a74f43556043c30cc11f192084b8d6a5b8ea3c9e35012eb82e2613fd"
+    "sha256": "a867cb46cf39f74da403429457a263f8399468ee1a505f454e33fd2657a2a675"
   }
 }
