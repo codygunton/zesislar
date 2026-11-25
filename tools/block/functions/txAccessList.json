@@ -210,7 +210,12 @@
       "entry_predecessor": "+0xac",
       "registers": {
         "x20": "outer_x20",
-        "x21": "outer_x21"
+        "x21": "outer_x21",
+        "x10": "outer_x10",
+        "x11": "outer_x11",
+        "x22": "outer_x22",
+        "x23": "outer_x23",
+        "x26": "outer_x26"
       },
       "index": "i",
       "facts": [
@@ -279,6 +284,11 @@
           "kind": "owned",
           "need": "the rest slice +0x94/+0x98 stored once before the loop (outer item consumed): every error exit to +0x4a8 and the +0x48c exit state it; a call-return root after +0xc4 rendered the entry's txBlockRestBytes instead",
           "coq": "\u2203 (header_length payload_length : Z), candidateDecodeItem (txInputBytes args) = candidateSuccess true header_length payload_length /\\ (0 < payload_length)%Z /\\ tx_outer_rest = app (word64Bytes (bv_unsigned (txInputPointer args) + (header_length + payload_length))) (word64Bytes (bv_unsigned (txInputLength args) - (header_length + payload_length)))"
+        },
+        {
+          "kind": "owned",
+          "need": "the 1/40 multiplier word (0xffffffffcccccccd) stored at +0xbc (s0-0x1f0) once before the loop and read at +0x350; call-return roots after +0xc4 rendered the slot uninitialized (resource_37)",
+          "coq": "tx_div_magic = cons (BV 8 205) (cons (BV 8 204) (cons (BV 8 204) (cons (BV 8 204) (cons (BV 8 255) (cons (BV 8 255) (cons (BV 8 255) (cons (BV 8 255) nil)))))))"
         }
       ],
       "owned": {
@@ -302,6 +312,10 @@
           {
             "name": "tx_outer_rest",
             "type": "list byte"
+          },
+          {
+            "name": "tx_div_magic",
+            "type": "list byte"
           }
         ],
         "resources": [
@@ -324,6 +338,11 @@
           {
             "coq": "bv_unsigned (txRestPointer args) \u21a6\u2098\u2217 tx_outer_rest",
             "length": "16"
+          },
+          "(bv_unsigned (txStackPointer args) - 576) \u21a6\u2098? 80",
+          {
+            "coq": "(bv_unsigned (txStackPointer args) - 576 + 80) \u21a6\u2098\u2217 tx_div_magic",
+            "length": "8"
           }
         ],
         "replaces": [
@@ -335,6 +354,9 @@
           },
           {
             "id": "resource_31"
+          },
+          {
+            "id": "resource_37"
           }
         ]
       }
@@ -1418,7 +1440,8 @@
         {
           "coq": "bv_unsigned (txRestPointer args) \u21a6\u2098\u2217 tx_final_rest",
           "length": "16"
-        }
+        },
+        "(bv_unsigned (txStackPointer args) - 576) \u21a6\u2098? 88"
       ],
       "replaces": [
         {
@@ -1444,6 +1467,15 @@
         },
         {
           "id": "loop_owned_7"
+        },
+        {
+          "id": "resource_37"
+        },
+        {
+          "id": "loop_owned_8"
+        },
+        {
+          "id": "loop_owned_9"
         }
       ],
       "facts": [
@@ -1525,6 +1557,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "de997b4c268513c9c34fdeab5884757d1092e0fea6f9510368cae0f759d9464f"
+    "sha256": "cc35648269c023ad0f804ff9ad68df31de8ff1d138bc75c10d6fa7e96e3ade17"
   }
 }

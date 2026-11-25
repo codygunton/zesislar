@@ -1100,11 +1100,13 @@
     "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_final",
     "txAccessListKeysSlices tx_final_done tx_final_images",
     {"coq": "ziskExtraParamsAddress ↦ₘ∗ tx_final_scratch", "length": "8"},
-    {"coq": "bv_unsigned (txRestPointer args) ↦ₘ∗ tx_final_rest", "length": "16"}
+    {"coq": "bv_unsigned (txRestPointer args) ↦ₘ∗ tx_final_rest", "length": "16"},
+    "(bv_unsigned (txStackPointer args) - 576) ↦ₘ? 88"
    ],
    "replaces": [{"id": "resource_37_call_after"}, {"id": "resource_35"},
                 {"id": "loop_owned_80000448_0"}, {"id": "loop_owned_80000448_1"}, {"id": "loop_owned_80000448_2"},
-                {"id": "loop_owned_80000448_4"}, {"id": "resource_31"}, {"id": "loop_owned_7"}],
+                {"id": "loop_owned_80000448_4"}, {"id": "resource_31"}, {"id": "loop_owned_7"},
+                {"id": "resource_37"}, {"id": "loop_owned_8"}, {"id": "loop_owned_9"}],
    "facts": [
     {"coq": "arrayListWellFormed entriesElementBytes tx_final", "role": "owned"},
     {"coq": "arrayListLength tx_final = Z.of_nat (List.length tx_final_done)", "role": "owned"},
@@ -1207,6 +1209,11 @@
      "name": "outer_x21",
      "register": "x21"
     },
+    {"name": "outer_x10", "register": "x10"},
+    {"name": "outer_x11", "register": "x11"},
+    {"name": "outer_x22", "register": "x22"},
+    {"name": "outer_x23", "register": "x23"},
+    {"name": "outer_x26", "register": "x26"},
     {
      "name": "i",
      "role": "index",
@@ -1236,6 +1243,11 @@
      "name": "tx_outer_rest",
      "type": "list byte",
      "exec": "snapshotRead {memory} (bv_unsigned (txRestPointer args)) 16"
+    },
+    {
+     "name": "tx_div_magic",
+     "type": "list byte",
+     "exec": "snapshotRead {memory} (bv_unsigned (txStackPointer args) - 576 + 80) 8"
     }
    ],
    "resources": [
@@ -1258,6 +1270,11 @@
     {
      "coq": "bv_unsigned (txRestPointer args) ↦ₘ∗ tx_outer_rest",
      "length": "16"
+    },
+    "(bv_unsigned (txStackPointer args) - 576) ↦ₘ? 80",
+    {
+     "coq": "(bv_unsigned (txStackPointer args) - 576 + 80) ↦ₘ∗ tx_div_magic",
+     "length": "8"
     }
    ],
    "facts": [
@@ -1326,12 +1343,17 @@
      "coq": "∃ (header_length payload_length : Z), candidateDecodeItem (txInputBytes args) = candidateSuccess true header_length payload_length /\\ (0 < payload_length)%Z /\\ tx_outer_rest = app (word64Bytes (bv_unsigned (txInputPointer args) + (header_length + payload_length))) (word64Bytes (bv_unsigned (txInputLength args) - (header_length + payload_length)))",
      "role": "owned",
      "need": "the rest slice +0x94/+0x98 stored once before the loop (outer item consumed): every error exit to +0x4a8 and the +0x48c exit state it; a call-return root after +0xc4 rendered the entry's txBlockRestBytes instead"
+    },
+    {
+     "coq": "tx_div_magic = cons (BV 8 205) (cons (BV 8 204) (cons (BV 8 204) (cons (BV 8 204) (cons (BV 8 255) (cons (BV 8 255) (cons (BV 8 255) (cons (BV 8 255) nil)))))))",
+     "role": "owned",
+     "need": "the 1/40 multiplier word (0xffffffffcccccccd) stored at +0xbc (s0-0x1f0) once before the loop and read at +0x350; call-return roots after +0xc4 rendered the slot uninitialized (resource_37)"
     }
    ],
    "author": {
     "tier": "opus-medium"
    },
-   "why": "while (al.len > 0) over the access-list payload: cursor s4 (x20) advances and s5 (x21) shrinks by each entry's consumed length; i = payload bytes walked. Owned state: entries list header at s0-0x1c0 and its buffer, one keys slice per finished entry, the memcpy scratch word, the rest slice (x22 = a2, stored at +0x94/+0x98 with the outer item's end and never written again); tx_done = the candidate's entries of the walked prefix; replaces the loop-entry frame span s0-0x1c0..s0-0x68 (resource_37_call_after: the header {8,0,0} and unwritten bytes), the scratch word (resource_35) and the rest slice (resource_31)",
+   "why": "while (al.len > 0) over the access-list payload: cursor s4 (x20) advances and s5 (x21) shrinks by each entry's consumed length; i = payload bytes walked. Owned state: entries list header at s0-0x1c0 and its buffer, one keys slice per finished entry, the memcpy scratch word, the rest slice (x22 = a2, stored at +0x94/+0x98 with the outer item's end and never written again), the 1/40 multiplier word at s0-0x1f0 (+0xbc) with its value; tx_done = the candidate's entries of the walked prefix; x10 x11 x22 x23 x26 are binders (each iteration rewrites them before use: +0xc4/+0xc8, +0xec..+0xf4); replaces the loop-entry frame span s0-0x1c0..s0-0x68 (resource_37_call_after: the header {8,0,0} and unwritten bytes), the frame span s0-0x240..s0-0x1e8 (resource_37), the scratch word (resource_35) and the rest slice (resource_31)",
    "replaces": [
     {
      "id": "resource_37_call_after"
@@ -1341,6 +1363,9 @@
     },
     {
      "id": "resource_31"
+    },
+    {
+     "id": "resource_37"
     }
    ]
   },
