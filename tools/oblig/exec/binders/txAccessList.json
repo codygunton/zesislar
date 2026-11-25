@@ -1,0 +1,194 @@
+{
+ "schema": "oblig-exec-binders/1",
+ "function": "txAccessList",
+ "note": "Binder map of tools/oblig/normalise.py (snapshot screen) for txAccessList: the contract arguments (TxAccessListArgs fields by projection path) from the entry snapshot (a0 result, a1 allocator, a2 rest cell; the rest cell holds the input pointer and length at entry, txBlockRestBytes), and per-block register witnesses. Loop, join and call-outcome binders (outer_x20, tx_entries, call_after, ...) are not mapped: their value at a block is not a fixed register or cell, so a goal that names one stays not-evaluable (listed unscreened). txInputEnd (zisk_input_end) is not in the snapshots.",
+ "mode": "remap-never",
+ "binders": [
+  {
+   "pattern": "(^|_)txResultPointer$",
+   "source": {
+    "reg": "a0",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txAllocatorPointer$",
+   "source": {
+    "reg": "a1",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txRestPointer$",
+   "source": {
+    "reg": "a2",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txAllocatorContext$",
+   "source": {
+    "mem": "allocator",
+    "offset": 0,
+    "size": 8,
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txInputPointer$",
+   "source": {
+    "mem": "rest",
+    "offset": 0,
+    "size": 8,
+    "at": "entry"
+   },
+   "note": "txBlockRestBytes: the rest cell holds the input slice at entry"
+  },
+  {
+   "pattern": "(^|_)txInputLength$",
+   "source": {
+    "mem": "rest",
+    "offset": 8,
+    "size": 8,
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txInputBytes$",
+   "source": {
+    "deref": {
+     "mem": "rest",
+     "offset": 0,
+     "size": 8
+    },
+    "length": {
+     "mem": "rest",
+     "offset": 8,
+     "size": 8
+    },
+    "scale": 1,
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txStackPointer$",
+   "source": {
+    "reg": "sp",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txReturnAddress$",
+   "source": {
+    "reg": "ra",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txSavedX8$",
+   "source": {
+    "reg": "s0",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txSavedX9$",
+   "source": {
+    "reg": "s1",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txSavedX18$",
+   "source": {
+    "reg": "s2",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txSavedX19$",
+   "source": {
+    "reg": "s3",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txSavedX20$",
+   "source": {
+    "reg": "s4",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txSavedX21$",
+   "source": {
+    "reg": "s5",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txSavedX22$",
+   "source": {
+    "reg": "s6",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txSavedX23$",
+   "source": {
+    "reg": "s7",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txSavedX24$",
+   "source": {
+    "reg": "s8",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txSavedX25$",
+   "source": {
+    "reg": "s9",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txSavedX26$",
+   "source": {
+    "reg": "s10",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txSavedX27$",
+   "source": {
+    "reg": "s11",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)txScratchBefore$",
+   "source": {
+    "bytes": "zisk-scratch",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "^machine_x(\\d+)$",
+   "source": {
+    "reg": "x\\1",
+    "at": "block"
+   },
+   "note": "register value at the block start (zesu_hist witness)"
+  },
+  {
+   "pattern": "^(b\\d*|fp_seed_mstatus_bits\\w*|forward_witness\\w*)$",
+   "source": {
+    "const": 0
+   },
+   "note": "mstatus-like witnesses: only Z.land b 131072 = 0 is stated"
+  }
+ ]
+}
