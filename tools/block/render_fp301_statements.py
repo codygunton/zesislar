@@ -2,6 +2,7 @@
 
 import json
 import re
+import sys
 from pathlib import Path
 
 from render_support import definition_introduction_source, unfold_declaration
@@ -40,6 +41,10 @@ def render_loop_head(block, header, structural=False, profile=None, loop_heads=N
     definitions = []
     declarations = []
     authenticated_classes = {}
+    # Profile `word_binders`: slots of the head's classes stated through a binder and its named equation.
+    word_binders = (profile.get('word_binders') or {}).get(block, [])
+    entry_hist.check_word_binders(word_binders)
+    word_applied = set()
     for index, source in enumerate(row['classes']):
         # The authenticated class sources keep the names of their generation run.
         original = re.match(r'Definition (generatedLoop[0-9a-f]+Class' + str(index) + r') ', source)[1]
@@ -67,7 +72,11 @@ def render_loop_head(block, header, structural=False, profile=None, loop_heads=N
         changed = entry_hist.seal_class(
             name, source[:source.index(':=')], binders_text, class_resources, class_facts,
             [{'name': 'args', 'type': profile.args_type}, {'name': 'returnAddress', 'type': 'Z'}], design,
-            visible=design.get('visible', []))
+            visible=design.get('visible', []), word_binders=word_binders)
+        if changed is not None and 'word_binders' in changed[2]:
+            word_applied |= set(changed[2]['word_binders']['applied'])
+            for row in changed[2]['word_binders']['refused']:
+                print('word_binders: %s: %s: %s' % (name, row['name'], row['reason']), file=sys.stderr)
         if changed is None:
             LOOP_HIST_META.pop(name, None)  # an earlier render of this class in another shape
             definitions.append((name, grouped_class(source)))
@@ -76,6 +85,9 @@ def render_loop_head(block, header, structural=False, profile=None, loop_heads=N
                 declarations.append((symbol, text, kind))
             definitions.append((name, changed[1]))
             LOOP_HIST_META[name] = changed[2]
+    for row in word_binders:
+        if row['name'] not in word_applied:
+            print('word_binders: %s: slot %s applies in no class' % (block, row['name']), file=sys.stderr)
     name = 'fp_machineAt' + block
     alternatives = ' ∨ '.join(symbol + ' args returnAddress' for symbol, _ in definitions)
     definitions.append((name,

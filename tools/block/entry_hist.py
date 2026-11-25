@@ -6,6 +6,8 @@ The function profile selects the shape (`configure`):
                           `⌜zesu_hist (<entry>_Hist args returnAddress <live binders>)⌝`.
   `"frame_slots": true`   each saved-register slot of the frame is one 8-byte cell at the address the
                           store computes.
+  `"word_binders": {pc: [slot]}`  a listed slot of a stored byte array is stated through a fresh binder
+                          and the visible fact `zesu_named_eq binder W` (`word_binder_value`).
 
 Visible facts: facts that mention no entry binder (function domain, return alignment), `List.length`
 facts of live binders, facts that match a profile `hist_pinned` regular expression (their binders stay
@@ -813,6 +815,154 @@ def slot_components(kind, address, value, table, regions, taken):
     return texts, binders
 
 
+# ---- word binders (profile `word_binders`) ----
+
+WORD_BINDER_KEYS = {'region', 'offset', 'size', 'name'}
+
+
+def _balanced(text):
+    depth = 0
+    for character in text:
+        if character in '([':
+            depth += 1
+        elif character in ')]':
+            depth -= 1
+            if depth < 0:
+                return False
+    return depth == 0
+
+
+def address_offset(text):
+    """(base, constant) of a Z address text `B`, `B + n` or `B - n`, nested: the base is the `normal`
+    text of B, so `((bv_unsigned (txStackPointer args) - 424) + 40) + 40` is
+    (`bv_unsigned (txStackPointer args)`, -344)."""
+    text, constant = unwrap(text.replace('%Z', '')), 0
+    while True:
+        match = re.fullmatch(r'(.*\S)\s+([+-])\s+(\d+)', text, re.S)
+        if match is None or not _balanced(match[1]):
+            return normal(text), constant
+        constant += int(match[3]) if match[2] == '+' else -int(match[3])
+        text = unwrap(match[1])
+
+
+def check_word_binders(rows):
+    """Refuse a malformed `word_binders` slot list of one pc: each slot is {`region` (a Z address text),
+    `offset` (bytes from it), `size` (8: a word; other: a byte list), `name` (the binder)}, names distinct."""
+    if not isinstance(rows, list):
+        raise ValueError('word_binders: the slots of a pc are a list')
+    names = set()
+    for row in rows:
+        if (not isinstance(row, dict) or set(row) != WORD_BINDER_KEYS
+                or not isinstance(row['region'], str) or not row['region'].strip()
+                or type(row['offset']) is not int or type(row['size']) is not int or row['size'] < 1
+                or not isinstance(row['name'], str) or not re.fullmatch(r"[A-Za-z_][\w']*", row['name'])):
+            raise ValueError('word_binders: a slot is {region: address text, offset: integer, '
+                             'size: positive integer, name: identifier}: ' + repr(row))
+        if row['name'] in names:
+            raise ValueError('word_binders: the binder name %s repeats at one pc' % row['name'])
+        names.add(row['name'])
+
+
+def word_binder_pattern(name):
+    """The visible pattern of the named equation of word binder `name`: the fact stays visible and its
+    binders live, so the block before the entry sets the binder from that equation."""
+    return r"zesu_named_eq \(?" + re.escape(name) + r"\)?(?![\w'])"
+
+
+def word_binder_value(address, value, rows, taken):
+    """Apply the `word_binders` slots `rows` of one entry to its stored byte array `address ↦ₘ∗ value`.
+
+    A slot lies in the array when its address (`region` + `offset`) and the array's have one base
+    (`address_offset`) and its bytes lie inside the array. A word slot (size 8) whose eight bytes are
+    `bv_extract 0 8 W` … `bv_extract 56 8 W` of one term W becomes `bv_extract 8k 8 name` with binder
+    `name : bv 64` and the fact `zesu_named_eq name (W)`. A byte-list slot (another size) is the whole
+    array: the array becomes `address ↦ₘ∗ name`, binder `name : list byte`, fact `zesu_named_eq name (value)`.
+    taken: the entry's binder names (grows). Returns None when no slot lies in the array, else
+    {value, binders, facts, applied: [row], refused: [(row, reason)]}."""
+    items = _list_items(value)
+    if items is None or items == ['']:
+        return None
+    base, start = address_offset(address)
+    inside = []
+    for row in rows:
+        row_base, row_start = address_offset(row['region'])
+        slot = row_start + row['offset']
+        if row_base == base and start <= slot < start + len(items):
+            inside.append((slot, row))
+    if not inside:
+        return None
+    result = {'value': value, 'binders': [], 'facts': [], 'applied': [], 'refused': []}
+    used = set()
+    for slot, row in sorted(inside, key=lambda pair: pair[0]):
+        span = range(slot - start, slot - start + row['size'])
+        if span.stop > len(items):
+            result['refused'].append((row, 'the slot crosses the end of the %d-byte array' % len(items)))
+            continue
+        if used & set(span):
+            result['refused'].append((row, 'the slot overlaps another slot of the array'))
+            continue
+        if row['name'] in taken:
+            result['refused'].append((row, 'the binder name is already an entry binder'))
+            continue
+        if row['size'] != 8:
+            if len(span) != len(items):
+                result['refused'].append((row, 'a byte-list slot is the whole %d-byte array' % len(items)))
+                continue
+            result['binders'].append({'name': row['name'], 'type': 'list byte'})
+            result['facts'].append('zesu_named_eq %s (%s)' % (row['name'], unwrap(value)))
+            result['value'] = row['name']
+        else:
+            word = _word_of_bytes(items[span.start:span.stop])
+            if word is None:
+                result['refused'].append((row, 'the eight bytes are not bv_extract 0 8 W … bv_extract 56 8 W of one W'))
+                continue
+            items[span.start:span.stop] = ['bv_extract %d%%N 8%%N %s' % (8 * index, row['name']) for index in range(8)]
+            result['binders'].append({'name': row['name'], 'type': 'bv 64'})
+            result['facts'].append('zesu_named_eq %s (%s)' % (row['name'], word))
+            result['value'] = '[' + '; '.join(items) + ']'
+        used |= set(span)
+        taken.add(row['name'])
+        result['applied'].append(row)
+    return result
+
+
+def word_binder_components(components, rows, taken):
+    """`word_binder_value` over the source components of one entry body (`byte_array`: {address, value}
+    texts). Returns (components, binders, facts, reports): the components with the listed slots stated
+    through their binders, the new binders, the named-equation facts (texts without ⌜⌝) and one report
+    {address, applied: [name], refused: [{name, reason}]} per array that holds a slot. No row: unchanged."""
+    result, binders, facts, reports = [], [], [], []
+    for component in components:
+        change = (word_binder_value(component['address'], component['value'], rows, taken)
+                  if rows and component['kind'] == 'byte_array' else None)
+        if change:
+            component = {**component, 'value': change['value']}
+            binders.extend(change['binders'])
+            facts.extend(change['facts'])
+            reports.append({'address': component['address'], 'applied': [row['name'] for row in change['applied']],
+                            'refused': [{'name': row['name'], 'reason': reason} for row, reason in change['refused']]})
+        result.append(component)
+    return result, binders, facts, reports
+
+
+def apply_word_binders(resources, facts, binders, rows):
+    """`word_binder_value` over the rendered resources `addr ↦ₘ∗ value` of a loop class: returns
+    (resources, facts, binders, applied rows, [(row, reason)]) with the facts appended."""
+    taken, applied, refused = {binder['name'] for binder in binders}, [], []
+    resources, facts, binders = list(resources), list(facts), list(binders)
+    for position, resource in enumerate(resources):
+        match = re.fullmatch(r'(.*?) ↦ₘ∗ (.*)', resource, re.S)
+        change = match and word_binder_value(match[1], match[2], rows, taken)
+        if not change:
+            continue
+        resources[position] = match[1] + ' ↦ₘ∗ (' + change['value'] + ')'
+        facts.extend(change['facts'])
+        binders.extend(change['binders'])
+        applied.extend(change['applied'])
+        refused.extend(change['refused'])
+    return resources, facts, binders, applied, refused
+
+
 # ---- loop classes (render_fp301_statements.render_loop_head) ----
 
 SLOT_TABLE = SLOT_REGIONS = None
@@ -845,10 +995,15 @@ def parse_binders(text):
     return result
 
 
-def seal_class(name, prefix, binders_text, resources, facts, plain_binders, design, visible=()):
-    """Return (declarations, class text, meta) of one loop class; None if nothing changes."""
+def seal_class(name, prefix, binders_text, resources, facts, plain_binders, design, visible=(), word_binders=()):
+    """Return (declarations, class text, meta) of one loop class; None if nothing changes.
+    word_binders: the profile's `word_binders` slots of the loop head (`apply_word_binders`)."""
     binders = parse_binders(binders_text)
-    slot_reports = []
+    slot_reports, word_report = [], None
+    if word_binders:
+        resources, facts, binders, applied, refused = apply_word_binders(resources, facts, binders, word_binders)
+        word_report = {'applied': [row['name'] for row in applied],
+                       'refused': [{'name': row['name'], 'reason': reason} for row, reason in refused]}
     if FRAME_SLOTS and SLOT_TABLE:
         taken, pieces = {binder['name'] for binder in binders}, []
         for resource in resources:
@@ -863,11 +1018,12 @@ def seal_class(name, prefix, binders_text, resources, facts, plain_binders, desi
                 pieces.append(resource)
         resources = pieces
     def plain():
-        if not slot_reports:
+        if not slot_reports and not (word_report and word_report['applied']):
             return None
         text = (prefix + ':= (∃ ' + telescope(binders) + ', (' + ' ∗ '.join(resources) + ') ∗ ⌜'
                 + conjunction(facts) + '⌝)%I.\n')
-        return [], text, {'entry': name, 'frame_slots': slot_reports}
+        return [], text, {'entry': name, 'frame_slots': slot_reports,
+                          **({'word_binders': word_report} if word_report else {})}
     # The loop-varying binders are the design's registers (by binder name, or by the
     # class's register resource when the design names its seed binders) and the index.
     names = {binder['name'] for binder in binders}
@@ -881,7 +1037,8 @@ def seal_class(name, prefix, binders_text, resources, facts, plain_binders, desi
     # Call facts: the newest call layer's record, guards and window (its payload is what the loop reads);
     # older records and the named equations of older cursors stay in the class history.
     patterns = (newest_call_patterns(binders, facts) + design_patterns(design)
-                + [r"(?<![\w'.])" + re.escape(binder) + r"(?![\w'])" for binder in registers])
+                + [r"(?<![\w'.])" + re.escape(binder) + r"(?![\w'])" for binder in registers]
+                + [word_binder_pattern(name) for name in (word_report or {}).get('applied', [])])
     sealed = seal_alternative(
         name, ' ' + telescope(plain_binders), plain_binders, binders, resources, facts,
         visible_patterns=patterns, pinned=registers, grouped=True, varying=registers, weak_patterns=list(visible))
@@ -889,5 +1046,7 @@ def seal_class(name, prefix, binders_text, resources, facts, plain_binders, desi
         return plain()
     declarations, body, meta = sealed
     meta['frame_slots'] = slot_reports
+    if word_report:
+        meta['word_binders'] = word_report
     meta['loop_class'] = True
     return declarations, prefix + ':= ' + body + '%I.\n', meta

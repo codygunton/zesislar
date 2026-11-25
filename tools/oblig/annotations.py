@@ -79,6 +79,15 @@ The compiled profile keys, by `boundary`:
                    (a loop_cut row or a `loop_heads` entry at `pc`); every binder the text names is a
                    binder of that cut, and it names at least one. A row with `potential` and binders or
                    facts is also the cut's loop_cut row.
+  word_binders     `word_binders[pc]` for `at.pc` (or each pc of `sites` [+0xOFFSET]): the row's `slots`
+                   [{`region` (a Z address text as the entry renders it, e.g. `bv_unsigned (txStackPointer
+                   args) - 576`), `offset` (bytes from it), `size`, `name`}]. Where the entry at pc (a block,
+                   join or loop-cut class) states the slot's bytes inside a stored byte array, it states them
+                   through the fresh existential `name` and the visible fact `zesu_named_eq name W`
+                   (entry_hist.word_binder_value): size 8 is a word `name : bv 64` whose bytes become
+                   `bv_extract 8k 8 name` (its bytes must be `bv_extract 8k 8 W` of one W); another size is a
+                   byte list `name : list byte` and must be the whole array (`addr ↦ₘ∗ name`, W the list).
+                   Each predecessor proves the equation with the entry; names are distinct per pc
 The profile key `charged: true` (copied from the profile part) needs `charged_code` {`module`,
 `premise`}: the charged selected code (`instr_lookup_resources_charged ...`) that replaces
 `selected_code` as every block's code premise. A charged function's entries own `step_budget (B)`
@@ -124,10 +133,11 @@ FUNCTIONS = ROOT / 'tools/block/functions'
 sys.path.insert(0, str(ROOT / 'tools/block'))
 import entry_hist  # noqa: E402
 SCHEMA = 'zesu.annotations.v1'
-BOUNDARIES = ('entry', 'loop_cut', 'join', 'call_site', 'call_return', 'function_return', 'access', 'frame')
+BOUNDARIES = ('entry', 'loop_cut', 'join', 'call_site', 'call_return', 'function_return', 'access', 'frame',
+              'word_binders')
 GENERATED_KEYS = ('loop_designs', 'join_designs', 'calls', 'function_returns', 'access_placements',
                   'domain_component', 'opaque_predicates', 'unreachable_entries', 'unreachable_reached',
-                  'join_drops', 'generated_from', 'potentials', 'join_owned')
+                  'join_drops', 'generated_from', 'potentials', 'join_owned', 'word_binders')
 POTENTIAL_KEYS = {'id', 'request', 'at', 'potential', 'entry_bound', 'author'}
 REGISTER_BINDER = re.compile(r'(?:machine|call|loop)_x\d+')
 IDENTIFIER = re.compile(r"(?<![\w'.])[A-Za-z_][\w']*(?![\w'.])")
@@ -309,7 +319,7 @@ def compile_profile(data, source=None):
     profile.setdefault('symbol', data['symbol'])
     heads = list(profile.get('loop_heads', []))
     loop_designs, join_designs, calls, returns, placements = [], {}, [], [], []
-    unreachable, reached_pcs, drops, join_owned = [], [], {}, {}
+    unreachable, reached_pcs, drops, join_owned, word_binders = [], [], {}, {}, {}
     rows = data['rows']
     for row in rows:
         at, boundary = row['at'], row['at']['boundary']
@@ -413,6 +423,19 @@ def compile_profile(data, source=None):
                                       'distinct offsets, `sites` [pc] and no facts' % row['id'])
             if not profile.get('frame_slots'):
                 raise AnnotationError('%s: a frame row needs the profile key frame_slots' % row['id'])
+        elif boundary == 'word_binders':
+            slots, sites = row.get('slots'), row.get('sites') or [at['pc']]
+            if not slots or row.get('facts') or not isinstance(sites, list) \
+                    or not all(isinstance(pc, str) and re.fullmatch(r'\+0x[0-9a-f]+', pc) for pc in sites):
+                raise AnnotationError('%s: a word_binders row has `slots` [{region, offset, size, name}], '
+                                      'optional `sites` [+0xOFFSET] and no facts' % row['id'])
+            for pc in sites:
+                word_binders.setdefault(pc, []).extend(dict(slot) for slot in slots)
+    for pc, slots in word_binders.items():
+        try:
+            entry_hist.check_word_binders(slots)
+        except ValueError as error:
+            raise AnnotationError('%s: %s' % (pc, error)) from None
     join_frames = {}
     for row in rows:
         if row['at']['boundary'] == 'frame':
@@ -436,7 +459,7 @@ def compile_profile(data, source=None):
                        ('function_returns', returns), ('access_placements', placements),
                        ('unreachable_entries', unreachable), ('unreachable_reached', reached_pcs),
                        ('join_drops', drops), ('join_frames', join_frames), ('join_owned', join_owned),
-                       ('potentials', _potentials(rows, heads))):
+                       ('word_binders', word_binders), ('potentials', _potentials(rows, heads))):
         if value:
             profile[key] = value
     _check_charged(profile)
