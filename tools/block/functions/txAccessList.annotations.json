@@ -33,6 +33,8 @@
    "^\\W*bv_unsigned \\(machine_x\\d+\\) = (arrayListPointer \\w+|arrayListCapacity \\w+|\\d+ \\* arrayListLength \\w+)\\W*(%Z\\W*)?$",
    "^\\W*Z\\.of_nat \\(List\\.length \\w+\\) = txAccessListScratchSize\\W*$",
    "^\\W*∃ \\(consumed : Z\\), tx_rest_error = ",
+   "^\\W*bool_decide \\(\\(bv_zero_extend 64%N \\(bv_concat 16%N \\(List\\.nth 33%nat call\\d*_after ",
+   "^\\W*bool_decide \\(\\(bv_concat 64%N \\(bv_concat 56%N .*List\\.nth 15%nat call\\d*_after .*= \\(BV 64%N (20|32)%Z\\)\\)\\) = true",
    "^\\W*∃ \\(header_length payload_length : Z\\), candidateDecodeItem \\(txInputBytes args\\) = candidateSuccess true header_length payload_length ",
    "^\\W*Forall2 \\(fun entry image => entryKeys entry <> \\[\\] -> txRamRange ",
    "^\\W*bv_unsigned \\(bv_concat 16 \\(List\\.nth 33 \\w+ \\(BV 8 0\\)\\) \\(List\\.nth 32 \\w+ \\(BV 8 0\\)\\)\\) = 0 ->",
