@@ -35,10 +35,10 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt04a8_ForwardA0N0 -> fp_machineAt04b8_slot0_ForwardA0N0 (forward) *)
-Global Instance zesu_hist_edge_72 (args : TxAccessListArgs) (returnAddress : Z) (call_after : DecodeItemOutcome) (tx_scratch_error : list byte) :
+Global Instance zesu_hist_edge_72 (args : TxAccessListArgs) (returnAddress : Z) (call_after : DecodeItemOutcome) (tx_rest_error : list byte) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt04a8_ForwardA0N0_Hist (args) (returnAddress) (call_after) (tx_scratch_error))
-    (fp_machineAt04b8_slot0_ForwardA0N0_Hist (args) (returnAddress) (call_after) (tx_scratch_error))
+    (fp_machineAt04a8_ForwardA0N0_Hist (args) (returnAddress) (call_after) (tx_rest_error))
+    (fp_machineAt04b8_slot0_ForwardA0N0_Hist (args) (returnAddress) (call_after) (tx_rest_error))
     (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt04a8_ForwardA0N0_Hist in Hh.
