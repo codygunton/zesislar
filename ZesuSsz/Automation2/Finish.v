@@ -1588,7 +1588,8 @@ Ltac zesu_block_tail_one := fail.
    instance from a context history, its new facts closed the same way:
    txAccessList 0188's edge to the inner loop head brings the entries list,
    the list bit and the nonzero payload length of call4's record), a fact a
-   context history reveals, the pure finisher, then FALLBACK. *)
+   context history reveals, FALLBACK (a residual lemma fails at once when
+   none is registered for the conjunct), then the pure finisher. *)
 Ltac zesu_ep_close_one fallback :=
   ExistsPure.zesu_ep_fixed;
   first [assumption | exact I | reflexivity |
@@ -1615,14 +1616,14 @@ Ltac zesu_ep_close_one fallback :=
             solve [typeclasses eauto]
         end
     end |
-    solve [zesu_finish_pure_goal] |
-    fallback].
+    fallback |
+    solve [zesu_finish_pure_goal]].
 
 (* A pure existential whose witnesses the context fixes (txAccessList 0170
    and 0188: decodeItem's domain and meaning over call4's record fix the
    record's binders, an equation the loop index, `[] = concat _` the keys
    list); every conjunct is then closed by `zesu_ep_close_one`, a residual
-   lemma for the conjunct last. *)
+   lemma for the conjunct before the finisher. *)
 Ltac zesu_ep_conjunct_close := zesu_ep_close_one ltac:(ResidualLemmas.zesu_residual_lemma).
 
 Ltac zesu_exists_pure_from_context :=
