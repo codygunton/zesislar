@@ -1054,25 +1054,27 @@
     {"name": "tx_final", "type": "ArrayListState"},
     {"name": "tx_final_done", "type": "list AccessListEntryValue"},
     {"name": "tx_final_images", "type": "list TxAccessListEntryImage"},
-    {"name": "tx_final_scratch", "type": "list byte"}
+    {"name": "tx_final_scratch", "type": "list byte"},
+    {"name": "tx_final_rest", "type": "list byte"}
    ],
    "resources": [
     {"coq": "(bv_unsigned (txStackPointer args) - 448) ↦ₘ∗ arrayListHeaderBytes tx_final", "length": "24"},
     "(bv_unsigned (txStackPointer args) - 424) ↦ₘ? 320",
     "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_final",
     "txAccessListKeysSlices tx_final_done tx_final_images",
-    {"coq": "ziskExtraParamsAddress ↦ₘ∗ tx_final_scratch", "length": "8"}
+    {"coq": "ziskExtraParamsAddress ↦ₘ∗ tx_final_scratch", "length": "8"},
+    {"coq": "bv_unsigned (txRestPointer args) ↦ₘ∗ tx_final_rest", "length": "16"}
    ],
    "replaces": [{"id": "resource_37_call_after"}, {"id": "resource_35"},
                 {"id": "loop_owned_80000448_0"}, {"id": "loop_owned_80000448_1"}, {"id": "loop_owned_80000448_2"},
-                {"id": "loop_owned_80000448_4"}],
+                {"id": "loop_owned_80000448_4"}, {"id": "resource_31"}],
    "facts": [
     {"coq": "arrayListWellFormed entriesElementBytes tx_final", "role": "owned"},
     {"coq": "arrayListLength tx_final = Z.of_nat (List.length tx_final_done)", "role": "owned"},
     {"coq": "arrayListItems tx_final = txAccessListEntriesBytes tx_final_done tx_final_images", "role": "owned"},
     {"coq": "Forall (fun image => Z.of_nat (List.length (imagePadding image)) = txAccessListPaddingSize) tx_final_images", "role": "owned"},
     {"coq": "Z.of_nat (List.length tx_final_scratch) = txAccessListScratchSize", "role": "owned"},
-    {"coq": "∃ (header_length payload_length : Z), candidateDecodeItem (txInputBytes args) = candidateSuccess true header_length payload_length /\\ txAccessListOuterWalked (txInputBytes args) (header_length + payload_length) tx_final_done", "role": "owned"}
+    {"coq": "∃ (header_length payload_length : Z), candidateDecodeItem (txInputBytes args) = candidateSuccess true header_length payload_length /\\ txAccessListOuterWalked (txInputBytes args) (header_length + payload_length) tx_final_done /\\ tx_final_rest = app (word64Bytes (bv_unsigned (txInputPointer args) + (header_length + payload_length))) (word64Bytes (bv_unsigned (txInputLength args) - (header_length + payload_length)))", "role": "owned"}
    ],
    "author": {"tier": "opus-medium"},
    "why": "all entries walked: the empty payload (+0xa8 branches here with the list {8, 0, 0} stored at +0x9c..+0xa4) or the outer loop's exit after the last append (+0x488 falls through with s5 = 0). Owned: the entries list tx_final (header at s0-0x1c0, buffer), one keys slice per entry, the 320 frame bytes after the header, the scratch word; tx_final_done = the candidate's entries of the whole payload. Replaces the frame span after the first call's output and the scratch word of the +0x68 root (what an edge stored there leaves with them) and the appended list's heap pieces."
@@ -1081,11 +1083,13 @@
    "id": "join-4a8",
    "request": null,
    "at": {"pc": "+0x4a8", "boundary": "join", "predecessors": ["+0x0", "+0x25c", "+0x390", "+0x4a0"]},
-   "binders": [{"name": "tx_scratch_error", "type": "list byte"}],
-   "resources": [{"coq": "ziskExtraParamsAddress ↦ₘ∗ tx_scratch_error", "length": "8"}],
-   "replaces": [{"id": "resource_35"}],
+   "binders": [{"name": "tx_scratch_error", "type": "list byte"}, {"name": "tx_rest_error", "type": "list byte"}],
+   "resources": [{"coq": "ziskExtraParamsAddress ↦ₘ∗ tx_scratch_error", "length": "8"},
+                 {"coq": "bv_unsigned (txRestPointer args) ↦ₘ∗ tx_rest_error", "length": "16"}],
+   "replaces": [{"id": "resource_35"}, {"id": "resource_31"}],
    "forget_unplaced": true,
-   "facts": [{"coq": "Z.of_nat (List.length tx_scratch_error) = txAccessListScratchSize", "role": "owned"}],
+   "facts": [{"coq": "Z.of_nat (List.length tx_scratch_error) = txAccessListScratchSize", "role": "owned"},
+             {"coq": "∃ (consumed : Z), tx_rest_error = app (word64Bytes (bv_unsigned (txInputPointer args) + consumed)) (word64Bytes (bv_unsigned (txInputLength args) - consumed))", "role": "owned"}],
    "author": {"tier": "opus-medium"},
    "why": "error exit (result {0, 0, 3}, +0x4a8..+0x4b4, then the epilogue): 17 edges from every decodeItem, keysEnsureCapacity, keysToOwnedSlice, alloc and entriesToOwnedSlice failure and the overflow tests. The join keeps the frame and the saved registers (the epilogue reloads them) and the result slot; what an edge holds on the heap (lists, slices, a fresh block) has no place on the join root and is forgotten (leaked, as the code leaks it). The scratch word is owned with any value of 8 bytes."
   },

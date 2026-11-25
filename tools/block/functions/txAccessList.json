@@ -1339,6 +1339,10 @@
         {
           "name": "tx_final_scratch",
           "type": "list byte"
+        },
+        {
+          "name": "tx_final_rest",
+          "type": "list byte"
         }
       ],
       "resources": [
@@ -1352,6 +1356,10 @@
         {
           "coq": "ziskExtraParamsAddress \u21a6\u2098\u2217 tx_final_scratch",
           "length": "8"
+        },
+        {
+          "coq": "bv_unsigned (txRestPointer args) \u21a6\u2098\u2217 tx_final_rest",
+          "length": "16"
         }
       ],
       "replaces": [
@@ -1372,6 +1380,9 @@
         },
         {
           "id": "loop_owned_80000448_4"
+        },
+        {
+          "id": "resource_31"
         }
       ],
       "facts": [
@@ -1391,7 +1402,7 @@
           "coq": "Z.of_nat (List.length tx_final_scratch) = txAccessListScratchSize"
         },
         {
-          "coq": "\u2203 (header_length payload_length : Z), candidateDecodeItem (txInputBytes args) = candidateSuccess true header_length payload_length /\\ txAccessListOuterWalked (txInputBytes args) (header_length + payload_length) tx_final_done"
+          "coq": "\u2203 (header_length payload_length : Z), candidateDecodeItem (txInputBytes args) = candidateSuccess true header_length payload_length /\\ txAccessListOuterWalked (txInputBytes args) (header_length + payload_length) tx_final_done /\\ tx_final_rest = app (word64Bytes (bv_unsigned (txInputPointer args) + (header_length + payload_length))) (word64Bytes (bv_unsigned (txInputLength args) - (header_length + payload_length)))"
         }
       ],
       "predecessors": [
@@ -1404,22 +1415,36 @@
         {
           "name": "tx_scratch_error",
           "type": "list byte"
+        },
+        {
+          "name": "tx_rest_error",
+          "type": "list byte"
         }
       ],
       "resources": [
         {
           "coq": "ziskExtraParamsAddress \u21a6\u2098\u2217 tx_scratch_error",
           "length": "8"
+        },
+        {
+          "coq": "bv_unsigned (txRestPointer args) \u21a6\u2098\u2217 tx_rest_error",
+          "length": "16"
         }
       ],
       "replaces": [
         {
           "id": "resource_35"
+        },
+        {
+          "id": "resource_31"
         }
       ],
       "facts": [
         {
           "coq": "Z.of_nat (List.length tx_scratch_error) = txAccessListScratchSize"
+        },
+        {
+          "coq": "\u2203 (consumed : Z), tx_rest_error = app (word64Bytes (bv_unsigned (txInputPointer args) + consumed)) (word64Bytes (bv_unsigned (txInputLength args) - consumed))"
         }
       ],
       "predecessors": [
@@ -1433,6 +1458,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "302bd5f576888d1fa49d0a5409b90bdaf10cf9eae777da42cad62be4afd151c8"
+    "sha256": "d7783e7034b1fe25f8281816367b4a3c0a1bd9924bf97447043a48f3806e3039"
   }
 }
