@@ -37,7 +37,8 @@
     "^\\W*arrayListLength \\w+ < arrayListCapacity \\w+\\W*%Z\\W*$",
     "^\\W*bv_unsigned \\(machine_x\\d+\\) = (arrayListPointer \\w+|arrayListCapacity \\w+|\\d+ \\* arrayListLength \\w+)\\W*(%Z\\W*)?$",
     "^\\W*Z\\.of_nat \\(List\\.length \\w+\\) = txAccessListScratchSize\\W*$",
-    "^\\W*\u2203 \\(consumed : Z\\), tx_rest_error = "
+    "^\\W*\u2203 \\(consumed : Z\\), tx_rest_error = ",
+    "^\\W*Forall2 \\(fun entry image => entryKeys entry <> \\[\\] -> txRamRange "
   ],
   "args_type": "TxAccessListArgs",
   "symbol": "rlp_decode.txAccessList",
@@ -251,6 +252,10 @@
         {
           "kind": "owned",
           "coq": "Forall (fun image => Z.of_nat (length (imagePadding image)) = txAccessListPaddingSize) tx_images"
+        },
+        {
+          "kind": "owned",
+          "coq": "Forall2 (fun entry image => entryKeys entry <> [] -> txRamRange (imageKeysPointer image) (txAccessListKeySize * Z.of_nat (List.length (entryKeys entry)))) tx_done tx_images"
         },
         {
           "kind": "owned",
@@ -1401,6 +1406,9 @@
           "coq": "Forall (fun image => Z.of_nat (List.length (imagePadding image)) = txAccessListPaddingSize) tx_final_images"
         },
         {
+          "coq": "Forall2 (fun entry image => entryKeys entry <> [] -> txRamRange (imageKeysPointer image) (txAccessListKeySize * Z.of_nat (List.length (entryKeys entry)))) tx_final_done tx_final_images"
+        },
+        {
           "coq": "Z.of_nat (List.length tx_final_scratch) = txAccessListScratchSize"
         },
         {
@@ -1460,6 +1468,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "144b8323fdf4592795a018e1036256fe074cec84b1915f7023dc56f6eec549a1"
+    "sha256": "01c0b3ffd62b176fa6091e1f41491a9081e64fd94fc669ed892bbdda3ebd5f90"
   }
 }
