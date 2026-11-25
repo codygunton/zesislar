@@ -150,11 +150,16 @@ Proof.
 Qed.
 
 (* Abstracted when the scope mentions its head and the conclusion does not:
-   its large subterm becomes a variable in every fact, the record fits the
-   limit and the statement keeps it. *)
+   its large subterm (at least `zesu_export_abstract_nodes` nodes) becomes a
+   variable in every fact, the record fits the limit and the statement
+   keeps it. *)
 Lemma residual_export_abstract (x y : Z)
-    (Hrec : residual_export_record (x + y + x + y + x + y + x + y + x) y)
-    (Hlow : 0 <= x + y + x + y + x + y + x + y + x) :
+    (Hrec : residual_export_record
+      (x * x * x * x * x * x * x * x * x * x * x * x * x * x * x * x +
+       y * y * y * y * y * y * y * y * y * y * y * y * y * y * y * y) y)
+    (Hlow : 0 <=
+      x * x * x * x * x * x * x * x * x * x * x * x * x * x * x * x +
+      y * y * y * y * y * y * y * y * y * y * y * y * y * y * y * y) :
   0 <= y + y.
 Proof.
   ltac2:(
