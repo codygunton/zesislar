@@ -12,8 +12,13 @@ residual module with --lemma naming one of its lemmas. The statement is
 Three compiles, each in its own resource-guard scope (the route of
 tools/block/residual_loop.py):
 1. probe: Rocq walks the binders of the statement and prints the kind of each one
-   (Z, nat, N, bool, bv <w>, list of bv 8, a Prop, other). A data binder of any other
-   type makes the verdict `unchecked`; nothing else runs.
+   (Z, nat, N, bool, bv <w>, list of bv 8, a Prop, a record, other; a type alias by its head
+   normal form). A record binder whose type tools/oblig/records.json registers is projected
+   to its fields (each a checked kind or a registered record; a field variable is named by its
+   projection path, as tools/oblig/normalise.py names them) and the search builds the record
+   from them; any other record binder makes the verdict `unchecked` with reason
+   `unscreened: record binder <name> : <type>`, a data binder of any other type `unchecked`
+   too; nothing else runs.
 2. search: at most LIMIT (200) assignments, fixed by the statement alone. Values: 0, 1,
    each literal of the statement and its neighbours, 2^k - 1 and 2^k for k in 8, 16,
    32, 64, the RAM bounds 0xa0000000 and 0xc0000000, byte lists of length 0, 1, 55
@@ -45,6 +50,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools/block"))
 import residual_loop as rl  # noqa: E402
+RECORDS_FILE = Path(__file__).resolve().parent / "records.json"
 
 LIMIT = 200
 CLAIM = 2 << 30
@@ -82,7 +88,19 @@ Ltac zf_kind H T :=
         let w := eval vm_compute in (Coq.ZArith.BinInt.Z.of_N n) in idtac "@@ZF B" H "bv" w
     | Coq.Init.Datatypes.list (stdpp.bitvector.definitions.bv ?n) =>
         let w := eval vm_compute in (Coq.ZArith.BinInt.Z.of_N n) in idtac "@@ZF B" H "list_bv" w
-    | _ => idtac "@@ZF B" H "other"
+    | _ =>
+        (* A type alias (`Definition DecodeItemOutcome := list byte`, `list EvmSailRlp...byte`) is
+           classified by its normal form; an inductive with one constructor is a record (projected by
+           project_records). *)
+        let U := eval cbv in T in
+        tryif constr_eq U T then
+          tryif (is_ind T; assert_succeeds (
+                   let zf_r := fresh "zf_r" in
+                   assert (zf_r : T -> Coq.Init.Logic.True)
+                     by (let zf_y := fresh "zf_y" in intro zf_y; destruct zf_y; [exact Coq.Init.Logic.I])))
+          then idtac "@@ZF B" H "record" T
+          else idtac "@@ZF B" H "other"
+        else zf_kind H U
     end
   end.
 Ltac zf_binders :=
@@ -97,10 +115,18 @@ Ltac zf_decide P :=
   | |- false = true => fail
   | _ => idtac "@@ZF stuck"; fail
   end.
+(* The head constant of a fact. *)
+Ltac zf_head P := lazymatch P with
+  | ?f _ _ _ _ _ _ _ _ => f | ?f _ _ _ _ _ _ _ => f | ?f _ _ _ _ _ _ => f | ?f _ _ _ _ _ => f
+  | ?f _ _ _ _ => f | ?f _ _ _ => f | ?f _ _ => f | ?f _ => f | ?f => f end.
+(* Facts a real-state screen may take as holding (tools/oblig/normalise.py, binder map `assume`):
+   none unless the screen redefines this tactic. *)
+Ltac zf_assumable P := fail.
 (* A fact without a Decision instance is tried once more at its head normal form
    (a marker definition around a decidable fact). *)
 Ltac zf_holds :=
   lazymatch goal with |- ?P =>
+    tryif zf_assumable P then (idtac "@@ZF assumed"; admit) else
     tryif (let _ := constr:(stdpp.decidable.bool_decide P) in idtac) then zf_decide P
     else (let Q := eval hnf in P in
           tryif (let _ := constr:(stdpp.decidable.bool_decide Q) in idtac)
@@ -424,8 +450,16 @@ def assignments(binders, statement, snaps=(), limit=LIMIT):
     return out
 
 
+def binder_term(binder, assignment):
+    """The value of BINDER under ASSIGNMENT (leaf name -> value): a projected record is its constructor
+    applied to its fields' values."""
+    if binder["kind"] == "record" and "fields" in binder:
+        return "(%s %s)" % (binder["ctor"], " ".join(binder_term(f, assignment) for f in binder["fields"]))
+    return coq_value(binder, assignment[binder["name"]])
+
+
 def steps(binders, assignment):
-    calls = ["zf_step zf_H %s" % coq_value(b, assignment[b["name"]]) for b in binders if b["kind"] != "prop"]
+    calls = ["zf_step zf_H %s" % binder_term(b, assignment) for b in binders if b["kind"] != "prop"]
     return "; ".join(calls + ["zf_finish zf_H"])
 
 
@@ -480,6 +514,10 @@ def parse_binders(lines):
             parts = line.split()
             name, kind = parts[1], parts[2]
             binder = dict(name=name, kind=kind)
+            if kind == "record":
+                binder["type"] = " ".join(parts[3:])
+                binders.append(binder)
+                continue
             width = int(re.sub(r"%Z$", "", parts[3])) if len(parts) > 3 else None
             if kind == "bv":
                 binder["width"] = width
@@ -491,19 +529,121 @@ def parse_binders(lines):
     return binders, ended
 
 
+# ---- record binders ----
+
+RECORD_DECL = re.compile(r"^Record\s+(\w+)\s*(?::\s*Type\s*)?:=\s*(\w+)?\s*\{(.*?)\}\s*\.", re.S | re.M)
+
+
+def field_binder(name, text):
+    """The binder of a record field of type TEXT when its type is a checked kind, else None."""
+    text = " ".join(text.split())
+    if text in ("Z", "nat", "N", "bool"):
+        return dict(name=name, kind=text)
+    match = re.fullmatch(r"bv \(?(\d+)\)?", text)
+    if match:
+        return dict(name=name, kind="bv", width=int(match[1]))
+    if text in ("list byte", "list (bv 8)"):
+        return dict(name=name, kind="bytes")
+    return None
+
+
+def record_fields(source, name):
+    """(constructor, [(field, type text)]) of `Record NAME` in the Rocq SOURCE text."""
+    text = re.sub(r"\(\*.*?\*\)", " ", source, flags=re.S)
+    for match in RECORD_DECL.finditer(text):
+        if match[1] == name:
+            fields = []
+            for item in match[3].split(";"):
+                names, _, kind = item.partition(":")
+                fields += [(field, " ".join(kind.split())) for field in names.split()]
+            return match[2] or "Build_" + name, fields
+    raise FalsifyError("no `Record %s` in the source" % name)
+
+
+def load_records(path=RECORDS_FILE):
+    """{record type: dict(ctor, fields=[(field, type text)])} of the registry RECORDS_FILE: a row
+    {type, source} takes its constructor and fields from the `Record` declaration in SOURCE (the
+    constructor fully qualified by SOURCE's module path); a row {type, ctor, fields} gives them."""
+    data = json.loads(Path(path).read_text())
+    if data.get("schema") != "oblig-records/1":
+        raise FalsifyError("%s: schema is not oblig-records/1" % path)
+    out = {}
+    for row in data["records"]:
+        if "source" in row:
+            ctor, fields = record_fields((ROOT / row["source"]).read_text(), row["type"])
+            module = ".".join(Path(row["source"]).with_suffix("").parts)
+            out[row["type"]] = dict(ctor="@%s.%s" % (module, ctor), fields=fields)
+        else:
+            out[row["type"]] = dict(ctor=row["ctor"], fields=[tuple(field) for field in row["fields"]])
+    return out
+
+
+def _projected(type_text, path, records, seen=()):
+    """(record binder named PATH with its fields, None) or (None, why) for a record of type TYPE_TEXT."""
+    short = type_text.rpartition(".")[2]
+    entry = records.get(short)
+    if entry is None or short in seen:
+        return None, ""
+    fields = []
+    for field, text in entry["fields"]:
+        name = "%s_%s" % (path, field) if path else field
+        leaf = field_binder(name, text)
+        if leaf is None:
+            leaf, _ = _projected(text, name, records, seen + (short,))
+            if leaf is None:
+                return None, " (field %s : %s)" % (field, text)
+        fields.append(leaf)
+    return dict(name=path, kind="record", type=type_text, ctor=entry["ctor"], fields=fields), None
+
+
+def project_records(binders, registry=None):
+    """(BINDERS, reason): each `record` binder whose type the registry (load_records) lists, its fields
+    checked kinds or registered records, gets `ctor` and `fields`: nested binders, each leaf named by its
+    projection path (`keysBase_toOwnedList_arrayListLength`, the GENERALISE convention of
+    tools/oblig/normalise.py), so the search instantiates the fields and builds the record. REASON is
+    None, or `unscreened: record binder <name> : <type>` for a record binder that cannot be projected
+    (or the leaf names that collide)."""
+    registry = load_records() if registry is None else registry
+    out, reason = [], None
+    for binder in binders:
+        if binder["kind"] != "record":
+            out.append(binder)
+            continue
+        projected, why = _projected(binder["type"], "", registry)
+        if projected is None:
+            reason = reason or "unscreened: record binder %s : %s%s" % (binder["name"], binder["type"], why)
+            out.append(binder)
+        else:
+            out.append(dict(binder, ctor=projected["ctor"], fields=projected["fields"]))
+    names = [leaf["name"] for leaf in leaves(out)]
+    clash = sorted({name for name in names if names.count(name) > 1})
+    if clash and reason is None:
+        reason = "unscreened: record fields collide with other binders: " + ", ".join(clash)
+    return out, reason
+
+
+def leaves(binders):
+    """BINDERS with each projected record replaced by its leaf fields (in order)."""
+    out = []
+    for binder in binders:
+        out += leaves(binder["fields"]) if binder["kind"] == "record" and "fields" in binder else [binder]
+    return out
+
+
 def search_outcomes(lines):
-    """Per assignment index: hit, concl (premises held), nodec, stuck."""
+    """Per assignment index: hit, concl (premises held), nodec, stuck, assumed (a premise was taken as
+    holding through the screen's `zf_assumable`)."""
     out, current = {}, None
     for line in lines:
         head, _, rest = line.partition(" ")
         if head == "try":
             current = int(rest)
-            out[current] = dict(hit=False, concl=False, nodec=False, stuck=False)
+            out[current] = dict(hit=False, concl=False, nodec=False, stuck=False, assumed=False)
         elif current is None:
             continue
         elif head == "hit":
             out[int(rest)]["hit"] = True
-        elif head in ("concl", "nodec", "stuck"):
+        elif head in ("concl", "nodec", "stuck", "assumed"):
             out[current][head] = True
     return out
 
@@ -571,7 +711,7 @@ def first_error(text):
     return " ".join(rest[-2:]) if rest else "no output"
 
 
-def check(goal, route, out=None, lemma=None, exec_dir=None, offset=None, limit=LIMIT):
+def check(goal, route, out=None, lemma=None, exec_dir=None, offset=None, limit=LIMIT, registry=None):
     goal = Path(goal)
     out = Path(out) if out else goal.parent
     out.mkdir(parents=True, exist_ok=True)
@@ -587,13 +727,18 @@ def check(goal, route, out=None, lemma=None, exec_dir=None, offset=None, limit=L
     if result["returncode"] != 0 or not ended:
         report.update(verdict="unchecked", reason="probe failed: " + first_error(text), error=compile_error(text))
         return finish(out, report)
-    other = [b for b in binders if b["kind"] not in CHECKED_KINDS]
+    binders, unscreened = project_records(binders, registry)
+    report["binders"] = binders
+    if unscreened:
+        report.update(verdict="unchecked", reason=unscreened)
+        return finish(out, report)
+    other = [b for b in leaves(binders) if b["kind"] not in CHECKED_KINDS]
     if other:
         report.update(verdict="unchecked", reason="binder type outside Z, nat, N, bv n, list byte, bool: %s"
                       % ", ".join(b["name"] for b in other))
         return finish(out, report)
 
-    rows = assignments(binders, statement, snapshots(exec_dir, offset), limit)
+    rows = assignments(leaves(binders), statement, snapshots(exec_dir, offset), limit)
     (out / "search.v").write_text(search_text(pre, statement, binders, rows))
     result, text = route.compile(out / "search.v", tag + "-search")
     outcomes = search_outcomes(records(text))

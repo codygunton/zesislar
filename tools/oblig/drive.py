@@ -25,14 +25,22 @@ that needs no model:
 - compose: a goal normalised into parts (tools/oblig/normalise.py; its MANIFEST row lists `parts`) whose
   parts are all closed gets its composed answer (normalise.compose) checked by `residual_loop.py collect`;
   `closed` tier `normalise`, else `failed` compose_error. Its parts are its dependencies for `unblock`.
+- screen gate: a block goal gets a model (prover) attempt only when its snapshot screen
+  (tools/oblig/normalise.py: the goal dir's screen/SCREEN.json, else RUN.../normalise/<goal>/NORMALISE.json
+  `screen`) is `true-on-<N>-states` with N >= 1 (also `... (callee facts assumed)`: the screen took a
+  callee's sealed call facts as holding on the snapshot, binder map `assume`), or the run dir's UNSCREENED.json
+  ({"schema": "oblig-unscreened/1", "goals": [{"id": <MANIFEST id>, "reason": <text>}]}, every entry
+  with a reason) lists it and it is not false on a real state; every other goal is held (no task, no
+  event; its mechanical attempt still runs). Meaning obligations are not screened.
 The actions rerun, derive, package, test, check (decisions), decide, diagnose, reconsider, owner
 and spin are listed for the region owner or the coordinator, never executed. Superseded obligations
 (store.py) get no action.
 
-Output: one `done` line with the counts of this call, then one line per item left:
-`MODEL <id> tier=<tier> <why>` (for drive_kernel.run_round), `RUNNING <id> tier=<tier>` (an attempt
-without its answer), `LIST <id> <action> [tier=<tier>] <why>` (not this driver's), and `UNLOCATED <id>`
-(no residual_loop run dir under RUN holds the goal).
+Output: one `done` line with the counts of this call, `held: <verdict> <n>, ...` when the gate holds
+goals, then one line per item left: `MODEL <id> tier=<tier> <why>` (for drive_kernel.run_round),
+`HELD <id> tier=<tier> screen=<verdict> <reason>` (a model attempt the screen gate holds),
+`RUNNING <id> tier=<tier>` (an attempt without its answer), `LIST <id> <action> [tier=<tier>] <why>`
+(not this driver's), and `UNLOCATED <id>` (no residual_loop run dir under RUN holds the goal).
 
 Obligation files: every residual_loop.py run dir under RUN (MANIFEST.json and goals/). A goal of a
 block run is `<F>/goal/<block>-<16 hex of sha256(statement)>`; a goal of a run whose block is
@@ -1141,6 +1149,108 @@ class CounterexampleProbe:
         return normal(text) in self.confirmed
 
 
+# ---- screen gate ----
+
+UNSCREENED = "UNSCREENED.json"
+UNSCREENED_SCHEMA = "oblig-unscreened/1"
+NO_SCREEN = "no-screen"
+HELD = "held"
+TRUE_ON_STATES = re.compile(r"true-on-[1-9]\d*-states( \(callee facts assumed\))?")
+HELD_REASONS = {"premises-never-hold": "the premises hold on no snapshot state",
+                "false-on-real-state": "refuted on a real machine state: a finding against the entry"}
+
+
+class UnscreenedError(ValueError):
+    """A malformed UNSCREENED.json."""
+
+
+def unscreened(d):
+    """{goal id: reason} of the residual_loop run dir D's UNSCREENED.json ({"schema": "oblig-unscreened/1",
+    "goals": [{"id": <MANIFEST goal id>, "reason": <why it goes to provers unscreened>}]}); {} without it."""
+    path = Path(d) / UNSCREENED
+    if not path.is_file():
+        return {}
+    data = store.read_json(path, {})
+    if not isinstance(data, dict) or data.get("schema") != UNSCREENED_SCHEMA or not isinstance(data.get("goals"), list):
+        raise UnscreenedError("%s: not %s ({schema, goals: [{id, reason}]})" % (path, UNSCREENED_SCHEMA))
+    known = {goal["id"] for goal in store.read_json(Path(d) / "MANIFEST.json", {}).get("goals", [])}
+    out = {}
+    for entry in data["goals"]:
+        entry = entry if isinstance(entry, dict) else {}
+        gid, reason = entry.get("id"), entry.get("reason")
+        if not isinstance(gid, str) or gid not in known:
+            raise UnscreenedError("%s: %r is no goal id of MANIFEST.json" % (path, gid))
+        if not isinstance(reason, str) or not reason.strip():
+            raise UnscreenedError("%s: goal %s has no reason" % (path, gid))
+        out[gid] = reason.strip()
+    return out
+
+
+def screen_of(where):
+    """(verdict, reason) of the goal's snapshot screen (tools/oblig/normalise.py): screen/SCREEN.json of its
+    goal dir (a part), else `screen` of RUN.../normalise/<goal>/NORMALISE.json (the reason from
+    screen-original/SCREEN.json or the SCREEN.json of the part with that verdict); (NO_SCREEN, why)
+    without either."""
+    own = store.read_json(where.goal_dir / "screen" / "SCREEN.json", {}) or {}
+    if own.get("verdict"):
+        return own["verdict"], own.get("reason")
+    d = where.d / "normalise" / where.gid
+    record = store.read_json(d / "NORMALISE.json", {}) or {}
+    if not record:
+        return NO_SCREEN, "no NORMALISE.json (normalise.py run)"
+    verdict = record.get("screen")
+    if not verdict:
+        return NO_SCREEN, "normalise.py ran without snapshot states"
+    reports = [d / "screen-original" / "SCREEN.json"] + [
+        Path(part["goal"]).parent / "screen" / "SCREEN.json"
+        for part in record.get("parts") or [] if part.get("screen") == verdict and part.get("goal")]
+    for path in reports:
+        report = store.read_json(path, {}) or {}
+        if report.get("verdict") == verdict:
+            return verdict, report.get("reason")
+    return verdict, None
+
+
+def screen_hold(where, listed):
+    """None when the goal may get a prover task: its screen is `true-on-<N>-states` (N >= 1), or LISTED (the
+    run dir's UNSCREENED.json) names it and it is not false on a real state; else (verdict, reason)."""
+    verdict, reason = screen_of(where)
+    if TRUE_ON_STATES.fullmatch(verdict):
+        return None
+    if where.gid in listed and not verdict.startswith("false-on-real-state"):
+        return None
+    return verdict, reason or HELD_REASONS.get(verdict.split("(")[0], "-")
+
+
+def gate(rows, state, located):
+    """ROWS of route.next_items with each model-tier `prove` row of a block goal (kind `goal`) the screen
+    holds (screen_hold) as (id, HELD, tier, `screen=<verdict> <reason>`). Mechanical rows, meaning
+    obligations and the other actions pass unchanged."""
+    listed, out = {}, []
+    for identifier, action, tier, why in rows:
+        where = located.get(identifier)
+        if (action == "prove" and tier not in (None, MECHANICAL) and where is not None
+                and (state.get(identifier) or {}).get("kind") == "goal"):
+            if where.d not in listed:
+                listed[where.d] = unscreened(where.d)
+            hold = screen_hold(where, listed[where.d])
+            if hold:
+                out.append((identifier, HELD, tier, "screen=%s %s" % hold))
+                continue
+        out.append((identifier, action, tier, why))
+    return out
+
+
+def held_counts(left):
+    """{screen verdict (without its input): count} of the HELD rows of LEFT."""
+    counts = {}
+    for _, action, _, why in left:
+        if action == HELD:
+            verdict = re.match(r"screen=([a-z-]+)", why)[1]
+            counts[verdict] = counts.get(verdict, 0) + 1
+    return counts
+
+
 # ---- step ----
 
 def compose_parents(function, run, state, located, kernel, counts):
@@ -1372,7 +1482,7 @@ def escalate_unpromptable(function, run, located, free, counts, kernel):
     - a prompt over the bound it may use files `too_large` (file_too_large): waiting-decision with
       TOO-LARGE.json once every model tier is too small."""
     state, filed = fold(run), 0
-    for identifier, action, tier, _ in route.next_items(run, function):
+    for identifier, action, tier, _ in gate(route.next_items(run, function), state, located):
         if action != "prove" or tier in (None, MECHANICAL) or identifier not in free:
             continue
         count = samples(tier, state[identifier]["goal_class"])
@@ -1408,10 +1518,13 @@ def escalate_unpromptable(function, run, located, free, counts, kernel):
 
 def step(function, run, limit=None, jobs=8, kernel=None):
     """Perform every model-free routed action until a pass changes nothing; return
-    (counts, [(id, action, tier, why)] left, running ids, unlocated ids)."""
+    (counts, [(id, action, tier, why)] left, running ids, unlocated ids). A model attempt the screen gate
+    holds (gate) is left as action HELD."""
     run = Path(run)
     kernel = kernel or Kernel()
     counts = Counts()
+    for d in {where.d for where in locate(run, function).values()}:
+        unscreened(d)  # a malformed UNSCREENED.json stops the step before anything is filed
     for _ in range(MAX_PASSES):
         located = locate(run, function)
         progress = check_answers(function, run, fold(run), located, kernel, counts, jobs)
@@ -1432,7 +1545,7 @@ def step(function, run, limit=None, jobs=8, kernel=None):
             break
     located = locate(run, function)
     state = fold(run)
-    left = [row for row in route.next_items(run, function, limit)]
+    left = gate(route.next_items(run, function, limit), state, located)
     running = [(item["id"], item["tier"]) for item in state.values() if item["state"] == "running"]
     unlocated = sorted(i for i, action, tier, _ in left
                        if action in ("falsify", "prove") and i not in located)
@@ -1440,16 +1553,23 @@ def step(function, run, limit=None, jobs=8, kernel=None):
 
 
 def model_items(run, function, tier=None):
-    """[(id, tier, why)] of the prover attempts route.py assigns to a model tier."""
-    return [(identifier, t, why) for identifier, action, t, why in route.next_items(run, function)
+    """[(id, tier, why)] of the prover attempts route.py assigns to a model tier that the screen gate
+    passes."""
+    rows = gate(route.next_items(run, function), fold(run), locate(run, function))
+    return [(identifier, t, why) for identifier, action, t, why in rows
             if action == "prove" and t not in (None, MECHANICAL) and (tier is None or t == tier)]
 
 
 def report_lines(counts, left, running, unlocated):
     lines = ["done %s" % (" ".join("%s=%d" % kv for kv in sorted(counts.items())) or "nothing")]
+    held = held_counts(left)
+    if held:
+        lines.append("held: %s" % ", ".join("%s %d" % kv for kv in sorted(held.items())))
     for identifier, action, tier, why in left:
         if identifier in unlocated:
             lines.append("UNLOCATED %s" % identifier)
+        elif action == HELD:
+            lines.append("HELD %s tier=%s %s" % (identifier, tier, why))
         elif action == "prove" and tier != MECHANICAL:
             lines.append("MODEL %s tier=%s %s" % (identifier, tier, why))
         else:
@@ -1470,7 +1590,7 @@ def main(argv=None):
     run = options.run or store.default_run(options.function)
     try:
         counts, left, running, unlocated = step(options.function, run, options.limit, options.jobs)
-    except store.Rejected as error:
+    except (store.Rejected, UnscreenedError) as error:
         print("rejected: %s" % error, file=sys.stderr)
         return 1
     text = "".join(line + "\n" for line in report_lines(counts, left, running, unlocated))

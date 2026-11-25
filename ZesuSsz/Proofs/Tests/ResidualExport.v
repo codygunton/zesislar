@@ -63,22 +63,16 @@ Ltac2 Eval expect_source
   constr:((forall (b : (@Coq.Init.Datatypes.bool)), (if b as b_1 return Prop then (@Coq.Init.Logic.True) else (@Coq.Init.Logic.False))))
   "(forall (b : (@Coq.Init.Datatypes.bool)), (if b as b_1 return Prop then (@Coq.Init.Logic.True) else (@Coq.Init.Logic.False)))".
 
-(* A branch that uses the constructor's argument is refused. *)
-Ltac2 Eval
-  match Control.case (fun () => export_text constr:(forall x : Z,
-    match Z.eq_dec x 0 with left h => h = h | right _ => True end)) with
-  | Val _ => Control.throw (Tactic_failure None)
-  | Err (ZesuExportRefused reason) => if String.equal reason "dependent branch" then () else Control.throw (Tactic_failure None)
-  | Err _ => Control.throw (Tactic_failure None)
-  end.
-
-(* Any other match is refused, not printed approximately. *)
-Ltac2 Eval
-  match Control.case (fun () => export_text constr:(forall n : nat, match n with O => True | S _ => False end)) with
-  | Val _ => Control.throw (Tactic_failure None)
-  | Err (ZesuExportRefused reason) => if String.equal reason "match" then () else Control.throw (Tactic_failure None)
-  | Err _ => Control.throw (Tactic_failure None)
-  end.
+(* A `sumbool` branch that uses the constructor's argument, and a match on
+   any other inductive, are printed as a `match` (ExportMatch.v). *)
+Ltac2 Eval expect_source
+  constr:(forall x : Z, match Z.eq_dec x 0 with left h => h = h | right _ => True end)
+  constr:((forall (x : (@Coq.Numbers.BinNums.Z)), (match (@stdpp.numbers.Z.eq_dec x (0)%Z) as x_1 return Prop with | @Coq.Init.Specif.left _ _ h => (@Coq.Init.Logic.eq (@Coq.Init.Logic.eq (@Coq.Numbers.BinNums.Z) x (0)%Z) h h) | @Coq.Init.Specif.right _ _ n => (@Coq.Init.Logic.True) end)))
+  "(forall (x : (@Coq.Numbers.BinNums.Z)), (match (@stdpp.numbers.Z.eq_dec x (0)%Z) as x_1 return Prop with | @Coq.Init.Specif.left _ _ h => (@Coq.Init.Logic.eq (@Coq.Init.Logic.eq (@Coq.Numbers.BinNums.Z) x (0)%Z) h h) | @Coq.Init.Specif.right _ _ n => (@Coq.Init.Logic.True) end))".
+Ltac2 Eval expect_source
+  constr:(forall n : nat, match n with O => True | S _ => False end)
+  constr:((forall (n : (@Coq.Init.Datatypes.nat)), (match n as n_1 return Prop with | @Coq.Init.Datatypes.O => (@Coq.Init.Logic.True) | @Coq.Init.Datatypes.S n0 => (@Coq.Init.Logic.False) end)))
+  "(forall (n : (@Coq.Init.Datatypes.nat)), (match n as n_1 return Prop with | @Coq.Init.Datatypes.O => (@Coq.Init.Logic.True) | @Coq.Init.Datatypes.S n0 => (@Coq.Init.Logic.False) end))".
 
 (* The statement of a goal: the facts that the conclusion reaches (through
    shared local variables), the variables they mention, and local

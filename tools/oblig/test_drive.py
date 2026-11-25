@@ -527,6 +527,7 @@ class PackagedGoalTests(unittest.TestCase):
         (self.d / "goals" / "0058-1").mkdir(parents=True)
         # The residual goal is huge (its exact source), the package task is bounded.
         (self.d / "goals" / "0058-1" / "goal.v").write_text(goal_v("residual_fn_0058_x", statement + " " * 40000))
+        write_screen(self.d / "goals" / "0058-1", "true-on-2-states")
         (self.d / "tasks").mkdir()
         (self.d / "tasks" / "0058-1.md").write_text("# Residual goal 0058-1\n" + "x" * 30000)
         self.package = self.d / "package" / "0058-1"
@@ -631,6 +632,103 @@ class PackagedGoalTests(unittest.TestCase):
         counts = drive.step(F, self.run, kernel=self.kernel)[0]
         self.assertEqual(counts.get("symbolized"), 1)
         self.assertEqual([t for _, t, _ in drive.model_items(self.run, F)], ["haiku-low"])
+
+
+def write_screen(goal_dir, verdict, reason=None):
+    """GOAL_DIR/screen/SCREEN.json of normalise.py's snapshot screen."""
+    (Path(goal_dir) / "screen").mkdir(parents=True, exist_ok=True)
+    (Path(goal_dir) / "screen" / "SCREEN.json").write_text(json.dumps(dict(verdict=verdict, reason=reason)))
+
+
+class ScreenGateTests(unittest.TestCase):
+    """Only a goal true on a real state (or listed in UNSCREENED.json with a reason) gets a prover task."""
+
+    GOALS = {"00d8-1": "x + 0 = x", "00d8-2": "x * 1 = x", "00d8-3": "x - 0 = x", "00d8-4": "0 + x = x",
+             "00d8-5": "1 * x = x"}
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.run = Path(self.tmp.name)
+        self.d = self.run / "resid" / "00d8"
+        rows = []
+        for gid, body in self.GOALS.items():
+            statement = "forall x : Z, " + body
+            (self.d / "goals" / gid).mkdir(parents=True)
+            (self.d / "goals" / gid / "goal.v").write_text(goal_v("residual_fn_00d8_" + gid[-1], statement))
+            (self.d / "tasks").mkdir(exist_ok=True)
+            (self.d / "tasks" / (gid + ".md")).write_text("# Residual goal %s\n" % gid)
+            rows.append(dict(id=gid, name="residual_fn_00d8_" + gid[-1], statement=statement, reparse="exact"))
+            identifier = store.goal_id(F, "00d8", statement)
+            store.append(self.run, [store.event(id=identifier, function=F, kind="goal", state="derived"),
+                                    store.event(id=identifier, function=F, kind="goal", state="derived",
+                                                tier="falsify")])
+        (self.d / "MANIFEST.json").write_text(json.dumps(dict(block="00d8", bank="/nonexistent", goals=rows)))
+        # 00d8-1 a part screened true; 00d8-2 and 00d8-5 unscreened (no binder map); 00d8-3 premises never
+        # hold; 00d8-4 has no screen record.
+        write_screen(self.d / "goals" / "00d8-1", "true-on-2-states")
+        for gid in ("00d8-2", "00d8-5"):
+            normalised = self.d / "normalise" / gid
+            (normalised / "screen-original").mkdir(parents=True)
+            (normalised / "NORMALISE.json").write_text(json.dumps(dict(level=0, parts=[], screen="not-evaluable")))
+            (normalised / "screen-original" / "SCREEN.json").write_text(json.dumps(dict(
+                verdict="not-evaluable", reason="no binder map")))
+        write_screen(self.d / "goals" / "00d8-3", "premises-never-hold")
+        self.kernel = FakeKernel()
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def gid(self, identifier):
+        return drive.locate(self.run, F)[identifier].gid
+
+    def unscreened(self, goals):
+        (self.d / drive.UNSCREENED).write_text(json.dumps(dict(schema=drive.UNSCREENED_SCHEMA, goals=goals)))
+
+    def test_only_a_goal_true_on_a_state_gets_a_task(self):
+        counts, left, running, unlocated = drive.step(F, self.run, kernel=self.kernel)
+        # The held goals keep their mechanical attempt.
+        self.assertEqual(counts.get("mechanical"), 5)
+        self.assertEqual([self.gid(i) for i, _, _ in drive.model_items(self.run, F)], ["00d8-1"])
+        held = {self.gid(i): why for i, action, _, why in left if action == drive.HELD}
+        self.assertEqual(held, {"00d8-2": "screen=not-evaluable no binder map",
+                                "00d8-3": "screen=premises-never-hold the premises hold on no snapshot state",
+                                "00d8-4": "screen=no-screen no NORMALISE.json (normalise.py run)",
+                                "00d8-5": "screen=not-evaluable no binder map"})
+        lines = drive.report_lines(counts, left, running, unlocated)
+        self.assertEqual(lines[1], "held: no-screen 1, not-evaluable 2, premises-never-hold 1")
+        self.assertEqual(sum(line.startswith("MODEL ") for line in lines), 1)
+        self.assertEqual(sum(line.startswith("HELD ") for line in lines), 4)
+
+    def test_a_goal_listed_unscreened_with_a_reason_gets_a_task(self):
+        # A goal false on a real state is never sent, listed or not.
+        write_screen(self.d / "goals" / "00d8-4", "false-on-real-state(in1.full)")
+        self.unscreened([dict(id="00d8-2", reason="entry checked by hand against the trace"),
+                         dict(id="00d8-4", reason="listed by mistake")])
+        left = drive.step(F, self.run, kernel=self.kernel)[1]
+        self.assertEqual(sorted(self.gid(i) for i, _, _ in drive.model_items(self.run, F)), ["00d8-1", "00d8-2"])
+        self.assertEqual(drive.held_counts(left), {"false-on-real-state": 1, "not-evaluable": 1,
+                                                   "premises-never-hold": 1})
+
+    def test_assumed_callee_facts_pass_true_and_hold_false(self):
+        write_screen(self.d / "goals" / "00d8-3", "true-on-2-states (callee facts assumed)")
+        write_screen(self.d / "goals" / "00d8-4", "false-on-real-state(in1.full) (callee facts assumed)")
+        self.unscreened([dict(id="00d8-4", reason="listed by mistake")])
+        left = drive.step(F, self.run, kernel=self.kernel)[1]
+        self.assertEqual(sorted(self.gid(i) for i, _, _ in drive.model_items(self.run, F)), ["00d8-1", "00d8-3"])
+        self.assertEqual(drive.held_counts(left)["false-on-real-state"], 1)
+
+    def test_an_unscreened_entry_without_a_reason_is_an_error(self):
+        drive.step(F, self.run, kernel=self.kernel)
+        self.unscreened([dict(id="00d8-2", reason=" ")])
+        with self.assertRaisesRegex(drive.UnscreenedError, "00d8-2 has no reason"):
+            drive.step(F, self.run, kernel=self.kernel)
+        self.unscreened([dict(id="00d8-2")])
+        with self.assertRaises(drive.UnscreenedError):
+            drive.model_items(self.run, F)
+        self.assertEqual(drive.main(["step", "--function", F, "--run", str(self.run)]), 1)
+        self.unscreened([dict(id="00d8-9", reason="typo")])
+        with self.assertRaisesRegex(drive.UnscreenedError, "no goal id"):
+            drive.step(F, self.run, kernel=self.kernel)
 
 
 def package_answer_form():

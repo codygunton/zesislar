@@ -123,6 +123,34 @@ class ScreenRowTests(unittest.TestCase):
         text = falsify.coq_value(dict(name="l", kind="bytes"), dict(hex="0102"))
         self.assertIn("(@Coq.Init.Datatypes.cons Coq.Numbers.BinNums.Z (1)%Z (@Coq.Init.Datatypes.cons", text)
 
+    def test_map_imports_follow_the_goal_preamble(self):
+        self.assertEqual(normalise.screen_imports(dict(MAP)), "")
+        self.assertEqual(normalise.screen_imports(dict(MAP, imports=["ZesuSsz.Region.Decide"])),
+                         "Require Import ZesuSsz.Region.Decide.\n")
+        with self.assertRaises(normalise.NormaliseError):
+            normalise.screen_imports(dict(MAP, imports=["Bad Module"]))
+
+        class Route:
+            args, coqlib = [], ""
+            def compile(self, path, tag):
+                return dict(returncode=1), ""
+        goal = self.tmp / "goal.v"
+        goal.write_text("Require Import ZesuSsz.Demo.\n\nLemma g :\n  forall x : Z, x = x.\nProof.\nAdmitted.\n")
+        states = normalise.snapshot_states(self.tmp, "0010", "remap-never")
+        normalise.screen(goal, Route(), self.tmp / "out", states, dict(MAP, imports=["ZesuSsz.Region.Decide"]))
+        probe = (self.tmp / "out" / "probe.v").read_text()
+        self.assertLess(probe.index("Require Import ZesuSsz.Demo."), probe.index("Require Import ZesuSsz.Region.Decide."))
+
+    def test_assume_names_are_qualified_predicates(self):
+        self.assertEqual(normalise.screen_assume(dict(MAP)), ("", []))
+        text, names = normalise.screen_assume(dict(MAP, assume=["M.Sealed.fact"]))
+        self.assertEqual(names, ["M.Sealed.fact"])
+        self.assertIn("constr_eq h (@M.Sealed.fact)", text)
+        self.assertIn("zesu_hist ?Q => zf_assumable Q", text)
+        for bad in (["fact"], ["M.fact x"], "M.fact"):
+            with self.assertRaises(normalise.NormaliseError):
+                normalise.screen_assume(dict(MAP, assume=bad))
+
     def test_seeded_maps_load(self):
         for function in ("keysToOwnedSlice", "entriesToOwnedSlice", "keysEnsureCapacity"):
             data = normalise.load_binder_map(function)
@@ -354,6 +382,8 @@ Definition hidden : Prop -> Prop := hidden_aux.(unseal).
 Lemma hidden_eq : hidden = hidden_def. Proof. exact (seal_eq hidden_aux). Qed.
 Global Opaque hidden.
 Definition post (a : Args) : Prop := argsLen a <= innerCap (argsInner a) /\ 0 <= argsPtr a + innerLen (argsInner a).
+Module Type SealSig. Parameter sealedFact : Z -> Prop. End SealSig.
+Module Sealed : SealSig. Definition sealedFact (z : Z) : Prop := 0 <= z. End Sealed.
 """
 HEADER = ["From Coq Require Import ZArith.ZArith.", "Require Import stdpp.bitvector.tactics.", "Require Import ZesuSsz.Automation2.All.",
           "Require Import ZesuSsz.NormFixture.Defs.",
@@ -361,6 +391,8 @@ HEADER = ["From Coq Require Import ZArith.ZArith.", "Require Import stdpp.bitvec
 D = "@ZesuSsz.NormFixture.Defs."
 TRUE_GOAL = ("(forall (a : (%sArgs)), (forall (H0 : (%sdom a)), (forall (H1 : (%shidden (@Coq.ZArith.BinInt.Z.le (0)%%Z "
              "(%sargsPtr a)))), (%spost a))))" % (D, D, D, D, D))
+SEALED_GOAL = ("(forall (p : Coq.Numbers.BinNums.Z), (forall (H0 : (@ZesuSsz.Automation2.Hist.zesu_hist "
+               "(%sSealed.sealedFact p))), (@Coq.ZArith.BinInt.Z.le p (5)%%Z)))" % D)
 FALSE_GOAL = ("(forall (a : (%sArgs)), (forall (H0 : (%sdom a)), (@Coq.ZArith.BinInt.Z.le (%sargsPtr a) (5)%%Z)))"
               % (D, D, D))
 
@@ -460,6 +492,33 @@ class RocqTests(unittest.TestCase):
         self.assertEqual(record["levels"]["2"]["fallback"], "falsify.py refuted a part")
         self.assertEqual(record["level"], 1)
         self.assertEqual(record["screen"], "not-evaluable")
+
+    def test_assumed_callee_facts_label_the_verdict(self):
+        run, manifest, goal = self.goal("0010-3", SEALED_GOAL)
+        exec_dir = self.tmp / "exec-sealed"
+        for name, a0 in (("small.remap-never", 3), ("big.remap-never", 9)):
+            snapshot(exec_dir / name, "0000", dict(a0=a0), {})
+            snapshot(exec_dir / name, "0010", dict(a0=a0), {})
+        rows = [dict(pattern=r"^p$", source=dict(reg="a0", at="entry"))]
+        sealed = "ZesuSsz.NormFixture.Defs.Sealed.sealedFact"
+        path = run / "goals" / "0010-3" / "goal.v"
+        small = [s for s in normalise.snapshot_states(exec_dir, "0010", "remap-never") if s[0].startswith("small")]
+        every = normalise.snapshot_states(exec_dir, "0010", "remap-never")
+        plain = dict(schema="oblig-exec-binders/1", mode="remap-never", binders=rows)
+        assume = dict(plain, assume=[sealed])
+        # Without `assume` the sealed premise has no Decision instance.
+        self.assertEqual(normalise.screen(path, self.route, run / "s0", small, plain)["verdict"], "not-evaluable")
+        # With it (through the history wrapper too) the state is screened, and the label says so.
+        self.assertEqual(normalise.screen(path, self.route, run / "s1", small, assume)["verdict"],
+                         "true-on-1-states (callee facts assumed)")
+        report = normalise.screen(path, self.route, run / "s2", every, assume)
+        self.assertEqual(report["verdict"], "false-on-real-state(big.remap-never) (callee facts assumed)")
+        self.assertNotIn("refute", report)
+        # A transparent definition is refused.
+        report = normalise.screen(path, self.route, run / "s3", small,
+                                  dict(plain, assume=["ZesuSsz.NormFixture.Defs.argsLen"]))
+        self.assertEqual(report["verdict"], "not-evaluable")
+        self.assertIn("transparent definition: ZesuSsz.NormFixture.Defs.argsLen", report["reason"])
 
 
 if __name__ == "__main__":
