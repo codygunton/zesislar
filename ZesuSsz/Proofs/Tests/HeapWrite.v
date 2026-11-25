@@ -1,7 +1,7 @@
 Require Import isla.riscv64.riscv64.
 From Coq Require Import ZArith.ZArith Lia.
-Require Import ZesuSsz.Automation2.All.
 From iris.proofmode Require Import environments.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 (* Accesses whose address equals a place of an owned region only through
