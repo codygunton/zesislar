@@ -35,22 +35,21 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt00c4_LoopClass0 -> fp_machineAt00d8_ForwardA0N0 (call_return) *)
-Global Instance zesu_hist_edge_5 (args : TxAccessListArgs) (returnAddress : Z) (call_after : DecodeItemOutcome) (tx_entries : ArrayListState) (tx_done : list AccessListEntryValue) (tx_images : list TxAccessListEntryImage) (tx_scratch : list byte) (outer_x20_succ : bv 64) :
+Global Instance zesu_hist_edge_8 (args : TxAccessListArgs) (returnAddress : Z) (call_after : DecodeItemOutcome) (tx_entries : ArrayListState) (tx_done : list AccessListEntryValue) (tx_images : list TxAccessListEntryImage) (tx_scratch : list byte) (outer_x20_succ : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt00c4_LoopClass0_Hist (args) (returnAddress) (call_after))
     (fp_machineAt00d8_ForwardA0N0_Hist (args) (returnAddress) (call_after) (outer_x20_succ) (tx_entries) (tx_done) (tx_images) (tx_scratch))
     (⌜(txAccessListOuterWalked (txInputBytes args) (bv_unsigned outer_x20_succ - bv_unsigned (txInputPointer args)) tx_done)⌝ ∗ ⌜∃ (call_arg_x13 : bv 64) (call_arg_x14 : bv 64) (call_arg_x15 : bv 64) (call_arg_x16 : bv 64) (call_arg_x17 : bv 64) (call_before : list byte), (decodeItemCallDomain
           (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)) (BV 64%N 576%Z)) (BV 64%N 18446744073709551128%Z))); ((txInputPointer args)); ((txInputLength args)); (call_arg_x13); (call_arg_x14); (call_arg_x15); (call_arg_x16); (call_arg_x17)]) (((bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)))) (bv_unsigned (((txInputEnd args)))) (txInputBytes args) call_before)) /\ (decodeItemCallMeaning
-            (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)) (BV 64%N 576%Z)) (BV 64%N 18446744073709551128%Z))); ((txInputPointer args)); ((txInputLength args)); (call_arg_x13); (call_arg_x14); (call_arg_x15); (call_arg_x16); (call_arg_x17)]) (((bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)))) (bv_unsigned (((txInputEnd args)))) (txInputBytes args) call_before) (call_after))⌝ ∗ ⌜arrayListWellFormed entriesElementBytes tx_entries⌝ ∗ ⌜arrayListLength tx_entries = Z.of_nat (length tx_done)⌝ ∗ ⌜arrayListItems tx_entries = txAccessListEntriesBytes tx_done tx_images⌝ ∗ ⌜Forall (fun image => Z.of_nat (length (imagePadding image)) = txAccessListPaddingSize) tx_images⌝ ∗ ⌜Z.of_nat (length tx_scratch) = txAccessListScratchSize⌝ ∗ True)%I.
+            (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)) (BV 64%N 576%Z)) (BV 64%N 18446744073709551128%Z))); ((txInputPointer args)); ((txInputLength args)); (call_arg_x13); (call_arg_x14); (call_arg_x15); (call_arg_x16); (call_arg_x17)]) (((bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)))) (bv_unsigned (((txInputEnd args)))) (txInputBytes args) call_before) (call_after))⌝ ∗ ⌜arrayListLength tx_entries = Z.of_nat (length tx_done)⌝ ∗ ⌜arrayListItems tx_entries = txAccessListEntriesBytes tx_done tx_images⌝ ∗ ⌜Forall (fun image => Z.of_nat (length (imagePadding image)) = txAccessListPaddingSize) tx_images⌝ ∗ ⌜Z.of_nat (length tx_scratch) = txAccessListScratchSize⌝ ∗ True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt00c4_LoopClass0_Hist in Hh.
   destruct Hh as (HF0 & HF1 & HF2).
   iIntros "HN".
-  iDestruct "HN" as "(%HN0 & %HV3 & %HV10 & %HV11 & %HV12 & %HV13 & %HV14 & _)".
+  iDestruct "HN" as "(%HN0 & %HV3 & %HV11 & %HV12 & %HV13 & %HV14 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt00d8_ForwardA0N0_Hist.
   exists (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z).
   split; [exact HV3|].
-  split; [exact HV10|].
   split; [exact HV11|].
   split; [exact HV12|].
   split; [exact HV13|].
