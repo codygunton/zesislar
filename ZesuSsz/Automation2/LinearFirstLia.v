@@ -435,10 +435,31 @@ Ltac2 rec zesu_linear_divides (term : constr) : bool :=
    succeeded too (diag P/Q runs, rules11 handoff). A goal `False` keeps
    every fact: a refutation may rest on a dividing fact alone
    (keysEnsureCapacity Block0164's residual closes `False` from a size
-   quotient). *)
+   quotient). So does a goal with any integer division, remainder or bit
+   operation, wraps included (`zesu_linear_bit_arithmetic`): zify turns
+   shifts and masks into divisions, and a byte-image residual (decodeItem
+   Block800d6a40) closes its shifted bytes from remainder facts. *)
+Ltac2 rec zesu_linear_bit_arithmetic (term : constr) : bool :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App head arguments =>
+      if List.exist (Constr.equal head)
+           [constr:(Z.div); constr:(Z.modulo); constr:(Z.quot); constr:(Z.rem);
+            constr:(Z.divide); constr:(Z.shiftr); constr:(Z.shiftl); constr:(Z.land);
+            constr:(Z.lor); constr:(Z.lxor); constr:(Z.ldiff); constr:(Z.testbit);
+            constr:(Z.ones)]
+      then true
+      else if zesu_linear_bit_arithmetic head then true
+      else Array.exist zesu_linear_bit_arithmetic arguments
+  | Constr.Unsafe.Prod binder body =>
+      if zesu_linear_bit_arithmetic (Constr.Binder.type binder) then true
+      else zesu_linear_bit_arithmetic body
+  | Constr.Unsafe.Cast value _ _ => zesu_linear_bit_arithmetic value
+  | _ => false
+  end.
+
 Ltac2 zesu_linear_clear_dividing_facts () :=
   if Constr.equal (Control.goal ()) constr:(False) then () else
-  if zesu_linear_divides (Control.goal ()) then () else
+  if zesu_linear_bit_arithmetic (Control.goal ()) then () else
   List.iter (fun (name, body, typ) =>
     match body with
     | Some _ => ()
@@ -453,39 +474,6 @@ Ltac2 zesu_linear_clear_dividing_facts () :=
     end) (Control.hyps ()).
 
 Ltac zesu_lia_clear_dividing_facts := ltac2:(zesu_linear_clear_dividing_facts ()).
-
-(* The distinct `Z.div`, `Z.modulo`, `Z.quot` and `Z.rem` subterms of a term. *)
-Ltac2 rec zesu_linear_division_terms (found : constr list) (term : constr) : constr list :=
-  let found :=
-    match Constr.Unsafe.kind term with
-    | Constr.Unsafe.App head arguments =>
-        if Bool.and (Int.equal (Array.length arguments) 2)
-             (List.exist (Constr.equal head)
-                [constr:(Z.div); constr:(Z.modulo); constr:(Z.quot); constr:(Z.rem)])
-        then (if List.exist (Constr.equal term) found then found else term :: found)
-        else found
-    | _ => found
-    end in
-  match Constr.Unsafe.kind term with
-  | Constr.Unsafe.App head arguments =>
-      Array.fold_left zesu_linear_division_terms (zesu_linear_division_terms found head) arguments
-  | Constr.Unsafe.Prod binder body =>
-      zesu_linear_division_terms
-        (zesu_linear_division_terms found (Constr.Binder.type binder)) body
-  | Constr.Unsafe.Cast value _ _ => zesu_linear_division_terms found value
-  | _ => found
-  end.
-
-(* A goal with more distinct divisions and remainders than the linear-first
-   path accepts (`zesu_divmod_bound`) goes to no solver: txAccessList 0264
-   (bench r53) spent the rest of its cap in one call on a 4,922-node goal
-   with 37 distinct remainders, refused by the linked-facts solver and then
-   run by the whole-context arm. *)
-Ltac2 zesu_linear_goal_divisions_within () :=
-  if Int.gt (List.length (zesu_linear_division_terms [] (Control.goal ()))) (zesu_divmod_bound ())
-  then Control.zero (Tactic_failure None) else ().
-
-Ltac zesu_lia_goal_divisions_within := ltac2:(zesu_linear_goal_divisions_within ()).
 
 (* A lower bound of `zesu_linear_remaining` on a term after a tactic that turns
    every application of a `collapsed` head into one node (a projection into a
