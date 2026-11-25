@@ -360,14 +360,60 @@ Ltac zesu_lia_context_within_budget :=
 Ltac zesu_lia_pruned_context_within_budget :=
   ltac2:(zesu_linear_context_within (zesu_linear_pruned_context_node_budget ())).
 
-(* Whether a term divides: `Z.div`, `Z.modulo`, `Z.quot`, `Z.rem` or `Z.divide`
-   anywhere in it. *)
+(* The binary digits of a positive literal; -1 for any other term. *)
+Ltac2 rec zesu_linear_positive_bits (term : constr) : int :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App head arguments =>
+      if Bool.and (Int.equal (Array.length arguments) 1)
+           (Bool.or (Constr.equal head constr:(xO)) (Constr.equal head constr:(xI)))
+      then
+        let bits := zesu_linear_positive_bits (Array.get arguments 0) in
+        if Int.lt bits 0 then -1 else Int.add bits 1
+      else -1
+  | _ => if Constr.equal term constr:(xH) then 1 else -1
+  end.
+
+(* A machine-word wrap divides by `2 ^ w` (or by a literal of more than 32
+   binary digits): `bv_unsigned` of a sum or a sign view unfolds to such a
+   remainder, and the facts in that form carry the address bounds. *)
+Ltac2 zesu_linear_wrap_divisor (divisor : constr) : bool :=
+  match Constr.Unsafe.kind divisor with
+  | Constr.Unsafe.App head arguments =>
+      if Constr.equal head constr:(Z.pow) then true
+      else if Bool.and (Constr.equal head constr:(Zpos)) (Int.equal (Array.length arguments) 1)
+      then Int.lt 32 (zesu_linear_positive_bits (Array.get arguments 0))
+      else false
+  | _ => false
+  end.
+
+(* A term without variables (a constant such as `2 ^ 128 / 2`). *)
+Ltac2 rec zesu_linear_constant (term : constr) : bool :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.Var _ => false
+  | Constr.Unsafe.Rel _ => false
+  | Constr.Unsafe.Evar _ _ => false
+  | Constr.Unsafe.App head arguments =>
+      if zesu_linear_constant head then Array.for_all zesu_linear_constant arguments else false
+  | Constr.Unsafe.Constant _ _ => true
+  | Constr.Unsafe.Constructor _ _ => true
+  | Constr.Unsafe.Ind _ _ => true
+  | _ => false
+  end.
+
+(* Whether a term divides: `Z.divide`, or `Z.div`, `Z.modulo`, `Z.quot`,
+   `Z.rem` of a non-constant by anything but a wrap divisor, anywhere in it. *)
 Ltac2 rec zesu_linear_divides (term : constr) : bool :=
   match Constr.Unsafe.kind term with
   | Constr.Unsafe.App head arguments =>
-      if List.exist (Constr.equal head)
-           [constr:(Z.div); constr:(Z.modulo); constr:(Z.quot); constr:(Z.rem);
-            constr:(Z.divide)]
+      if Constr.equal head constr:(Z.divide) then true
+      else if (if List.exist (Constr.equal head)
+                    [constr:(Z.div); constr:(Z.modulo); constr:(Z.quot); constr:(Z.rem)]
+               then
+                 if Int.equal (Array.length arguments) 2
+                 then Bool.neg (if zesu_linear_wrap_divisor (Array.get arguments 1) then true
+                                else zesu_linear_constant term)
+                 else true
+               else false)
       then true
       else if zesu_linear_divides head then true
       else Array.exist zesu_linear_divides arguments
@@ -386,8 +432,12 @@ Ltac2 rec zesu_linear_divides (term : constr) : bool :=
    arrayListPointer l` (92 and 103 facts; 2 to 5 of them divide). Without the
    dividing facts the same calls fail in 0.3 s; on every whole-context call
    of those blocks and of 0264 that succeeded, the call without them
-   succeeded too (diag P/Q runs, rules11 handoff). *)
+   succeeded too (diag P/Q runs, rules11 handoff). A goal `False` keeps
+   every fact: a refutation may rest on a dividing fact alone
+   (keysEnsureCapacity Block0164's residual closes `False` from a size
+   quotient). *)
 Ltac2 zesu_linear_clear_dividing_facts () :=
+  if Constr.equal (Control.goal ()) constr:(False) then () else
   if zesu_linear_divides (Control.goal ()) then () else
   List.iter (fun (name, body, typ) =>
     match body with
