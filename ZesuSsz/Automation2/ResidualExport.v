@@ -620,11 +620,24 @@ Ltac2 zesu_export_names (label : string) (names : ident list) :=
 
 (* ---- large record facts ---- *)
 
-(* The application subterms of TERM that mention no variable bound inside
-   TERM, each with its node count, collected into FOUND. Returns the node
-   count of TERM and its highest loose de Bruijn index (0 when none). *)
-Ltac2 rec zesu_export_subterms (found : (int * constr) list ref) (term : constr) : int * int :=
-  let visit := zesu_export_subterms found in
+(* Subterms smaller than this many nodes are not abstracted and say nothing
+   specific about a large fact: `bv_unsigned (txInputPointer args)` is 20
+   nodes with its width literal and occurs in every input bound. *)
+Ltac2 zesu_export_abstract_nodes := 64.
+
+(* The application subterms of TERM of at least `zesu_export_abstract_nodes`
+   nodes that mention no variable bound inside TERM, each with its node
+   count, collected into FOUND; occurrences of SKIP are not entered (they
+   count one node). Returns the node count of TERM and its highest loose de
+   Bruijn index (0 when none). *)
+Ltac2 rec zesu_export_subterms (skip : constr option) (found : (int * constr) list ref)
+    (term : constr) : int * int :=
+  let skipped := match skip with
+    | Some needle => Constr.equal needle term
+    | None => false
+    end in
+  if skipped then (1, 0) else
+  let visit := zesu_export_subterms skip found in
   let join (a : int * int) (b : int * int) :=
     let (n1, r1) := a in
     let (n2, r2) := b in
@@ -650,45 +663,34 @@ Ltac2 rec zesu_export_subterms (found : (int * constr) list ref) (term : constr)
   let nodes := Int.add nodes 1 in
   (match Constr.Unsafe.kind term with
    | Constr.Unsafe.App _ _ =>
-       if Int.equal loose 0 then Ref.set found ((nodes, term) :: Ref.get found) else ()
+       if Bool.and (Int.equal loose 0) (Int.le zesu_export_abstract_nodes nodes)
+       then Ref.set found ((nodes, term) :: Ref.get found) else ()
    | _ => ()
    end);
   (nodes, loose).
 
-(* Subterms smaller than this many nodes are not abstracted and say nothing
-   specific about a large fact: `bv_unsigned (txInputPointer args)` is 20
-   nodes with its width literal and occurs in every input bound. *)
-Ltac2 zesu_export_abstract_nodes := 64.
-
-(* The application subterms of at least `zesu_export_abstract_nodes` nodes
-   of the conclusion and of the facts within LIMIT nodes: the terms through
-   which the statement relates a large fact to the rest of the statement. *)
-Ltac2 zesu_export_shared (limit : int) : constr list :=
-  let collect (term : constr) :=
-    let found := Ref.ref [] in
-    let _ := zesu_export_subterms found term in
-    List.map (fun entry => let (_, subterm) := entry in subterm)
-      (List.filter (fun entry => let (nodes, _) := entry in Int.le zesu_export_abstract_nodes nodes)
-        (Ref.get found)) in
-  List.fold_left (fun shared declaration =>
+(* The terms of the statement: the conclusion and the facts it may keep (the
+   facts within LIMIT nodes and the record facts SCOPE names). *)
+Ltac2 zesu_export_statement_terms (limit : int) (scope : constr) (conclusion : constr) : constr list :=
+  List.fold_left (fun terms declaration =>
     let (_, body, typ) := declaration in
     match body with
-    | Some _ => shared
+    | Some _ => terms
     | None =>
         if Bool.and (zesu_export_proposition typ)
-          (ZesuSsz.Automation2.ContextCollection.zesu_select_small limit typ)
-        then List.append (collect typ) shared else shared
-    end) (collect (zesu_export_unfold_local (Control.goal ()))) (Control.hyps ()).
+          (Bool.or (ZesuSsz.Automation2.ContextCollection.zesu_select_small limit typ)
+            (zesu_export_keep_whole scope typ))
+        then typ :: terms else terms
+    end) [conclusion] (Control.hyps ()).
 
 (* A subterm that a variable may replace everywhere: a value (not a proof,
-   not a type) without evar that the conclusion does not mention, and that
-   either occurs itself in SHARED (the other facts then relate the same
-   variable: txAccessList 0188's call4 argument pointer word) or has no
-   large subterm in SHARED (no other fact looks into it: call4's argument
-   words read from the input, but not call4's argument record, whose
-   pointer word the bound facts state). *)
-Ltac2 zesu_export_abstractable (conclusion : constr) (shared : constr list) (term : constr) : bool :=
-  let in_shared (subterm : constr) := List.exist (fun other => Constr.equal other subterm) shared in
+   not a type) without evar that the conclusion does not mention, none of
+   whose large subterms occurs in TERMS outside its own occurrences. The
+   replacement then cuts no relation the statement states (txAccessList
+   0188: call4's argument words read from the input and its argument
+   pointer's byte word go; call4's argument record, and the unsigned view
+   of its pointer word that the bound facts state, stay). *)
+Ltac2 zesu_export_abstractable (conclusion : constr) (terms : constr list) (term : constr) : bool :=
   if Constr.has_evar term then false
   else if zesu_export_mentions term conclusion then false
   else
@@ -702,24 +704,26 @@ Ltac2 zesu_export_abstractable (conclusion : constr) (shared : constr list) (ter
       | Err _ => false
       end in
     if Bool.neg typed then false
-    else if in_shared term then true
     else
+      let outside := Ref.ref [] in
+      List.iter (fun other => let _ := zesu_export_subterms (Some term) outside other in ()) terms;
       let inner := Ref.ref [] in
-      let _ := zesu_export_subterms inner term in
+      let _ := zesu_export_subterms None inner term in
       List.for_all (fun entry =>
-        let (nodes, subterm) := entry in
-        if Int.lt nodes zesu_export_abstract_nodes then true else Bool.neg (in_shared subterm))
+        let (_, subterm) := entry in
+        if Constr.equal subterm term then true
+        else Bool.neg (List.exist (fun found => let (_, other) := found in Constr.equal other subterm)
+          (Ref.get outside)))
         (Ref.get inner).
 
 (* Replaces the largest abstractable subterm of fact NAME by a new variable
    `zesu_abs*` everywhere in the context. Whether a subterm was replaced. *)
-Ltac2 zesu_export_abstract_one (name : ident) (conclusion : constr) (shared : constr list)
+Ltac2 zesu_export_abstract_one (name : ident) (conclusion : constr) (terms : constr list)
     (refused : constr list ref) : bool :=
   let found := Ref.ref [] in
-  let _ := zesu_export_subterms found (Constr.type (Control.hyp name)) in
+  let _ := zesu_export_subterms None found (Constr.type (Control.hyp name)) in
   let ordered := List.sort (fun a b => let (n1, _) := a in let (n2, _) := b in Int.compare n2 n1)
-    (List.filter (fun entry => let (nodes, _) := entry in Int.le zesu_export_abstract_nodes nodes)
-      (Ref.get found)) in
+    (Ref.get found) in
   let set_term := ltac1val:(term |-
     let abstracted := fresh "zesu_abs" in set (abstracted := term) in *; clearbody abstracted) in
   let rec first (entries : (int * constr) list) :=
@@ -728,7 +732,7 @@ Ltac2 zesu_export_abstract_one (name : ident) (conclusion : constr) (shared : co
     | entry :: rest =>
         let (_, term) := entry in
         if List.exist (fun other => Constr.equal other term) (Ref.get refused) then first rest
-        else if zesu_export_abstractable conclusion shared term then
+        else if zesu_export_abstractable conclusion terms term then
           match Control.case (fun () => Ltac1.run (set_term (Ltac1.of_constr term))) with
           | Val _ => true
           | Err _ => Ref.set refused (term :: Ref.get refused); first rest
@@ -741,11 +745,10 @@ Ltac2 zesu_export_abstract_one (name : ident) (conclusion : constr) (shared : co
    does not (a call record that the existential this conjunct comes from
    restated): its largest abstractable subterms are replaced by variables,
    until it fits the limit or no such subterm is left (`zesu_export_reach_in`
-   keeps it either way). The shared terms are taken again after each
-   replacement: a replacement changes the facts that mentioned the term.
-   Replacing a term by a variable everywhere gives a statement that implies
-   the original one, and the residual tier finds the variable by
-   unification. *)
+   keeps it either way). The statement's terms are taken again after each
+   replacement. Replacing a term by a variable everywhere gives a statement
+   that implies the original one, and the residual tier finds the variable
+   by unification. *)
 Ltac2 zesu_export_abstract (limit : int) (scope : constr) :=
   let conclusion := zesu_export_unfold_local (Control.goal ()) in
   let records := List.filter (fun declaration =>
@@ -770,7 +773,8 @@ Ltac2 zesu_export_abstract (limit : int) (scope : constr) :=
       if Int.le budget 0 then ()
       else if ZesuSsz.Automation2.ContextCollection.zesu_select_small limit
         (Constr.type (Control.hyp name)) then ()
-      else if zesu_export_abstract_one name conclusion (zesu_export_shared limit) refused
+      else if zesu_export_abstract_one name conclusion
+        (zesu_export_statement_terms limit scope conclusion) refused
       then shrink (Int.sub budget 1) else () in
     shrink 24) records.
 
