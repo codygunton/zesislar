@@ -1,0 +1,21 @@
+{
+  "schema": "oblig-records/1",
+  "records": [
+    {"type": "TxAccessListArgs", "source": "ZesuSsz/Contracts/TxAccessListContract.v"},
+    {"type": "DecodeItemArgs", "source": "ZesuSsz/Contracts/RlpDecodeItemContract.v"},
+    {"type": "DecodeItemOtherCalleeSaved", "source": "ZesuSsz/Contracts/DecodeItemCompositional.v"},
+    {"type": "DecodeItemCompositionalArgs", "source": "ZesuSsz/Contracts/DecodeItemCompositional.v"},
+    {"type": "ArrayListState", "source": "ZesuSsz/Contracts/ArrayListContract.v"},
+    {"type": "ArrayListCalleeSaved", "source": "ZesuSsz/Contracts/ArrayListContract.v"},
+    {"type": "ToOwnedSliceArgs", "source": "ZesuSsz/Contracts/ArrayListContract.v"},
+    {"type": "EnsureCapacityArgs", "source": "ZesuSsz/Contracts/KeysEnsureCapacityContract.v"},
+    {"type": "KeysEnsureCapacityBlockArgs", "source": "ZesuSsz/Contracts/KeysEnsureCapacityBlockEntries.v"},
+    {"type": "KeysToOwnedSliceBlockArgs", "source": "ZesuSsz/Contracts/KeysToOwnedSliceBlockEntries.v"},
+    {"type": "EntriesToOwnedSliceBlockArgs", "source": "ZesuSsz/Contracts/EntriesToOwnedSliceBlockEntries.v"},
+    {"type": "NextUint64Call", "source": "ZesuSsz/Contracts/ParentHeaderRootFacts.v"},
+    {"type": "NextUint64Args", "source": "ZesuSsz/Contracts/NextUint64BlockEntries.v"},
+    {"type": "ParentHeaderArgs", "source": "ZesuSsz/Contracts/ParentHeaderContract.v"},
+    {"type": "FreeArgs", "source": "ZesuSsz/Contracts/AltFlFreeContract.v"},
+    {"type": "FreeOutcome", "source": "ZesuSsz/Contracts/AltFlFreeContract.v"}
+  ]
+}
