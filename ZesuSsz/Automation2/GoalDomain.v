@@ -137,7 +137,7 @@ Ltac zesu_goal_domain_lengths :=
 Ltac zesu_goal_domain_lia :=
   first
     [zesu_lia
-    |(try (apply Z.mod_divide; [lia|])); Z.div_mod_to_equations; zesu_lia].
+    |(try (apply Z.mod_divide; [zesu_lia|])); Z.div_mod_to_equations; zesu_lia].
 
 (* Each conjunct over the facts that share its atoms, its words' ranges
    among them: a block's whole context makes lia search for a contradiction
