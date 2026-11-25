@@ -22,7 +22,14 @@ Set Default Proof Mode "Classic".
      whose branches do not use the constructor's argument is written as
      `(if s as x return P then t else e)`, which elaborates to the same
      match.
-   Any other match, a fixpoint, an evar or a primitive value is refused.
+   - any other match on an inductive without indices is written as
+     `(match s as x return P with | @C _ .. _ a1 .. an => t .. end)`: one
+     branch per constructor in order, the constructor by its full path, the
+     inductive's parameters as `_`, the arguments named by their binders
+     (fresh when bound or when the name reads as a constructor).
+   A match on an indexed family (an `in` clause), a match with a branch
+   that does not bind its constructor's arguments, a fixpoint, an evar or a
+   primitive value is refused.
 
    The statement of a goal is `forall (x1 : T1) ... (xn : Tn), C` over the
    hypotheses that the conclusion reaches: the facts that share a local
@@ -233,6 +240,75 @@ Ltac2 zesu_export_binder_name (binder : binder) (names : string list) : string :
   | None => zesu_export_fresh "x" 1 names
   end.
 
+(* The name of a pattern variable: the binder name, fresh when it is
+   already bound or when a loaded constructor has it as its short name (the
+   pattern would read it as that constructor). *)
+Ltac2 zesu_export_pattern_name (binder : binder) (names : string list) : string :=
+  let reads_constructor (text : string) :=
+    match Ident.of_string text with
+    | Some id =>
+        List.exist (fun reference =>
+          match reference with
+          | Std.ConstructRef _ => true
+          | _ => false
+          end) (Env.expand [id])
+    | None => false
+    end in
+  let text := zesu_export_binder_name binder names in
+  if reads_constructor text then zesu_export_fresh text 1 names else text.
+
+(* The number of arguments of constructor K of an inductive with PARAMETERS
+   parameters; None when its type is not a product ending in an inductive. *)
+Ltac2 zesu_export_constructor_arity (k : constructor) (parameters : int) : int option :=
+  let rec count (term : constr) (found : int) :=
+    match Constr.Unsafe.kind term with
+    | Constr.Unsafe.Prod _ body => count body (Int.add found 1)
+    | Constr.Unsafe.Ind _ _ => Some found
+    | Constr.Unsafe.App head _ =>
+        match Constr.Unsafe.kind head with
+        | Constr.Unsafe.Ind _ _ => Some found
+        | _ => None
+        end
+    | _ => None
+    end in
+  match count (Constr.type (Env.instantiate (Std.ConstructRef k))) 0 with
+  | Some total => if Int.le parameters total then Some (Int.sub total parameters) else None
+  | None => None
+  end.
+
+(* The branches ` | @C _ .. _ a1 .. an => t` of a match on IND (PARAMETERS
+   parameters as `_`), one per constructor in order. Each branch is
+   `fun a1 .. an => t` with n the constructor's arity. *)
+Ltac2 zesu_export_branches (recur : string list -> constr -> message) (ind : inductive)
+    (parameters : int) (names : string list) (branches : constr array) : message :=
+  let data := Ind.data ind in
+  if Int.equal (Array.length branches) (Ind.nconstructors data) then ()
+  else zesu_export_refuse "match";
+  let rec peel (remaining : int) (names : string list) (shown : message) (term : constr) :=
+    if Int.le remaining 0 then (shown, names, term) else
+    match Constr.Unsafe.kind term with
+    | Constr.Unsafe.Lambda binder body =>
+        let name := zesu_export_pattern_name binder names in
+        peel (Int.sub remaining 1) (name :: names)
+          (zesu_export_cats [shown; zesu_export_str " "; zesu_export_str name]) body
+    | _ => zesu_export_refuse "match"
+    end in
+  let rec wildcards (count : int) :=
+    if Int.le count 0 then "" else String.app " _" (wildcards (Int.sub count 1)) in
+  let (_, shown) := Array.fold_left (fun state branch =>
+    let (index, shown) := state in
+    let k := Ind.get_constructor data index in
+    let arity := match zesu_export_constructor_arity k parameters with
+      | Some arity => arity
+      | None => zesu_export_refuse "match"
+      end in
+    let (arguments, inner, body) := peel arity names (zesu_export_str "") branch in
+    (Int.add index 1, zesu_export_cats [shown; zesu_export_str " | ";
+      zesu_export_path (Std.ConstructRef k); zesu_export_str (wildcards parameters); arguments;
+      zesu_export_str " => "; recur inner body]))
+    (0, zesu_export_str "") branches in
+  shown.
+
 Ltac2 rec zesu_export_term (lits : zesu_export_literals) (names : string list) (term : constr)
     : message :=
   let recur := zesu_export_term lits in
@@ -304,43 +380,60 @@ Ltac2 rec zesu_export_term (lits : zesu_export_literals) (names : string list) (
             zesu_export_path (Std.ConstRef c); zesu_export_str ")"]
       | None => zesu_export_refuse "projection"
       end
-  | Constr.Unsafe.Case _ predicate _ scrutinee branches =>
+  | Constr.Unsafe.Case info predicate invert scrutinee branches =>
       let (returned, _) := predicate in
-      (* The return predicate `fun (x : I ..) => P` names the inductive: `bool`
-         (constructors without arguments) or `sumbool A B` (one argument). *)
-      let shape := match Constr.Unsafe.kind returned with
+      (* The return predicate `fun (x : I params) => P` of a match on an
+         inductive I without indices. *)
+      let shape := match invert with
+        | Constr.Unsafe.CaseInvert _ => None
+        | Constr.Unsafe.NoInvert =>
+        match Constr.Unsafe.kind returned with
         | Constr.Unsafe.Lambda binder body =>
-            let head := match Constr.Unsafe.kind (Constr.Binder.type binder) with
-              | Constr.Unsafe.App head _ => head
-              | _ => Constr.Binder.type binder
+            let (head, parameters) := match Constr.Unsafe.kind (Constr.Binder.type binder) with
+              | Constr.Unsafe.App head arguments => (head, Array.length arguments)
+              | _ => (Constr.Binder.type binder, 0)
               end in
             match Constr.Unsafe.kind head with
             | Constr.Unsafe.Ind ind _ =>
-                if Ind.equal ind (lits.(bool_type)) then Some (binder, body, 0)
-                else if Ind.equal ind (lits.(sumbool_type)) then Some (binder, body, 1)
-                else None
+                if Constr.Unsafe.Case.equal info (Constr.Unsafe.case ind)
+                then Some (ind, parameters, binder, body) else None
             | _ => None
             end
         | _ => None
+        end
         end in
       match shape with
       | None => zesu_export_refuse "match"
-      | Some (binder, body, fields) =>
-          if Int.equal (Array.length branches) 2 then () else zesu_export_refuse "match";
+      | Some (ind, parameters, binder, body) =>
           let name := zesu_export_binder_name binder names in
-          let branch (term : constr) :=
-            if Int.equal fields 0 then recur names term else
-            match Constr.Unsafe.kind term with
-            | Constr.Unsafe.Lambda _ inner =>
-                if zesu_export_occurs 1 inner then zesu_export_refuse "dependent branch"
-                else recur ("_" :: names) inner
-            | _ => zesu_export_refuse "match"
-            end in
-          zesu_export_cats [zesu_export_str "(if "; recur names scrutinee;
-            zesu_export_str " as "; zesu_export_str name; zesu_export_str " return ";
-            recur (name :: names) body; zesu_export_str " then ";
-            branch (Array.get branches 0); zesu_export_str " else ";
-            branch (Array.get branches 1); zesu_export_str ")"]
+          let sumbool_plain () :=
+            Bool.and (Ind.equal ind (lits.(sumbool_type)))
+              (Array.for_all (fun branch =>
+                 match Constr.Unsafe.kind branch with
+                 | Constr.Unsafe.Lambda _ inner => Bool.neg (zesu_export_occurs 1 inner)
+                 | _ => false
+                 end) branches) in
+          if Bool.or (Ind.equal ind (lits.(bool_type))) (sumbool_plain ()) then
+            (* `if`: `bool` (constructors without arguments) or `sumbool A B`
+               (one argument, unused). *)
+            if Int.equal (Array.length branches) 2 then () else zesu_export_refuse "match";
+            let branch (term : constr) :=
+              if Ind.equal ind (lits.(bool_type)) then recur names term else
+              match Constr.Unsafe.kind term with
+              | Constr.Unsafe.Lambda _ inner => recur ("_" :: names) inner
+              | _ => zesu_export_refuse "match"
+              end in
+            zesu_export_cats [zesu_export_str "(if "; recur names scrutinee;
+              zesu_export_str " as "; zesu_export_str name; zesu_export_str " return ";
+              recur (name :: names) body; zesu_export_str " then ";
+              branch (Array.get branches 0); zesu_export_str " else ";
+              branch (Array.get branches 1); zesu_export_str ")"]
+          else
+            zesu_export_cats [zesu_export_str "(match "; recur names scrutinee;
+              zesu_export_str " as "; zesu_export_str name; zesu_export_str " return ";
+              recur (name :: names) body; zesu_export_str " with";
+              zesu_export_branches recur ind parameters names branches;
+              zesu_export_str " end)"]
       end
   | Constr.Unsafe.Fix _ _ _ _ => zesu_export_refuse "fixpoint"
   | Constr.Unsafe.CoFix _ _ _ => zesu_export_refuse "cofixpoint"
