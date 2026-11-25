@@ -266,7 +266,10 @@ def return_boundary(designs, slot=None):
         # on the way to that seed.
         root, (alternative,) = drop_entry_resources(
             root_seeds[roots.get(exit["seed_pc"], public_seed["entry_pc"])], [alternative], [], seed_drops)
-        terminal = next(row["id"] for row in root.ownership["components"] if row["source"] == "True")
+        # The closing component: `True`, or the continuation `K` of a root that carries it (an owned join or
+        # loop-head seed, loop_design.owned_seed).
+        terminal = next((row["id"] for row in root.ownership["components"] if row["source"] == "True"), None) \
+            or next(row["id"] for row in root.ownership["components"] if row["source"] == "K")
         alternative, = align_join_edges([alternative], root.ownership, terminal, "K", keep_binders=True,
                                         keep_designs=lambda source: entry_hist.is_join_history(
                                             source.strip().removeprefix("⌜").removesuffix("⌝")))[0]

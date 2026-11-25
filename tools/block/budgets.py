@@ -14,7 +14,9 @@ where the term of an edge is
   * a call (the block ends in a `call` row): the callee's budget plus B(return site);
   * a tail call (the block jumps to another function's entry): the callee's budget;
   * a function return: 0.
-A block of an `unreachable_entries` row has budget 0 and is no successor. At a loop cut with a
+A block of an `unreachable_entries` row has budget 0 and is no successor, except a call's return site
+also in `unreachable_reached`: its call-return seed stays, so it keeps its budget and only the edges from
+predecessor blocks into it are cut. At a loop cut with a
 `potential` row (profile key `potentials` {block: {"potential": P, "entry_bound"?: E}}) B is P itself,
 not computed. An edge into a cut from a block of the cut's loop (one the cut reaches) has the term P
 over the loop body's binders; the inequality between the potential before and after the iteration is
@@ -188,7 +190,14 @@ class Walk:
         self.compute_callees = compute_callees
         self.callees = {}
         get = (lambda key, default: profile.get(key, default)) if profile is not None else (lambda key, default: default)
-        self.unreachable = {self._address(key) for key in get('unreachable_entries', [])}
+        # An `unreachable_entries` block also in `unreachable_reached` that is a call's return site keeps
+        # its own seed (the call return) and its budget; only the edges from predecessor blocks into it are
+        # cut (each closes by contradiction in the kernel), as the renderer does (render_fp301_entries.py).
+        reached = {self._address(key) for key in get('unreachable_reached', [])}
+        return_sites = {target for call_pc in self.calls for block in function['blocks']
+                        if block['start'] <= call_pc < block['end'] for target in block['successors']}
+        self.cut_edges = {self._address(key) for key in get('unreachable_entries', [])}
+        self.unreachable = self.cut_edges - (reached & return_sites)
         self.potentials = {self._address(key): row for key, row in (get('potentials', {}) or {}).items()}
         for address in self.potentials:
             if address not in self.blocks:
@@ -299,7 +308,7 @@ class Walk:
             terms.append({'kind': 'function_return', 'term': Budget(None, 0)})
         else:
             for target in inside:
-                if target in self.unreachable:
+                if target in self.cut_edges:
                     continue
                 term = self.successor_term(address, target)
                 if target not in self.potentials or not self.in_loop(target, address):
@@ -338,7 +347,7 @@ class Walk:
                 continue
             seen.add(node)
             todo.extend(target for target in self.blocks[node]['successors']
-                        if self.entry <= target < self.function['end'] and target not in self.unreachable)
+                        if self.entry <= target < self.function['end'] and target not in self.cut_edges)
         return False
 
     def edge_kind(self, address, target):
