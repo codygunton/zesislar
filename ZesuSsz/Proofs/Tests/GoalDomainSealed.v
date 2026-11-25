@@ -57,3 +57,23 @@ Lemma goal_domain_sealed_large_context (args : ParentHeaderArgs) (x13 x14 x15 x1
        (bv_unsigned (parentHeaderInputEnd args))
        (parentHeaderInputBytes args) values).
 Proof. intros. zesu_finish. Qed.
+
+(* A part over a frame slot: its address is a modular sum with closed words,
+   its alignment a divisibility. Over the facts that share its atoms (the
+   stack pointer's range and alignment) it closes; the unrelated facts of
+   the context take no part. A part the selected facts do not give fails at
+   once: no solver runs over the whole context. *)
+Lemma goal_domain_part_frame_slot (sp : bv 64) (a b c d e f : Z) :
+  2684355264 <= bv_unsigned sp <= 3221225472 ->
+  bv_unsigned sp mod 16 = 0 ->
+  0 <= a * b <= c * d -> c * d <= e * f -> a * c <= b * d ->
+  (8 | (bv_unsigned sp + bv_unsigned (BV 64 18446744073709551040)) mod 2 ^ 64).
+Proof. intros. ZesuSsz.Automation2.GoalDomain.zesu_goal_domain_part. Qed.
+
+Goal forall (sp : bv 64) (a b c d e f : Z),
+  0 <= a * b <= c * d -> c * d <= e * f -> a * c <= b * d ->
+  (8 | (bv_unsigned sp + 8) mod 2 ^ 64) \/ True.
+Proof.
+  intros. Fail (left; ZesuSsz.Automation2.GoalDomain.zesu_goal_domain_part).
+  right. exact I.
+Qed.
