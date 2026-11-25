@@ -1,7 +1,7 @@
 {
  "schema": "oblig-exec-binders/1",
  "function": "txAccessList",
- "note": "Binder map of tools/oblig/normalise.py (snapshot screen) for txAccessList: the contract arguments (TxAccessListArgs fields by projection path) from the entry snapshot (a0 result, a1 allocator, a2 rest cell; the rest cell holds the input pointer and length at entry, txBlockRestBytes), and per-block register witnesses. Loop, join and call-outcome binders (outer_x20, tx_entries, call_after, ...) are not mapped: their value at a block is not a fixed register or cell, so a goal that names one stays not-evaluable (listed unscreened). txInputEnd (zisk_input_end) is not in the snapshots. `imports`: the Decision instances of the premises (screen only; PR #425 reads the key).",
+ "note": "Binder map of tools/oblig/normalise.py (snapshot screen) for txAccessList: the contract arguments (TxAccessListArgs fields by projection path) from the entry snapshot (a0 result, a1 allocator, a2 rest cell; the rest cell holds the input pointer and length at entry, txBlockRestBytes), and per-block register witnesses. Loop, join and call-outcome binders (outer_x20, tx_entries, call_after, ...) are not mapped: their value at a block is not a fixed register or cell, so a goal that names one stays not-evaluable (listed unscreened). txInputEnd (zisk_input_end) is not in the snapshots. `imports`: the Decision instances of the premises (screen only; PR #425 reads the key). `assume`: the sealed call facts of the four callees (screen takes them as holding on snapshots; aa/screen-assume reads the key).",
  "mode": "remap-never",
  "binders": [
   {
@@ -193,5 +193,15 @@
  ],
  "imports": [
   "ZesuSsz.Compliance.TxAccessListDecide"
+ ],
+ "assume": [
+  "ZesuSsz.Interfaces.DecodeItem.DecodeItemSealed.decodeItemCallDomain",
+  "ZesuSsz.Interfaces.DecodeItem.DecodeItemSealed.decodeItemCallMeaning",
+  "ZesuSsz.Interfaces.EntriesToOwnedSlice.EntriesToOwnedSliceSealed.entriesToOwnedSliceCallDomain",
+  "ZesuSsz.Interfaces.EntriesToOwnedSlice.EntriesToOwnedSliceSealed.entriesToOwnedSliceCallAllows",
+  "ZesuSsz.Interfaces.KeysEnsureCapacity.KeysEnsureCapacitySealed.keysEnsureCapacityCallDomain",
+  "ZesuSsz.Interfaces.KeysEnsureCapacity.KeysEnsureCapacitySealed.keysEnsureCapacityCallAllows",
+  "ZesuSsz.Interfaces.KeysToOwnedSlice.KeysToOwnedSliceSealed.keysToOwnedSliceCallDomain",
+  "ZesuSsz.Interfaces.KeysToOwnedSlice.KeysToOwnedSliceSealed.keysToOwnedSliceCallAllows"
  ]
 }
