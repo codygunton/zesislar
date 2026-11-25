@@ -83,16 +83,16 @@ Proof.
 Qed.
 
 (* fp_machineAt0204_ForwardA0N0 -> fp_machineAt0248_ForwardA0N0 (join) *)
-Global Instance zesu_hist_edge_39 (args : TxAccessListArgs) (returnAddress : Z) (call6_x10 : bv 64) (call6_outcome : EnsureCapacityOutcome) (call6_kept_x25 : bv 64) (call5_after : DecodeItemOutcome) (call5_payload_offset : Z) (call4_after : DecodeItemOutcome) (outer_x20 : bv 64) (outer_x21 : bv 64) (call3_kept_x26 : bv 64) (call3_after : DecodeItemOutcome) (call3_payload_offset : Z) (call2_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (tx_entries : ArrayListState) (tx_done : list AccessListEntryValue) (tx_images : list TxAccessListEntryImage) (tx_scratch : list byte) (inner_x22 : bv 64) (inner_x23 : bv 64) (inner_x24 : bv 64) (tx_keys : ArrayListState) (machine_x22 : bv 64) (tx_keys_done : ArrayListState) (tx_scratch_keys : list byte) :
+Global Instance zesu_hist_edge_39 (args : TxAccessListArgs) (returnAddress : Z) (call6_x10 : bv 64) (call6_outcome : EnsureCapacityOutcome) (call6_kept_x25 : bv 64) (call5_after : DecodeItemOutcome) (call5_payload_offset : Z) (call4_after : DecodeItemOutcome) (outer_x20 : bv 64) (outer_x21 : bv 64) (call3_kept_x26 : bv 64) (call3_after : DecodeItemOutcome) (call3_payload_offset : Z) (call2_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (tx_entries : ArrayListState) (tx_done : list AccessListEntryValue) (tx_images : list TxAccessListEntryImage) (tx_scratch : list byte) (inner_x22 : bv 64) (inner_x23 : bv 64) (inner_x24 : bv 64) (tx_keys : ArrayListState) (machine_x22 : bv 64) (tx_keys_done : ArrayListState) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0204_ForwardA0N0_Hist (args) (returnAddress) (call6_x10) (call6_outcome) (call6_kept_x25) (call5_after) (call5_payload_offset) (call4_after) (outer_x20) (outer_x21) (call3_kept_x26) (call3_after) (call3_payload_offset) (call2_after) (call_after) (tx_entries) (tx_done) (tx_images) (tx_scratch) (inner_x22) (inner_x23) (inner_x24) (tx_keys))
-    (fp_machineAt0248_ForwardA0N0_Hist (args) (returnAddress) (outer_x20) (outer_x21) (machine_x22) (call4_after) (call3_after) (call3_payload_offset) (call2_after) (call_after) (tx_entries) (tx_done) (tx_images) (tx_keys_done) (tx_scratch_keys))
-    (∃ (tx_keys_list : list (list byte)), ⌜((0%Z <= bv_unsigned machine_x22 <= 0%Z)%Z)⌝ ∗ ⌜(arrayListItems tx_keys_done = List.concat tx_keys_list)⌝ ∗ ⌜(arrayListLength tx_keys_done = Z.of_nat (List.length tx_keys_list))⌝ ∗ ⌜(∃ (keys_pointer keys_length : Z), firstn 16 call4_after = app (word64Bytes keys_pointer) (word64Bytes keys_length) /\ txAccessListKeysWalked (take (Z.to_nat keys_length) (drop (Z.to_nat (keys_pointer - bv_unsigned (txInputPointer args))) (txInputBytes args))) keys_length tx_keys_list)⌝ ∗ ⌜(Z.of_nat (List.length tx_scratch_keys) = txAccessListScratchSize)⌝ ∗ ⌜((bool_decide (machine_x22 = (BV 64%N 0%Z))) = true) /\ ((((bv_unsigned machine_x22) = (0%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x22 >= bv_unsigned (BV 64%N 0%Z))%Z)) = true) /\ ((((bv_unsigned machine_x22) >= (0%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x22 <= bv_unsigned (BV 64%N 0%Z))%Z)) = true) /\ ((((bv_unsigned machine_x22) <= (0%Z))%Z))⌝ ∗ True)%I.
+    (fp_machineAt0248_ForwardA0N0_Hist (args) (returnAddress) (outer_x20) (outer_x21) (machine_x22) (call4_after) (call3_after) (call3_payload_offset) (call2_after) (call_after) (tx_entries) (tx_done) (tx_images) (tx_keys_done))
+    (∃ (tx_keys_list : list (list byte)), ⌜((0%Z <= bv_unsigned machine_x22 <= 0%Z)%Z)⌝ ∗ ⌜(arrayListItems tx_keys_done = List.concat tx_keys_list)⌝ ∗ ⌜(arrayListLength tx_keys_done = Z.of_nat (List.length tx_keys_list))⌝ ∗ ⌜(∃ (keys_pointer keys_length : Z), firstn 16 call4_after = app (word64Bytes keys_pointer) (word64Bytes keys_length) /\ txAccessListKeysWalked (take (Z.to_nat keys_length) (drop (Z.to_nat (keys_pointer - bv_unsigned (txInputPointer args))) (txInputBytes args))) keys_length tx_keys_list)⌝ ∗ ⌜((bool_decide (machine_x22 = (BV 64%N 0%Z))) = true) /\ ((((bv_unsigned machine_x22) = (0%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x22 >= bv_unsigned (BV 64%N 0%Z))%Z)) = true) /\ ((((bv_unsigned machine_x22) >= (0%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x22 <= bv_unsigned (BV 64%N 0%Z))%Z)) = true) /\ ((((bv_unsigned machine_x22) <= (0%Z))%Z))⌝ ∗ True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0204_ForwardA0N0_Hist in Hh.
   destruct Hh as (fp_seed_mstatus_bits & forward_witness_f1505c797ad3010d & forward_witness_d7543602bfbbe148 & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & forward_witness_d0511cb7161d8dd4 & forward_witness_0c9a8614ab622b44 & forward_witness_21649d1cf161453f & forward_witness_00470b017f14ddbf & forward_witness_72b7e22ed74cb83b & forward_witness_87e5cadc5c04d5d4 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53 & HF54 & HF55 & HF56 & HF57 & HF58 & HF59 & HF60 & HF61 & HF62 & HF63 & HF64 & HF65 & HF66 & HF67 & HF68 & HF69 & HF70 & HF71 & HF72 & HF73 & HF74 & HF75 & HF76 & HF77 & HF78 & HF79 & HF80 & HF81 & HF82 & HF83 & HF84 & HF85 & HF86 & HF87 & HF88 & HF89 & HF90 & HF91 & HF92 & HF93 & HF94 & HF95 & HF96 & HF97 & HF98 & HF99 & HF100 & HF101 & HF102).
   iIntros "HN".
-  iDestruct "HN" as (tx_keys_list) "(%HN0 & %HN1 & %HN2 & %HN3 & %HN4 & %HN5 & %HN6 & %HN7 & _)".
+  iDestruct "HN" as (tx_keys_list) "(%HN0 & %HN1 & %HN2 & %HN3 & %HN4 & %HN5 & %HN6 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt0248_ForwardA0N0_Hist.
   exists tx_scratch, tx_keys_list, (BV 64%N 0%Z), forward_witness_d7543602bfbbe148, forward_witness_83d3e6d46c3de70e, forward_witness_1d218312837c2f84, forward_witness_dc636cab9ffb40ae, forward_witness_184f6fc7524c683f, forward_witness_88383840afa7af74, forward_witness_d0511cb7161d8dd4, forward_witness_0c9a8614ab622b44, (BV 64%N 0%Z).
   split; [exact HF0|].
@@ -110,7 +110,6 @@ Proof.
   split; [exact HN1|].
   split; [exact HN2|].
   split; [exact HN3|].
-  split; [exact HN4|].
   split; [by vm_compute|].
   split; [exact HF21|].
   split; [exact HF22|].
@@ -151,9 +150,9 @@ Proof.
   split; [exact HF59|].
   split; [by vm_compute|].
   split; [by vm_compute|].
+  split; [exact HN4|].
   split; [exact HN5|].
-  split; [exact HN6|].
-  exact HN7.
+  exact HN6.
 Qed.
 
 Global Instance zesu_hist_reveal_27 (args : TxAccessListArgs) (returnAddress : Z) (call6_x10 : bv 64) (call6_outcome : EnsureCapacityOutcome) (call6_kept_x25 : bv 64) (call5_after : DecodeItemOutcome) (call5_payload_offset : Z) (call4_after : DecodeItemOutcome) (outer_x20 : bv 64) (outer_x21 : bv 64) (call3_kept_x26 : bv 64) (call3_after : DecodeItemOutcome) (call3_payload_offset : Z) (call2_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (tx_entries : ArrayListState) (tx_done : list AccessListEntryValue) (tx_images : list TxAccessListEntryImage) (tx_scratch : list byte) (inner_x22 : bv 64) (inner_x23 : bv 64) (inner_x24 : bv 64) (tx_keys : ArrayListState) :

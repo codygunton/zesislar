@@ -69,11 +69,11 @@ Proof.
 Qed.
 
 (* fp_machineAt0068_ForwardA0N0 -> fp_machineAt04a8_ForwardA0N0 (join) *)
-Global Instance zesu_hist_edge_2 (args : TxAccessListArgs) (returnAddress : Z) (call_after : DecodeItemOutcome) (tx_scratch_error : list byte) :
+Global Instance zesu_hist_edge_2 (args : TxAccessListArgs) (returnAddress : Z) (call_after : DecodeItemOutcome) (tx_rest_error : list byte) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0068_ForwardA0N0_Hist (args) (returnAddress))
-    (fp_machineAt04a8_ForwardA0N0_Hist (args) (returnAddress) (call_after) (tx_scratch_error))
-    (⌜(Z.of_nat (List.length tx_scratch_error) = txAccessListScratchSize)⌝ ∗ ⌜(∃ (call_arg_x13 : bv 64) (call_arg_x14 : bv 64) (call_arg_x15 : bv 64) (call_arg_x16 : bv 64) (call_arg_x17 : bv 64) (call_before : list byte), (decodeItemCallDomain
+    (fp_machineAt04a8_ForwardA0N0_Hist (args) (returnAddress) (call_after) (tx_rest_error))
+    (⌜(∃ (consumed : Z), tx_rest_error = app (word64Bytes (bv_unsigned (txInputPointer args) + consumed)) (word64Bytes (bv_unsigned (txInputLength args) - consumed)))⌝ ∗ ⌜(∃ (call_arg_x13 : bv 64) (call_arg_x14 : bv 64) (call_arg_x15 : bv 64) (call_arg_x16 : bv 64) (call_arg_x17 : bv 64) (call_before : list byte), (decodeItemCallDomain
           (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)) (BV 64%N 576%Z)) (BV 64%N 18446744073709551128%Z))); ((txInputPointer args)); ((txInputLength args)); (call_arg_x13); (call_arg_x14); (call_arg_x15); (call_arg_x16); (call_arg_x17)]) (((bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)))) (bv_unsigned (((txInputEnd args)))) (txInputBytes args) call_before)) /\ (decodeItemCallMeaning
             (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)) (BV 64%N 576%Z)) (BV 64%N 18446744073709551128%Z))); ((txInputPointer args)); ((txInputLength args)); (call_arg_x13); (call_arg_x14); (call_arg_x15); (call_arg_x16); (call_arg_x17)]) (((bv_add (txStackPointer args) (BV 64%N 18446744073709551040%Z)))) (bv_unsigned (((txInputEnd args)))) (txInputBytes args) call_before) (call_after)))⌝ ∗ True)%I.
 Proof.
