@@ -460,22 +460,22 @@ Ltac2 zesu_export_record_head (typ : constr) : constr option :=
   | None => None
   end.
 
-(* A large fact that the statement keeps whole: a record fact whose head the
-   conclusion mentions (an existential that restates a call record over its
-   binders needs the record). *)
-Ltac2 zesu_export_keep_whole (conclusion : constr) (typ : constr) : bool :=
+(* A large fact that the statement keeps: a record fact whose head SCOPE
+   mentions (an existential that restates a call record over its binders
+   needs the record; a conjunct of it gets the record with its large
+   subterms abstracted, `zesu_export_abstract`). *)
+Ltac2 zesu_export_keep_whole (scope : constr) (typ : constr) : bool :=
   match zesu_export_record_head typ with
-  | Some head => zesu_export_mentions head conclusion
+  | Some head => zesu_export_mentions head scope
   | None => false
   end.
 
 (* The facts that the conclusion reaches: a fact is kept when it shares a
    local variable with the conclusion or with a kept fact. A conclusion
    without local variables (`False` of a contradictory path) reaches every
-   candidate fact. Facts above LIMIT nodes (unless kept whole), facts
+   candidate fact. Facts above LIMIT nodes (unless kept for SCOPE), facts
    without local variables, and facts with refused syntax are never kept. *)
-Ltac2 zesu_export_reach (limit : int) : ident list * int * int :=
-  let conclusion := zesu_export_unfold_local (Control.goal ()) in
+Ltac2 zesu_export_reach_in (limit : int) (scope : constr) : ident list * int * int :=
   let candidates := List.fold_right (fun declaration found =>
     let (name, body, typ) := declaration in
     match body with
@@ -487,7 +487,7 @@ Ltac2 zesu_export_reach (limit : int) : ident list * int * int :=
           | Some variables =>
               if Int.equal (List.length variables) 0 then found
               else if Bool.or (ZesuSsz.Automation2.ContextCollection.zesu_select_small limit typ)
-                (zesu_export_keep_whole conclusion typ)
+                (zesu_export_keep_whole scope typ)
               then (name, variables) :: found else found
           | None => found
           end
@@ -525,6 +525,9 @@ Ltac2 zesu_export_reach (limit : int) : ident list * int * int :=
   let ordered := List.fold_right (fun entry found =>
     let (name, _) := entry in if zesu_export_member name kept then name :: found else found) candidates [] in
   (ordered, props, List.length candidates).
+
+Ltac2 zesu_export_reach (limit : int) : ident list * int * int :=
+  zesu_export_reach_in limit (zesu_export_unfold_local (Control.goal ())).
 
 Ltac2 zesu_export_node_cap := 1000000.
 
@@ -652,25 +655,55 @@ Ltac2 rec zesu_export_subterms (found : (int * constr) list ref) (term : constr)
    end);
   (nodes, loose).
 
+(* The application subterms of at least 16 nodes of the conclusion and of
+   the facts within LIMIT nodes: the terms through which the statement
+   relates a large fact to the rest of the statement. *)
+Ltac2 zesu_export_shared (limit : int) : constr list :=
+  let collect (term : constr) :=
+    let found := Ref.ref [] in
+    let _ := zesu_export_subterms found term in
+    List.map (fun entry => let (_, subterm) := entry in subterm)
+      (List.filter (fun entry => let (nodes, _) := entry in Int.le 16 nodes) (Ref.get found)) in
+  List.fold_left (fun shared declaration =>
+    let (_, body, typ) := declaration in
+    match body with
+    | Some _ => shared
+    | None =>
+        if Bool.and (zesu_export_proposition typ)
+          (ZesuSsz.Automation2.ContextCollection.zesu_select_small limit typ)
+        then List.append (collect typ) shared else shared
+    end) (collect (zesu_export_unfold_local (Control.goal ()))) (Control.hyps ()).
+
 (* A subterm that a variable may replace: a value (not a proof, not a type)
-   without evar that the conclusion does not mention. *)
-Ltac2 zesu_export_abstractable (conclusion : constr) (term : constr) : bool :=
+   without evar none of whose subterms of at least 16 nodes is SHARED, so no
+   other part of the statement says anything about its insides (txAccessList
+   0188: the argument words of call4 read from the input, but not the
+   argument record, whose pointer the bound facts state). *)
+Ltac2 zesu_export_abstractable (shared : constr list) (term : constr) : bool :=
   if Constr.has_evar term then false
-  else if zesu_export_mentions term conclusion then false
-  else match Control.case (fun () => Constr.type term) with
-    | Val (typ, _) =>
-        if zesu_export_proposition typ then false
-        else match Constr.Unsafe.kind typ with
-          | Constr.Unsafe.Sort _ => false
-          | _ => true
-          end
-    | Err _ => false
-    end.
+  else
+    let typed := match Control.case (fun () => Constr.type term) with
+      | Val (typ, _) =>
+          if zesu_export_proposition typ then false
+          else match Constr.Unsafe.kind typ with
+            | Constr.Unsafe.Sort _ => false
+            | _ => true
+            end
+      | Err _ => false
+      end in
+    if typed then
+      let inner := Ref.ref [] in
+      let _ := zesu_export_subterms inner term in
+      List.for_all (fun entry =>
+        let (nodes, subterm) := entry in
+        if Int.lt nodes 16 then true
+        else Bool.neg (List.exist (fun other => Constr.equal other subterm) shared)) (Ref.get inner)
+    else false.
 
 (* Replaces the largest abstractable subterm of fact NAME (at least 16
    nodes) by a new variable `zesu_abs*` everywhere in the context. Whether a
    subterm was replaced. *)
-Ltac2 zesu_export_abstract_one (name : ident) (conclusion : constr) (refused : constr list ref) : bool :=
+Ltac2 zesu_export_abstract_one (name : ident) (shared : constr list) (refused : constr list ref) : bool :=
   let found := Ref.ref [] in
   let _ := zesu_export_subterms found (Constr.type (Control.hyp name)) in
   let ordered := List.sort (fun a b => let (n1, _) := a in let (n2, _) := b in Int.compare n2 n1)
@@ -683,7 +716,7 @@ Ltac2 zesu_export_abstract_one (name : ident) (conclusion : constr) (refused : c
     | entry :: rest =>
         let (_, term) := entry in
         if List.exist (fun other => Constr.equal other term) (Ref.get refused) then first rest
-        else if zesu_export_abstractable conclusion term then
+        else if zesu_export_abstractable shared term then
           match Control.case (fun () => Ltac1.run (set_term (Ltac1.of_constr term))) with
           | Val _ => true
           | Err _ => Ref.set refused (term :: Ref.get refused); first rest
@@ -694,35 +727,43 @@ Ltac2 zesu_export_abstract_one (name : ident) (conclusion : constr) (refused : c
 
 (* A record fact above LIMIT whose head SCOPE mentions but the conclusion
    does not (a call record that the existential this conjunct comes from
-   restated): its largest subterms that the conclusion does not mention are
-   replaced by variables until it fits the limit. Replacing a term by a
-   variable everywhere gives a statement that implies the original one, and
-   the residual tier finds the variable by unification. *)
+   restated): its largest subterms that nothing else in the statement looks
+   into are replaced by variables, until it fits the limit or no such
+   subterm is left (`zesu_export_reach` keeps it either way). Replacing a
+   term by a variable everywhere gives a statement that implies the original
+   one, and the residual tier finds the variable by unification. *)
 Ltac2 zesu_export_abstract (limit : int) (scope : constr) :=
   let conclusion := zesu_export_unfold_local (Control.goal ()) in
-  List.iter (fun declaration =>
-    let (name, body, typ) := declaration in
+  let records := List.filter (fun declaration =>
+    let (_, body, typ) := declaration in
     match body with
-    | Some _ => ()
+    | Some _ => false
     | None =>
         if zesu_export_proposition typ then
-          match zesu_export_record_head typ with
-          | Some head =>
-              if Bool.and (zesu_export_mentions head scope)
-                (Bool.neg (zesu_export_mentions head conclusion)) then
-                let refused := Ref.ref [] in
-                let rec shrink (budget : int) :=
-                  if Int.le budget 0 then ()
-                  else if ZesuSsz.Automation2.ContextCollection.zesu_select_small limit
-                    (Constr.type (Control.hyp name)) then ()
-                  else if zesu_export_abstract_one name conclusion refused
-                  then shrink (Int.sub budget 1) else () in
-                shrink 24
-              else ()
-          | None => ()
-          end
-        else ()
-    end) (Control.hyps ()).
+          if ZesuSsz.Automation2.ContextCollection.zesu_select_small limit typ then false
+          else match zesu_export_record_head typ with
+            | Some head =>
+                Bool.and (zesu_export_mentions head scope)
+                  (Bool.neg (zesu_export_mentions head conclusion))
+            | None => false
+            end
+        else false
+    end) (Control.hyps ()) in
+  match records with
+  | [] => ()
+  | _ =>
+      let shared := zesu_export_shared limit in
+      List.iter (fun declaration =>
+        let (name, _, _) := declaration in
+        let refused := Ref.ref [] in
+        let rec shrink (budget : int) :=
+          if Int.le budget 0 then ()
+          else if ZesuSsz.Automation2.ContextCollection.zesu_select_small limit
+            (Constr.type (Control.hyp name)) then ()
+          else if zesu_export_abstract_one name shared refused
+          then shrink (Int.sub budget 1) else () in
+        shrink 24) records
+  end.
 
 (* The export record of the focused pure goal. KIND names the export point;
    SCOPE is the statement the goal comes from (the goal itself, or the
@@ -732,7 +773,7 @@ Ltac2 zesu_export_record (kind : string) (limit : int) (scope : constr) :=
   if Constr.has_evar goal then zesu_export_refuse "evar in goal" else ();
   if zesu_export_proposition goal then () else zesu_export_refuse "not a proposition";
   zesu_export_abstract limit scope;
-  let (facts, props, small) := zesu_export_reach limit in
+  let (facts, props, small) := zesu_export_reach_in limit scope in
   let (statement, binders) := zesu_export_statement facts in
   let dropped := zesu_export_dropped limit facts in
   let source := zesu_export_source statement in
