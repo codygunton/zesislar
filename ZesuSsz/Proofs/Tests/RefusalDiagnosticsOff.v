@@ -16,7 +16,7 @@ Proof.
   Fail zesu_diag_step.
   zesu_diag_stage ("test"%string);
   zesu_diag_step_end;
-  zesu_diag_refusal ("test"%string).
+  zesu_diag_refusal ("test"%string) fail.
   match goal with |- x + 1 <= 11 => idtac end.
   lia.
 Qed.

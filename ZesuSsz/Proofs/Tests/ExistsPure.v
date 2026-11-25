@@ -11,6 +11,10 @@ Local Open Scope Z_scope.
 (* An opaque record fact over the witnesses, held as a hypothesis. *)
 Definition exists_pure_record (x : Z) (l : list Z) : Prop := x = 3 /\ l = [].
 
+(* Two histories and an edge between them with one new fact. *)
+Definition exists_pure_hist_pre (a : Z) : Prop := 0 <= a.
+Definition exists_pure_hist_succ (a : Z) : Prop := 0 <= a /\ a < 10.
+
 Section exists_pure.
 Context `{!islaG Sigma} `{!threadG}.
 
@@ -59,5 +63,49 @@ Proof.
   intros Hrecord. iIntros "HK".
   ZesuSsz.Automation2.ExistsPure.zesu_exists_pure_close ltac:(
     solve [ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses]).
+Qed.
+
+(* Witnesses fixed by the context in passes: the record fixes the first two
+   components; `3 = y` fixes y, although `0 <= y` comes first and the
+   context holds the lower bound `0 <= a` it would unify with; `[] = concat
+   w` fixes w; a nested existential restates the record. *)
+Lemma exists_pure_context_passes (K : iProp Sigma) (a b : Z) (l : list Z) :
+  0 <= a -> exists_pure_record (b + 1) l ->
+  K -∗ ∃ x : Z *ₗ list Z *ₗ Z *ₗ list (list Z) *ₗ unit,
+    ⌜exists_pure_record (x.1ₗ + 1) x.2ₗ⌝ ∗ ⌜0 <= x.3ₗ⌝ ∗ ⌜3 = x.3ₗ⌝ ∗
+    ⌜[] = concat x.4ₗ⌝ ∗ ⌜∃ m : Z, exists_pure_record (m + 1) l⌝ ∗ K.
+Proof.
+  intros Ha Hrecord. iIntros "HK".
+  ZesuSsz.Automation2.ExistsPure.zesu_exists_pure_close ltac:(
+    solve [ZesuSsz.Automation2.Finish.zesu_exists_pure_from_context]).
+Qed.
+
+Global Instance exists_pure_hist_edge (a : Z) :
+  ZesuHistEdge (PROP := iProp Sigma) (exists_pure_hist_pre a) (exists_pure_hist_succ a)
+    (⌜a < 10⌝ ∗ ⌜True⌝).
+Proof.
+  rewrite /ZesuHistEdge => Hh. iIntros "[%Hlt _]". iPureIntro.
+  apply zesu_hist_intro. split; [exact (zesu_hist_elim _ Hh) | exact Hlt].
+Qed.
+
+(* A restated successor history follows from the context history through
+   the edge, whose new fact is a hypothesis. *)
+Lemma exists_pure_history (K : iProp Sigma) (a : Z) :
+  zesu_hist (exists_pure_hist_pre a) -> a < 10 ->
+  K -∗ ∃ x : Z, ⌜x = a⌝ ∗ ⌜zesu_hist (exists_pure_hist_succ x)⌝ ∗ K.
+Proof.
+  intros Hpre Hlt. iIntros "HK".
+  ZesuSsz.Automation2.ExistsPure.zesu_exists_pure_close ltac:(
+    solve [ZesuSsz.Automation2.Finish.zesu_exists_pure_from_context]).
+Qed.
+
+(* Without the edge's new fact in the context the history does not follow. *)
+Lemma exists_pure_history_refused (a : Z) :
+  zesu_hist (exists_pure_hist_pre a) -> True.
+Proof.
+  intros Hpre.
+  Fail assert (exists x : Z, x = a /\ zesu_hist (exists_pure_hist_succ x)) by
+    solve [ZesuSsz.Automation2.Finish.zesu_exists_pure_from_context].
+  exact I.
 Qed.
 End exists_pure.

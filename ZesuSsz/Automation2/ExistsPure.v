@@ -1,5 +1,6 @@
 From iris.proofmode Require Import proofmode environments.
 From lithium Require Import pure_definitions.
+From stdpp Require Import tactics.
 Set Default Proof Mode "Classic".
 
 (* A leftover existential whose witnesses only pure facts constrain.
@@ -119,3 +120,94 @@ Ltac zesu_exists_pure_close close :=
           try (iPureIntro; repeat match goal with |- _ /\ _ => split end;
             first [assumption | exact I])))
   end.
+
+(* Witnesses of the pure statement from the context. The statement is
+   split into its conjuncts (its leading existentials and conjunctions,
+   syntactically) with one evar per witness; an existential inside a
+   conjunct stays one conjunct (Finish.zesu_ep_close_one closes it on its
+   own). The witnesses are then fixed in passes over the conjuncts, in
+   order:
+   - a conjunct with an evar whose head is no equation or comparison is the
+     hypothesis of the same head it unifies with (a call record restated
+     over its binders: domain and meaning of the call);
+   - `?w = t` or `t = ?w`, `t` without evar, binds `?w` to `t`;
+   - `a = b + ?w` in Z binds `?w` to `a - b` (an offset into the input);
+   - `[] = t` (or `0 = t`) with a list evar in `t` closes with `[]` for it,
+     when the conjunct then holds by conversion (`[] = concat ?keys`);
+   - a conjunct still with an evar is the hypothesis of the same head it
+     unifies with, comparisons included.
+   A comparison is matched last: `0 <= ?index` unifies with any lower
+   bound in the context, and the equation that fixes the index comes later
+   in the statement. Conjuncts that a pass does not settle are left as
+   goals. *)
+Ltac zesu_ep_relation c :=
+  lazymatch c with
+  | @eq _ _ _ => idtac | not _ => idtac
+  | BinInt.Z.le _ _ => idtac | BinInt.Z.lt _ _ => idtac
+  | BinInt.Z.ge _ _ => idtac | BinInt.Z.gt _ _ => idtac
+  | le _ _ => idtac | lt _ _ => idtac | ge _ _ => idtac | gt _ _ => idtac
+  end.
+
+Ltac zesu_ep_flatten :=
+  repeat lazymatch goal with |- ex _ => eexists end;
+  repeat lazymatch goal with |- _ /\ _ => split end.
+
+Ltac zesu_ep_from_hypothesis :=
+  lazymatch goal with
+  | |- ?c =>
+      has_evar c;
+      let head := get_head c in
+      match goal with
+      | Hfact : ?fact |- _ =>
+          let fact_head := get_head fact in
+          constr_eq head fact_head; exact Hfact
+      end
+  end.
+
+Ltac zesu_ep_record :=
+  lazymatch goal with |- ?c => assert_fails (zesu_ep_relation c) end;
+  zesu_ep_from_hypothesis.
+
+Ltac zesu_ep_bind :=
+  lazymatch goal with
+  | |- ?a = ?b =>
+      first [is_evar b; assert_fails (has_evar a) | is_evar a; assert_fails (has_evar b)];
+      reflexivity
+  end.
+
+(* `a = b + ?w` (or `b + ?w = a`) in Z, `a` and `b` without evar: `?w` is
+   `a - b`; the conjunct is left for the closer. *)
+Ltac zesu_ep_offset :=
+  lazymatch goal with
+  | |- @eq BinNums.Z ?a (BinInt.Z.add ?b ?w) =>
+      is_evar w; assert_fails (has_evar a); assert_fails (has_evar b);
+      unify w (BinInt.Z.sub a b)
+  | |- @eq BinNums.Z (BinInt.Z.add ?b ?w) ?a =>
+      is_evar w; assert_fails (has_evar a); assert_fails (has_evar b);
+      unify w (BinInt.Z.sub a b)
+  end.
+
+Ltac zesu_ep_empty_side side :=
+  lazymatch side with [] => idtac | O => idtac | BinNums.Z0 => idtac end.
+
+Ltac zesu_ep_empty_list :=
+  lazymatch goal with
+  | |- ?a = ?b =>
+      first [zesu_ep_empty_side a | zesu_ep_empty_side b];
+      match goal with
+      | |- context [?w] =>
+          is_evar w;
+          lazymatch type of w with list ?A => unify w (@nil A) end;
+          reflexivity
+      end
+  end.
+
+Ltac zesu_ep_instantiate :=
+  lazymatch goal with |- ex _ => idtac end;
+  zesu_ep_flatten;
+  try zesu_ep_record; try zesu_ep_bind; try zesu_ep_offset; try zesu_ep_empty_list;
+  try zesu_ep_from_hypothesis.
+
+(* Fails on a conjunct whose witness no pass fixed. *)
+Ltac zesu_ep_fixed :=
+  lazymatch goal with |- ?c => assert_fails (has_evar c) end.

@@ -164,15 +164,29 @@ Ltac2 zesu_residual_premise () : unit :=
   match List.find_opt (fun declaration => let (_, _, typ) := declaration in Constr.equal typ goal)
           (Control.hyps ()) with
   | Some declaration => let (name, _, _) := declaration in Control.refine (fun () => Control.hyp name)
-  | None => ltac1:(first [assumption | zesu_residual_piece_premise])
+  | None => ltac1:(first [assumption | eassumption | zesu_residual_piece_premise])
   end.
 
+(* A binder the export introduced for a subterm of a large fact
+   (`ResidualExport.zesu_export_abstract`): its name starts with
+   `zesu_abs`. *)
+Ltac2 zesu_residual_abstracted (name : ident) : bool :=
+  let text := Ident.to_string name in
+  let prefix := "zesu_abs" in
+  let rec same (index : int) :=
+    if Int.equal index (String.length prefix) then true
+    else if Int.equal (Char.to_int (String.get text index)) (Char.to_int (String.get prefix index))
+    then same (Int.add index 1) else false in
+  if Int.lt (String.length text) (String.length prefix) then false else same 0.
+
 (* Apply LEMMA to the goal when the goal is its conclusion up to its binders.
-   A binder that the conclusion fixes is found by unification; any other
-   binder that a premise mentions is the context variable of the same name
-   (the export keeps the names of the context it was taken from); each
-   premise closes by a hypothesis or a piece of one. A missing variable or premise fails the
-   lemma; nothing else is tried. Which binders the rest of the statement
+   A binder that the conclusion fixes is found by unification; a binder for
+   a subterm of a large fact (`zesu_residual_abstracted`) by unification of
+   the premises that mention it with hypotheses; any other binder that a
+   premise mentions is the context variable of the same name (the export
+   keeps the names of the context it was taken from); each premise closes
+   by a hypothesis or a piece of one. A missing variable or premise fails
+   the lemma; nothing else is tried. Which binders the rest of the statement
    mentions is computed only once the conclusion matched. *)
 Ltac2 zesu_residual_exact_apply (lemma : constr) : unit :=
   let (binders, conclusion) := zesu_residual_split (Constr.type lemma) [] in
@@ -187,6 +201,7 @@ Ltac2 zesu_residual_exact_apply (lemma : constr) : unit :=
         | Some name =>
             if List.mem Ident.equal name names
             then ((Std.NamedHyp name, Control.hyp name) :: bindings, next)
+            else if zesu_residual_abstracted name then (bindings, next)
             else Control.zero (Tactic_failure None)
         | None => Control.zero (Tactic_failure None)
         end

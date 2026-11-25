@@ -418,12 +418,64 @@ Ltac2 zesu_export_statement (facts : ident list) : constr * ident list :=
   | Err _ => zesu_export_refuse "ill-typed statement"
   end.
 
+(* The head of a fact's type: the applied constant or inductive. *)
+Ltac2 zesu_export_head (typ : constr) : constr option :=
+  let term := match Constr.Unsafe.kind typ with
+    | Constr.Unsafe.App applied _ => applied
+    | _ => typ
+    end in
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.Constant _ _ => Some term
+  | Constr.Unsafe.Ind _ _ => Some term
+  | _ => None
+  end.
+
+(* Whether NEEDLE occurs in TERM syntactically. *)
+Ltac2 rec zesu_export_mentions (needle : constr) (term : constr) : bool :=
+  if Constr.equal needle term then true else
+  let visit := zesu_export_mentions needle in
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App head arguments => if visit head then true else Array.exist visit arguments
+  | Constr.Unsafe.Prod binder body => if visit (Constr.Binder.type binder) then true else visit body
+  | Constr.Unsafe.Lambda binder body => if visit (Constr.Binder.type binder) then true else visit body
+  | Constr.Unsafe.LetIn binder value body =>
+      if visit (Constr.Binder.type binder) then true else if visit value then true else visit body
+  | Constr.Unsafe.Cast value _ typ => if visit value then true else visit typ
+  | Constr.Unsafe.Proj _ _ value => visit value
+  | Constr.Unsafe.Case _ predicate _ scrutinee branches =>
+      let (returned, _) := predicate in
+      if visit returned then true else if visit scrutinee then true else Array.exist visit branches
+  | _ => false
+  end.
+
+(* A record fact: its head is a predicate of its own, not a connective, an
+   equation or a comparison (which any conclusion mentions). *)
+Ltac2 zesu_export_record_head (typ : constr) : constr option :=
+  match zesu_export_head typ with
+  | Some head =>
+      if List.exist (fun other => Constr.equal head other)
+        ['and; 'or; 'not; 'iff; '(@eq); 'BinInt.Z.le; 'BinInt.Z.lt; 'BinInt.Z.ge;
+         'BinInt.Z.gt; 'le; 'lt; 'ge; 'gt; 'True; 'False; '(@ex)]
+      then None else Some head
+  | None => None
+  end.
+
+(* A large fact that the statement keeps whole: a record fact whose head the
+   conclusion mentions (an existential that restates a call record over its
+   binders needs the record). *)
+Ltac2 zesu_export_keep_whole (conclusion : constr) (typ : constr) : bool :=
+  match zesu_export_record_head typ with
+  | Some head => zesu_export_mentions head conclusion
+  | None => false
+  end.
+
 (* The facts that the conclusion reaches: a fact is kept when it shares a
    local variable with the conclusion or with a kept fact. A conclusion
    without local variables (`False` of a contradictory path) reaches every
-   candidate fact. Facts above LIMIT nodes, facts without local variables,
-   and facts with refused syntax are never kept. *)
+   candidate fact. Facts above LIMIT nodes (unless kept whole), facts
+   without local variables, and facts with refused syntax are never kept. *)
 Ltac2 zesu_export_reach (limit : int) : ident list * int * int :=
+  let conclusion := zesu_export_unfold_local (Control.goal ()) in
   let candidates := List.fold_right (fun declaration found =>
     let (name, body, typ) := declaration in
     match body with
@@ -434,7 +486,8 @@ Ltac2 zesu_export_reach (limit : int) : ident list * int * int :=
           match zesu_export_variables typ with
           | Some variables =>
               if Int.equal (List.length variables) 0 then found
-              else if ZesuSsz.Automation2.ContextCollection.zesu_select_small limit typ
+              else if Bool.or (ZesuSsz.Automation2.ContextCollection.zesu_select_small limit typ)
+                (zesu_export_keep_whole conclusion typ)
               then (name, variables) :: found else found
           | None => found
           end
@@ -520,6 +573,7 @@ Ltac2 zesu_export_dropped (limit : int) (facts : ident list) : (ident * int * me
         let variables := variables_of typ in
         if Bool.or (Bool.neg (zesu_export_proposition typ)) (Int.equal (List.length variables) 0) then found
         else if ZesuSsz.Automation2.ContextCollection.zesu_select_small limit typ then found
+        else if zesu_export_member name facts then found
         else if Bool.and (Bool.neg (Int.equal (List.length conclusion) 0))
           (Bool.neg (ZesuSsz.Automation2.ContextCollection.zesu_context_intersects variables reached))
         then found
@@ -561,11 +615,123 @@ Ltac2 zesu_export_names (label : string) (names : ident list) :=
     zesu_export_cats [message; zesu_export_str " "; Message.of_ident name])
     (zesu_export_str label) names).
 
-(* The export record of the focused pure goal. KIND names the export point. *)
-Ltac2 zesu_export_record (kind : string) (limit : int) :=
+(* ---- large record facts ---- *)
+
+(* The application subterms of TERM that mention no variable bound inside
+   TERM, each with its node count, collected into FOUND. Returns the node
+   count of TERM and its highest loose de Bruijn index (0 when none). *)
+Ltac2 rec zesu_export_subterms (found : (int * constr) list ref) (term : constr) : int * int :=
+  let visit := zesu_export_subterms found in
+  let join (a : int * int) (b : int * int) :=
+    let (n1, r1) := a in
+    let (n2, r2) := b in
+    (Int.add n1 n2, if Int.lt r1 r2 then r2 else r1) in
+  let under (a : int * int) :=
+    let (n, r) := a in (n, if Int.le r 1 then 0 else Int.sub r 1) in
+  let (nodes, loose) := match Constr.Unsafe.kind term with
+    | Constr.Unsafe.Rel index => (0, index)
+    | Constr.Unsafe.App head arguments =>
+        Array.fold_left (fun acc argument => join acc (visit argument)) (visit head) arguments
+    | Constr.Unsafe.Prod binder body => join (visit (Constr.Binder.type binder)) (under (visit body))
+    | Constr.Unsafe.Lambda binder body => join (visit (Constr.Binder.type binder)) (under (visit body))
+    | Constr.Unsafe.LetIn binder value body =>
+        join (join (visit (Constr.Binder.type binder)) (visit value)) (under (visit body))
+    | Constr.Unsafe.Cast value _ typ => join (visit value) (visit typ)
+    | Constr.Unsafe.Proj _ _ value => visit value
+    | Constr.Unsafe.Case _ predicate _ scrutinee branches =>
+        let (returned, _) := predicate in
+        Array.fold_left (fun acc branch => join acc (visit branch))
+          (join (visit returned) (visit scrutinee)) branches
+    | _ => (0, 0)
+    end in
+  let nodes := Int.add nodes 1 in
+  (match Constr.Unsafe.kind term with
+   | Constr.Unsafe.App _ _ =>
+       if Int.equal loose 0 then Ref.set found ((nodes, term) :: Ref.get found) else ()
+   | _ => ()
+   end);
+  (nodes, loose).
+
+(* A subterm that a variable may replace: a value (not a proof, not a type)
+   without evar that the conclusion does not mention. *)
+Ltac2 zesu_export_abstractable (conclusion : constr) (term : constr) : bool :=
+  if Constr.has_evar term then false
+  else if zesu_export_mentions term conclusion then false
+  else match Control.case (fun () => Constr.type term) with
+    | Val (typ, _) =>
+        if zesu_export_proposition typ then false
+        else match Constr.Unsafe.kind typ with
+          | Constr.Unsafe.Sort _ => false
+          | _ => true
+          end
+    | Err _ => false
+    end.
+
+(* Replaces the largest abstractable subterm of fact NAME (at least 16
+   nodes) by a new variable `zesu_abs*` everywhere in the context. Whether a
+   subterm was replaced. *)
+Ltac2 zesu_export_abstract_one (name : ident) (conclusion : constr) (refused : constr list ref) : bool :=
+  let found := Ref.ref [] in
+  let _ := zesu_export_subterms found (Constr.type (Control.hyp name)) in
+  let ordered := List.sort (fun a b => let (n1, _) := a in let (n2, _) := b in Int.compare n2 n1)
+    (List.filter (fun entry => let (nodes, _) := entry in Int.le 16 nodes) (Ref.get found)) in
+  let set_term := ltac1val:(term |-
+    let abstracted := fresh "zesu_abs" in set (abstracted := term) in *; clearbody abstracted) in
+  let rec first (entries : (int * constr) list) :=
+    match entries with
+    | [] => false
+    | entry :: rest =>
+        let (_, term) := entry in
+        if List.exist (fun other => Constr.equal other term) (Ref.get refused) then first rest
+        else if zesu_export_abstractable conclusion term then
+          match Control.case (fun () => Ltac1.run (set_term (Ltac1.of_constr term))) with
+          | Val _ => true
+          | Err _ => Ref.set refused (term :: Ref.get refused); first rest
+          end
+        else (Ref.set refused (term :: Ref.get refused); first rest)
+    end in
+  first ordered.
+
+(* A record fact above LIMIT whose head SCOPE mentions but the conclusion
+   does not (a call record that the existential this conjunct comes from
+   restated): its largest subterms that the conclusion does not mention are
+   replaced by variables until it fits the limit. Replacing a term by a
+   variable everywhere gives a statement that implies the original one, and
+   the residual tier finds the variable by unification. *)
+Ltac2 zesu_export_abstract (limit : int) (scope : constr) :=
+  let conclusion := zesu_export_unfold_local (Control.goal ()) in
+  List.iter (fun declaration =>
+    let (name, body, typ) := declaration in
+    match body with
+    | Some _ => ()
+    | None =>
+        if zesu_export_proposition typ then
+          match zesu_export_record_head typ with
+          | Some head =>
+              if Bool.and (zesu_export_mentions head scope)
+                (Bool.neg (zesu_export_mentions head conclusion)) then
+                let refused := Ref.ref [] in
+                let rec shrink (budget : int) :=
+                  if Int.le budget 0 then ()
+                  else if ZesuSsz.Automation2.ContextCollection.zesu_select_small limit
+                    (Constr.type (Control.hyp name)) then ()
+                  else if zesu_export_abstract_one name conclusion refused
+                  then shrink (Int.sub budget 1) else () in
+                shrink 24
+              else ()
+          | None => ()
+          end
+        else ()
+    end) (Control.hyps ()).
+
+(* The export record of the focused pure goal. KIND names the export point;
+   SCOPE is the statement the goal comes from (the goal itself, or the
+   existential whose conjunct it is). *)
+Ltac2 zesu_export_record (kind : string) (limit : int) (scope : constr) :=
   let goal := Control.goal () in
   if Constr.has_evar goal then zesu_export_refuse "evar in goal" else ();
   if zesu_export_proposition goal then () else zesu_export_refuse "not a proposition";
+  zesu_export_abstract limit scope;
   let (facts, props, small) := zesu_export_reach limit in
   let (statement, binders) := zesu_export_statement facts in
   let dropped := zesu_export_dropped limit facts in
@@ -583,8 +749,8 @@ Ltac2 zesu_export_record (kind : string) (limit : int) :=
   Message.print (zesu_export_cats [zesu_export_str "@@X stmt "; source]);
   Message.print (zesu_export_str "@@X end").
 
-Ltac2 zesu_export_goal_here (kind : string) :=
-  match Control.case (fun () => zesu_export_record kind 2048) with
+Ltac2 zesu_export_goal_here (kind : string) (scope : constr) :=
+  match Control.case (fun () => zesu_export_record kind 2048 scope) with
   | Val _ => ()
   | Err error =>
       let why := match error with
@@ -598,12 +764,14 @@ Ltac2 Type exn ::= [ ZesuExportRestore ].
 
 (* The record is printed with the pieces of the large facts in the context;
    the failure that follows restores the goal and the context. *)
-Ltac2 zesu_export_goal (kind : string) :=
+Ltac2 zesu_export_goal_in (kind : string) (scope : constr) :=
   let _ := Control.case (fun () =>
     let _ := ZesuSsz.Automation2.ContextCollection.zesu_large_fact_pieces () in
-    zesu_export_goal_here kind;
+    zesu_export_goal_here kind scope;
     Control.zero ZesuExportRestore) in
   ().
+
+Ltac2 zesu_export_goal (kind : string) := zesu_export_goal_in kind (Control.goal ()).
 
 (* ---- checks used by the loop tool ---- *)
 

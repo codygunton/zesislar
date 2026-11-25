@@ -65,3 +65,19 @@ Proof. Fail ResidualLemmas.zesu_residual_lemma. lia. Qed.
 Lemma residual_exact_local_definitions (a y : Z) :
   let b := a in (b <> 0 -> 0 <= y) -> 0 < a -> y < 10 -> b * 32 <> 0.
 Proof. intros b H0 H1 H2. ResidualLemmas.zesu_residual_lemma. Qed.
+
+(* A binder the export introduced for a subterm of a large fact
+   (`zesu_abs*`, ResidualExport.zesu_export_abstract) is found by
+   unification of the premises that mention it with hypotheses. *)
+Definition residual_exact_record (a b : Z) : Prop := a = b + b.
+
+Lemma residual_exactTier_0000_0000000000000003 :
+  forall (y : Z) (zesu_abs : Z) (H0 : residual_exact_record zesu_abs y) (H1 : 0 <= zesu_abs),
+    0 <= y + y + 1.
+Proof. unfold residual_exact_record. intros; lia. Qed.
+#[local] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas.zesu_residual_exact constr:(residual_exactTier_0000_0000000000000003) : zesu_residual_exact.
+
+Lemma residual_exact_abstracted_binder (a y : Z)
+    (Hrec : residual_exact_record (a * a + 3) y) (Hlow : 0 <= a * a + 3) :
+  0 <= y + y + 1.
+Proof. ResidualLemmas.zesu_residual_lemma. Qed.

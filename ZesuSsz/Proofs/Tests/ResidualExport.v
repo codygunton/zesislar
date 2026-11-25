@@ -134,6 +134,42 @@ Proof.
   lia.
 Qed.
 
+(* A record fact (a head of its own) above the node limit. *)
+Definition residual_export_record (a b : Z) : Prop := a = b + b.
+
+(* Kept whole when the conclusion mentions its head: the conclusion restates
+   the record. *)
+Lemma residual_export_keep_whole (x y : Z)
+    (Hrec : residual_export_record (x + y + x + y + x + y) y) :
+  residual_export_record (x + y + x + y + x + y) y.
+Proof.
+  ltac2:(
+    let (facts, _, _) := zesu_export_reach 10 in
+    if same_names facts [@Hrec] then () else Control.throw (Tactic_failure None)).
+  exact Hrec.
+Qed.
+
+(* Abstracted when the scope mentions its head and the conclusion does not:
+   its large subterm becomes a variable in every fact, the record fits the
+   limit and the statement keeps it. *)
+Lemma residual_export_abstract (x y : Z)
+    (Hrec : residual_export_record (x + y + x + y + x + y + x + y + x) y)
+    (Hlow : 0 <= x + y + x + y + x + y + x + y + x) :
+  0 <= y + y.
+Proof.
+  ltac2:(
+    zesu_export_abstract 10 constr:(residual_export_record 0 0);
+    let typ := Constr.type (Control.hyp @Hrec) in
+    if ZesuSsz.Automation2.ContextCollection.zesu_select_small 10 typ then ()
+    else Control.throw (Tactic_failure None);
+    if zesu_export_mentions (Control.hyp @x) typ then Control.throw (Tactic_failure None) else ();
+    if zesu_export_mentions (Control.hyp @x) (Constr.type (Control.hyp @Hlow))
+    then Control.throw (Tactic_failure None) else ();
+    let (facts, _, _) := zesu_export_reach 10 in
+    if same_names facts [@Hrec; @Hlow] then () else Control.throw (Tactic_failure None)).
+  unfold residual_export_record in Hrec. lia.
+Qed.
+
 (* Minimization keeps the facts whose binders the proof uses. *)
 Definition residual_export_proof :
   forall (x y : Z) (Hx : 0 <= x) (Hy : 0 <= y), 0 <= x + 0 :=
@@ -168,7 +204,7 @@ Lemma residual_export_hooks (x : Z) (Hx : 0 <= x < 10) (Hy : 0 < 1) : x + 1 <= 1
 Proof.
   zesu_diag_export_on.
   zesu_diag_export_split;
-  zesu_diag_export_final.
+  zesu_diag_export_final fail.
   match goal with |- x + 1 <= 11 => idtac end.
   ltac2:(if Int.equal (prop_count ()) 2 then () else Control.throw (Tactic_failure None)).
   lia.

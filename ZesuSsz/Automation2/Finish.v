@@ -1580,36 +1580,53 @@ Ltac zesu_finish_split_conjunct :=
    is touched. *)
 Ltac zesu_block_tail_one := fail.
 
-(* A pure existential whose witnesses a hypothesis fixes: conjuncts are
-   matched in order against hypotheses with the same head (txAccessList 0170:
-   decodeItem's domain and meaning over call4's record fix all eight
-   witnesses); every conjunct then left has no evar and goes to the pure
-   finisher (0170: the record's list bit and nonzero length, stated as
-   `negb (bool_decide _) = true` and `_ <> 0`). *)
-Ltac zesu_exists_pure_from_context :=
-  lazymatch goal with |- ex _ => idtac end;
-  repeat lazymatch goal with |- ex _ => eexists end;
-  repeat lazymatch goal with |- _ /\ _ => split end;
-  try (match goal with
-       | |- ?conjunct =>
-           lazymatch type of conjunct with Prop => idtac end;
-           let head := get_head conjunct in
-           match goal with
-           | Hfact : ?fact |- _ =>
-               let fact_head := get_head fact in
-               constr_eq head fact_head; exact Hfact
-           end
-       end);
-  lazymatch goal with |- ?conjunct => assert_fails (has_evar conjunct) end;
-  first [assumption | reflexivity |
+(* One conjunct of a leftover existential's pure statement, its witnesses
+   fixed by `ExistsPure.zesu_ep_instantiate`: a hypothesis, `True`, a
+   conversion, a decided proposition through the proposition, an
+   existential conjunct on its own (txAccessList 018c: the restated call4
+   record inside the exit's statement), a history restatement (the edge
+   instance from a context history, its new facts closed the same way:
+   txAccessList 0188's edge to the inner loop head brings the entries list,
+   the list bit and the nonzero payload length of call4's record), a fact a
+   context history reveals, the pure finisher, then FALLBACK. *)
+Ltac zesu_ep_close_one fallback :=
+  ExistsPure.zesu_ep_fixed;
+  first [assumption | exact I | reflexivity |
     lazymatch goal with
-    | |- ZesuSsz.Automation2.Hist.zesu_hist _ =>
+    | |- bool_decide _ = true =>
+        apply bool_decide_eq_true_2; zesu_ep_close_one fallback
+    | |- negb (bool_decide _) = true =>
+        apply negb_true_iff, bool_decide_eq_false_2; zesu_ep_close_one fallback
+    | |- ex _ => solve [ExistsPure.zesu_ep_instantiate; zesu_ep_close_one fallback]
+    | |- ZesuSsz.Automation2.Hist.zesu_hist ?succ =>
         match goal with
-        | Hpre : ZesuSsz.Automation2.Hist.zesu_hist _, S : gFunctors |- _ =>
-            exact (ZesuSsz.Automation2.Hist.zesu_hist_edge_pure (Σ := S) _ _ Hpre _)
+        | Hpre : ZesuSsz.Automation2.Hist.zesu_hist ?pre, S : gFunctors |- _ =>
+            notypeclasses refine
+              (ZesuSsz.Automation2.Hist.zesu_hist_edge_facts (Σ := S) pre succ _ Hpre _ _);
+            [solve [typeclasses eauto]
+            |iStartProof; iPureIntro; ExistsPure.zesu_ep_flatten; zesu_ep_close_one fallback]
         end
     end |
-    zesu_finish_pure_goal].
+    lazymatch goal with
+    | |- ?fact =>
+        match goal with
+        | Hpre : ZesuSsz.Automation2.Hist.zesu_hist ?pre |- _ =>
+            notypeclasses refine (@ZesuSsz.Automation2.Hist.zesu_hist_reveal pre fact _ Hpre);
+            solve [typeclasses eauto]
+        end
+    end |
+    solve [zesu_finish_pure_goal] |
+    fallback].
+
+(* A pure existential whose witnesses the context fixes (txAccessList 0170
+   and 0188: decodeItem's domain and meaning over call4's record fix the
+   record's binders, an equation the loop index, `[] = concat _` the keys
+   list); every conjunct is then closed by `zesu_ep_close_one`, a residual
+   lemma for the conjunct last. *)
+Ltac zesu_ep_conjunct_close := zesu_ep_close_one ltac:(ResidualLemmas.zesu_residual_lemma).
+
+Ltac zesu_exists_pure_from_context :=
+  ExistsPure.zesu_ep_instantiate; zesu_ep_conjunct_close.
 
 (* Residual lemmas close the pure goals that every other tier leaves open. *)
 Ltac zesu_block2 :=
@@ -1621,13 +1638,15 @@ Ltac zesu_block2 :=
   (* The pure statement of a leftover existential is first matched against
      the context: an entry that restates a call record (decodeItem's domain
      and meaning over the record's binders) has those facts as hypotheses,
-     and the export drops facts above its node limit, so the residual lemma
-     would lack its only premises. *)
+     and the export drops facts above its node limit, so a residual lemma
+     for the whole statement would lack its only premises. The export
+     (Diagnostics.zesu_diag_export_final) writes one goal per conjunct that
+     `zesu_ep_conjunct_close` leaves, once the context fixes every witness. *)
   try solve [ExistsPure.zesu_exists_pure_close ltac:(first [
     solve [zesu_exists_pure_from_context] |
     ResidualLemmas.zesu_residual_lemma])];
   try zesu_block_tail_one;
-  zesu_diag_refusal "final".
+  zesu_diag_refusal "final" ltac:(zesu_ep_conjunct_close).
 
 Ltac zesu_block_simpl :=
   iStartProof;

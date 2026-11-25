@@ -25,7 +25,7 @@ Proof.
   Fail zesu_diag_step.
   zesu_diag_stage ("test"%string);
   zesu_diag_step_end;
-  zesu_diag_refusal ("test"%string).
+  zesu_diag_refusal ("test"%string) fail.
   match goal with |- x + 1 <= 11 => idtac end.
   ltac2:(if Int.equal (diag_prop_count ()) 2 then () else Control.throw (Tactic_failure None)).
   lia.

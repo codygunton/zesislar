@@ -202,17 +202,30 @@ Ltac zesu_diag_export_split :=
 (* At the refusal point: each goal still open at the end of the block. Also
    on under ZESU_TELEMETRY=1 (Telemetry.v), so a benchmark run of an
    unchanged caller records its leftover goals. With SpatialExportOn, a
-   spatial goal also gets its `@@S` record (SpatialExport.v). *)
-Ltac zesu_diag_export_final :=
+   spatial goal also gets its `@@S` record (SpatialExport.v).
+   An existential that only pure facts constrain, its spatial rest held
+   (ExistsPure.v): when the context fixes every witness
+   (`ExistsPure.zesu_ep_instantiate`), each conjunct that CLOSE does not
+   close is a residual goal; otherwise the whole pure statement is. A
+   conjunct needs no fact above the export's node limit when the facts that
+   fixed the witnesses are (a call record restated over its binders). *)
+Ltac zesu_diag_export_final close :=
   tryif first [zesu_diag_export_on | zesu_telemetry_on] then try (
     lazymatch goal with
     | |- environments.envs_entails _ _ =>
-        (* an existential that only pure facts constrain, its spatial rest
-           held (ExistsPure.v): its pure statement is the residual goal *)
         tryif ZesuSsz.Automation2.ExistsPure.zesu_exists_pure_parts ltac:(fun _ => idtac)
         then ZesuSsz.Automation2.ExistsPure.zesu_exists_pure_parts ltac:(fun E =>
-          try (assert E; [ltac2:(ZesuSsz.Automation2.ResidualExport.zesu_export_goal "final"); fail
-                         | fail]))
+          let export_in := ltac2:(scope |-
+            ZesuSsz.Automation2.ResidualExport.zesu_export_goal_in "final"
+              (Option.get (Ltac1.to_constr scope))) in
+          try (assert E; [
+            first [
+              ZesuSsz.Automation2.ExistsPure.zesu_ep_instantiate;
+              ZesuSsz.Automation2.ExistsPure.zesu_ep_fixed;
+              tryif close then idtac else export_in E
+            | ltac2:(ZesuSsz.Automation2.ResidualExport.zesu_export_goal "final")];
+            fail
+          | fail]))
         else (idtac "@@X skip final spatial";
         tryif ZesuSsz.Automation2.SpatialExport.zesu_spatial_export_on
         then try ZesuSsz.Automation2.SpatialExport.zesu_spatial_export_final else idtac)
@@ -220,6 +233,8 @@ Ltac zesu_diag_export_final :=
     end)
   else idtac.
 
-Ltac zesu_diag_refusal kind :=
+(* CLOSE closes one conjunct of a leftover existential's pure statement
+   (`fail` when the caller has no such closer). *)
+Ltac zesu_diag_refusal kind close :=
   (tryif zesu_diag_on then try zesu_diag_print_refusal kind else idtac);
-  zesu_diag_export_final.
+  zesu_diag_export_final close.
