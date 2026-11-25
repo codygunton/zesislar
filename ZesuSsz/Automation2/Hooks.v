@@ -2839,8 +2839,6 @@ Ltac zesu_liAStep :=
   | (lazymatch goal_class with ZGfind_mem => idtac end;
      zesu_talt l_split_memory_cell_chain (idtac; zesu_split_memory_cell_chain))
   | zesu_talt l_normalize_find_mem_address (idtac; zesu_normalize_find_mem_address)
-  | (lazymatch goal_class with ZGfind_mem => idtac end;
-     zesu_talt l_heap_write (idtac; zesu_heap_write))
   | zesu_talt l_select_generic_write (idtac; ZesuSsz.Automation2.UnionRuleComponents.block2_f6_select_generic_write)
   | zesu_talt l_liAWriteMem (idtac; zesu_liAWriteMem)
   | zesu_talt l_read_span (idtac; ltac2:(Ltac1.run (Ltac1.ref
@@ -2870,6 +2868,9 @@ Ltac zesu_liAStep :=
      (GoalShape.zesu_call_slice_goal_unheld): the call-site step lends it. *)
   | (tryif zesu_call_slice_goal_unheld then fail else idtac;
      zesu_talt l_liStep (idtac; liStep))
+  (* After liStep: only a store that Lithium's lookup does not place. *)
+  | (lazymatch goal_class with ZGfind_mem => idtac end;
+     zesu_talt l_heap_write (idtac; zesu_heap_write))
   | zesu_talt l_opaque_atom_arguments (idtac; zesu_opaque_atom_arguments)
   | zesu_talt l_liLetBindHint (idtac; liLetBindHint)
   | zesu_talt l_liUnfoldLate (idtac; liUnfoldLate)
