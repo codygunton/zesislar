@@ -81,6 +81,46 @@ Ltac zesu_split_folded_pure :=
       end
   end.
 
+(* `repeat first [progress zesu_split_folded_pure | destruct a conjunction]`
+   in one pass. That loop rescans every hypothesis (one `hnf` each) after
+   each destruct; on the txAccessList 01bc region-fault contexts (about 110
+   hypotheses, 80 destructs) it took 1.8 s of which nearly all was the
+   rescans. Here each hypothesis is split once and its parts recursively:
+   the same facts come out (a registered domain is kept the same way). *)
+Ltac zesu_split_folded_one H :=
+  let T := type of H in
+  lazymatch type of T with Prop => idtac end;
+  lazymatch T with
+  | _ /\ _ =>
+      let left := fresh "H" in
+      let right := fresh "H" in
+      destruct H as [left right];
+      try zesu_split_folded_one left; try zesu_split_folded_one right
+  | _ =>
+      let unfolded := eval hnf in T in
+      lazymatch unfolded with
+      | _ /\ _ =>
+          tryif zesu_registered_domain T
+          then (tryif (match goal with _ : zesu_kept_domain T |- _ => idtac end)
+                then idtac
+                else (let Hkeep := fresh "Hdomain" in
+                      pose proof (zesu_keep_domain T H) as Hkeep))
+          else idtac;
+          change unfolded in H; zesu_split_folded_one H
+      end
+  end.
+
+Ltac2 zesu_split_folded_all_pass () :=
+  List.iter (fun (name, body, _) =>
+    match body with
+    | Some _ => ()
+    | None =>
+        let _ := Control.case (fun () =>
+          ltac1:(hypothesis |- zesu_split_folded_one hypothesis) (Ltac1.of_ident name)) in ()
+    end) (Control.hyps ()).
+
+Ltac zesu_split_folded_all := ltac2:(Control.enter zesu_split_folded_all_pass).
+
 (* One derivation from one hypothesis. It adds a fact that is not yet in the
    context, or fails. A present result fails, so the instance search
    backtracks to its next solution: one hypothesis can derive several

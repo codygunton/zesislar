@@ -8,7 +8,8 @@ Python eval kernel:
 
 run_round first runs `drive.step` (every routed action that needs no model: unblock, falsify,
 mechanical, kernel checks), then takes the prover attempts `route.py next` assigns to a model tier
-(only TIER when given, else every tier with an agent), at most LIMIT. For each it builds the prompt
+and drive's screen gate passes (drive.model_items; the summary's `held` counts the others by screen
+verdict), only TIER when given, else every tier with an agent, at most LIMIT. For each it builds the prompt
 from the obligation's task file
 (drive.prompt_for: the answer form of package.py, the compiler errors after a compile error at the
 same tier, the named items after need_context), registers the attempt in the store BEFORE spawning
@@ -291,9 +292,9 @@ def run_round(function, run, tier=None, limit=16, concurrency=16, jobs=8, kernel
             by_tier[name] = by_tier.get(name, 0) + 1
     return dict(function=function, tiers=allowed, skipped=skipped, started=len(started), goals=len(groups),
                 refused=refused, verdicts=verdicts, model_mismatch=mismatched, step_before=dict(before),
-                step_after=dict(after), next_model=by_tier,
+                step_after=dict(after), next_model=by_tier, held=_drive.held_counts(left),
                 deferred=[(i, a, t) for i, a, t, _ in left if a in DEFERRED],
-                listed=sum(1 for _, a, _, _ in left if a not in DEFERRED and a != "prove"),
+                listed=sum(1 for _, a, _, _ in left if a not in DEFERRED and a not in ("prove", _drive.HELD)),
                 running=running, unlocated=unlocated, check_calls=calls["check_calls"], tool_calls=calls)
 
 

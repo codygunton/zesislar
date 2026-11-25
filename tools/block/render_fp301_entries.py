@@ -193,6 +193,9 @@ loop_heads = set(profile["loop_heads"])
 cases = []
 emitted = []
 header = pilot_header(profile)
+if profile.get("word_binders"):
+    # The named equations of word binders (`word_binders`) need their inductive.
+    header += "Require Import ZesuSsz.Contracts.NamedEquation.\n"
 # A charged profile: every block entry owns `step_budget (B)`, B from tools/block/budgets.py (BUDGETS.json
 # beside RESULT.json); a return package and an unreachable entry own none.
 budget_record = None
@@ -501,6 +504,9 @@ for suffix, slot in units:
                                  else "#/boundaries/" + str(index))
     join_design = [entry_hist.design_fact_text(row) for row in profile.get("join_designs", {}).get(suffix, [])]
     join_frames = profile.get("join_frames", {}).get(suffix, [])
+    # Profile `word_binders`: the slots this entry states through binders (entry_hist.word_binder_value).
+    word_rows = profile.get("word_binders", {}).get(suffix, [])
+    entry_hist.check_word_binders(word_rows)
 
     def provenance(*args, **kwargs):
         return {"source": source_ref}
@@ -621,7 +627,14 @@ for suffix, slot in units:
                 raise ValueError("This source adapter has no let/loop declaration binding.")
             rendered_components, slot_binders = [], []
             taken = {binder["name"] for binder in body["existentials"]}
-            for component in body["components"]:
+            # Profile `word_binders`: a listed slot is stated through a fresh binder and the visible
+            # named equation `zesu_named_eq binder W` of the term W it held.
+            components, word_binders, word_facts, reports = entry_hist.word_binder_components(
+                body["components"], word_rows, taken)
+            word_reports.extend(reports)
+            named_facts = [({"kind": "pure", "word_binder": True}, "⌜(" + word_fold(fact) + ")⌝")
+                           for fact in word_facts]
+            for component in components:
                 text = render(component)
                 split = None
                 if entry_hist.FRAME_SLOTS and component["kind"] in ("byte_array", "unknown_byte_array"):
@@ -637,6 +650,16 @@ for suffix, slot in units:
                     slot_binders.extend(split[1])
                     slot_reports.append({"address": component["address"], "pieces": len(split[0]),
                                          "binders": [binder["name"] for binder in split[1]]})
+            if named_facts:
+                # After the entry's own pure facts (else after its resources): the resources fix the
+                # binders first.
+                pure = [number + 1 for number, (component, _) in enumerate(rendered_components)
+                        if component["kind"] == "pure"]
+                position = max(pure) if pure else len(rendered_components)
+                while not pure and position and rendered_components[position - 1][0]["kind"] in ("continuation",
+                                                                                                  "true"):
+                    position -= 1
+                rendered_components[position:position] = named_facts
             if budget is not None:
                 # The step budget, its `{reg:xR}` read in this alternative, among the owned resources.
                 conjunct = budgets.budget_conjunct(
@@ -644,7 +667,7 @@ for suffix, slot in units:
                 rendered_components.insert(budgets.place_budget([component["kind"] for component, _
                                                                  in rendered_components]),
                                            ({"kind": "step_budget"}, conjunct))
-            body = {**body, "existentials": body["existentials"] + slot_binders}
+            body = {**body, "existentials": body["existentials"] + slot_binders + word_binders}
             result = "(" + " ∗ ".join(text for _, text in rendered_components) + ")"
             # A Level 1 entry witness whose register a path overwrote occurs
             # nowhere in the body; nothing could instantiate it, so it is dropped.
@@ -673,7 +696,9 @@ for suffix, slot in units:
                                                  if design.get('entry_predecessor')}, binders, facts))
                      if (block := re.match(r"[0-9a-f]+(?=_|$)", suffix)) else [])
                     # Profile `hist_pinned`: facts that stay visible and keep their binders live.
-                    + profile.get("hist_pinned", []),
+                    + profile.get("hist_pinned", [])
+                    # Profile `word_binders`: each binder's named equation stays visible.
+                    + [entry_hist.word_binder_pattern(binder["name"]) for binder in word_binders],
                     weak_patterns=profile.get("hist_visible", []),
                     # A successor's live binder without a resource takes its value from this entry.
                     pinned=backward_pins.get(pc, {}).get("pinned", []),
@@ -772,7 +797,7 @@ for suffix, slot in units:
 
     # A generated cut whose generalization binds a register value: refute
     # each source alternative first, so an infeasible arm cannot widen it.
-    last_emit, hist_meta, slot_reports = [], {}, []
+    last_emit, hist_meta, slot_reports, word_reports = [], {}, [], []
     refused_sources, refused_names = [], []
     try:
         record, definitions, facts = rendered(boundary)
@@ -787,6 +812,7 @@ for suffix, slot in units:
         while True:
             hist_meta.clear()
             del slot_reports[:]
+            del word_reports[:]
             record, definitions, facts = rendered(boundary)
             if definitions is None:
                 break
@@ -855,6 +881,16 @@ for suffix, slot in units:
         record["hist"] = deepcopy(hist_meta)
     if slot_reports:
         record["frame_slots"] = list(slot_reports)
+    if word_rows:
+        applied = {name for report in word_reports for name in report["applied"]}
+        record["word_binders"] = word_reports + [{"unmatched": row["name"]} for row in word_rows
+                                                 if row["name"] not in applied]
+        for report in record["word_binders"]:
+            for row in report.get("refused", []):
+                print("word_binders: %s: %s refused: %s" % (suffix, row["name"], row["reason"]), file=sys.stderr)
+            if "unmatched" in report:
+                print("word_binders: %s: %s matches no stored byte array of the entry" % (suffix, report["unmatched"]),
+                      file=sys.stderr)
     record.update(
         status="source_declarations_rendered",
         entry=bind(entry),
